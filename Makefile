@@ -6,7 +6,8 @@ DEP_DIR= dep/
 SRC_DIR= src/
 INCLUDES= includes/
 
-SRCS= $(addprefix $(SRC_DIR), main.cpp)
+SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp)
+DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
 CXXFLAGS= -Wall -Wextra -Werror -I $(INCLUDES) -g -std=c++98
@@ -28,5 +29,7 @@ fclean: clean
 	rm -rf $(NAME)
 
 re: fclean all
+
+-include $(DEP)
 
 .PHONY: all clean fclean re
