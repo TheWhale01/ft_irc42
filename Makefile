@@ -1,24 +1,20 @@
 CXX= c++
 
 NAME= ircserv
-
 OBJ_DIR= obj/
-
-DEP= ${SRCS:.cpp=.d}
-
+DEP_DIR= dep/
 SRC_DIR= src/
-
 INCLUDES= includes/
 
-CXXFLAGS= -Wall -Wextra -Werror -I $(INCLUDES) -g -std=c++98 -MMD
+SRCS= $(addprefix $(SRC_DIR), main.cpp)
+OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
-CFILES= $(addprefix $(SRC_DIR), main.cpp)
-
-OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(CFILES))
+CXXFLAGS= -Wall -Wextra -Werror -I $(INCLUDES) -g -std=c++98
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
-	mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	@mkdir -p $(dir $@)
+	@mkdir -p $(DEP_DIR)
+	$(CXX) $(CXXFLAGS) -MMD -MP -MF $(patsubst $(OBJ_DIR)%.o, $(DEP_DIR)%.d, $@) -c $< -o $@
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
@@ -26,14 +22,11 @@ $(NAME): $(OBJS)
 all: $(NAME)
 
 clean:
-	rm -rf $(OBJ_DIR) 
+	rm -rf $(OBJ_DIR) $(DEP_DIR)
 
 fclean: clean
 	rm -rf $(NAME)
 
-re: fclean
-	$(MAKE) all
-
--include $(DEP)
+re: fclean all
 
 .PHONY: all clean fclean re
