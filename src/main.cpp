@@ -1,30 +1,35 @@
-#include <iostream>
-#include <stdexcept>
-#include <exception>
-#include <cstring>
-#include <sys/socket.h>
-
-#define SIM_USERS 50
-typedef struct sockaddr sockaddr_t;
+#include "irc.hpp"
 
 int main(void)
 {
-	int sock_fd, client_sock_fd;
-	sockaddr_t addr, client_addr;
-	socklen_t client_addr_size;
+	while (1)
+	{
+		int serv_fd;
+	int opt = 1;
+	int client_fd;
+	int recv_bytes;
+	char msg[1024];
+	struct sockaddr_in myaddr;
+	socklen_t addrlen = sizeof(myaddr);
 
-	memset(&addr, 0, sizeof(addr));
-	addr.sa_family = AF_INET;
-	sock_fd = socket(addr.sa_family, SOCK_STREAM, 0);
-	if (sock_fd == -1)
-		throw (std::domain_error("socket error."));
-	if (bind(sock_fd, (sockaddr *) &addr, sizeof(addr)) == -1)
-		throw (std::domain_error("bind error."));
-	if (listen(sock_fd, SIM_USERS) == -1)
-		throw (std::domain_error("Salut !"));
-	client_addr_size = sizeof(client_addr);
-	client_sock_fd = accept(sock_fd, (struct sockaddr *) &client_addr, &client_addr_size);
-	if (client_sock_fd == -1)
-		throw (std::domain_error("Bonsoir !"));
+	myaddr.sin_family = AF_INET;
+	serv_fd = socket(myaddr.sin_family, SOCK_STREAM, 0);
+	if (serv_fd == -1)
+		return (1);
+	// Prevent address and port already in use
+	if (setsockopt(serv_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) == -1)
+		return (1);
+	myaddr.sin_addr.s_addr = INADDR_ANY;
+	myaddr.sin_port = htons(PORT);
+	if (bind(serv_fd, (struct sockaddr *) &myaddr, sizeof(myaddr)) == -1)
+		return (1);
+	if (listen(serv_fd, SIM_USERS))
+		return (1);
+	std::cout << "Server started on port: " << PORT << std::endl;
+	if ((client_fd = accept(serv_fd, (struct sockaddr *)&myaddr, &addrlen)) == -1)
+		return (1);
+	recv_bytes = read(client_fd, msg, 1024);
+	std::cout << msg << std::endl;
+	}
 	return (0);
 }
