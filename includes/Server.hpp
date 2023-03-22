@@ -15,7 +15,7 @@ class Server
 		};
 
 		Server(int port, std::string passwd);
-		~Server(void) {}
+		~Server(void);
 
 		const int &getFd(void) const {return (_fd);}
 		const struct sockaddr_in &getAddr(void) const {return (_addr);}

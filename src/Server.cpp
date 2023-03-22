@@ -16,3 +16,9 @@ Server::Server(int port, std::string passwd): _port(port), _passwd(passwd)
 	std::cout << "Server started on port: " << _port << std::endl;
 	return ;
 }
+
+Server::~Server(void)
+{
+	close(_fd);
+	return ;
+}
