@@ -63,10 +63,11 @@ void Server::run(void)
 					else
 					{
 						_buff[_bytes] = '\0';
-						std::cout << "(Client: " << _pollfds[i].fd << ") >> " << _buff;
-						for (size_t j = 1; j < _clients.size(); j++)
-							if (j != i)
-								send(_pollfds[j].fd, _buff, _bytes, 0);
+						exec(_buff);
+						// std::cout << "(Client: " << _pollfds[i].fd << ") >> " << _buff;
+						// for (size_t j = 1; j <= _clients.size(); j++)
+						// 	if (j != i)
+						// 		send(_pollfds[j].fd, _buff, _bytes, 0);
 					}
 				}
 			}

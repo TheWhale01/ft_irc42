@@ -28,6 +28,18 @@ typedef struct sockaddr_in sockaddr_in_t;
 #include "exception.hpp"
 
 // Prototypes
-void parse(std::string const &str);
-
+void exec(std::string str);
 bool pass(Server const &serv, std::string const &pass);
+
+// Operator overloads
+template<class T>
+std::ostream &operator<<(std::ostream &stream, std::vector<T> const &v)
+{
+	typename std::vector<T>::const_iterator it;
+
+	stream << "[";
+	for (it = v.begin(); it != v.end(); it++)
+		stream << *it << (it + 1 != v.end() ? ", " : "");
+	stream << "]";
+	return (stream);
+}
