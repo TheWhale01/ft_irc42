@@ -1,5 +1,7 @@
 #include "irc.hpp"
 
+class Server;
+
 class Client
 {
 	public:
@@ -10,6 +12,7 @@ class Client
 
 	private:
 		pollfd_t _poll;
-		std::string _usrname;
+		std::string _username;
 		std::string _nickname;
+		std::string _realname;
 };

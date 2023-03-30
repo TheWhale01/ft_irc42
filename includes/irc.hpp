@@ -23,8 +23,11 @@
 typedef struct pollfd pollfd_t;
 typedef struct sockaddr_in sockaddr_in_t;
 
+#include "Client.hpp"
 #include "Server.hpp"
 #include "exception.hpp"
 
 // Prototypes
+void parse(std::string const &str);
+
 bool pass(Server const &serv, std::string const &pass);

@@ -1,6 +1,8 @@
 #pragma once
 #include "irc.hpp"
 
+class Client;
+
 class Server
 {
 	public:
@@ -10,9 +12,9 @@ class Server
 		Server(int port, std::string passwd);
 		~Server(void);
 
-		const pollfd_t &getPoll(void) const {return (_poll);}
-		const sockaddr_in_t &getAddr(void) const {return (_addr);}
-		const std::string &getPasswd(void) const {return (_passwd);}
+		const pollfd_t &getPoll(void) const ;
+		const sockaddr_in_t &getAddr(void) const ;
+		const std::string &getPasswd(void) const ;
 
 		void run(void);
 	
@@ -22,5 +24,6 @@ class Server
 		pollfd_t _poll;
 		std::string _passwd;
 		sockaddr_in_t _addr;
-		std::vector<pollfd_t> _clients;
+		std::vector<Client> _clients;
+		std::vector<pollfd_t> _pollfds;
 };

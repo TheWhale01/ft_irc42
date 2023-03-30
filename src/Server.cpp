@@ -1,5 +1,4 @@
 #include "irc.hpp"
-#include "Client.hpp"
 
 Server::Server(int port, std::string passwd): _passwd(passwd)
 {
@@ -15,55 +14,59 @@ Server::Server(int port, std::string passwd): _passwd(passwd)
 		throw (ServerException());
 	if (listen(_poll.fd, SIM_USERS) == -1)
 		throw (ServerException());
-	_clients.push_back(_poll);
+	_pollfds.push_back(_poll);
 	std::cout << "Server started on port: " << ntohs(_addr.sin_port) << std::endl;
 	return ;
 }
 
 Server::~Server(void)
 {
-	for (size_t i = 0; i < _clients.size(); i++)
-		close(_clients[i].fd);
-	close(_poll.fd);
+	for (size_t i = 0; i < _pollfds.size(); i++)
+		close(_pollfds[i].fd);
 	return ;
 }
+
+const pollfd_t &Server::getPoll(void) const {return (_poll);}
+const sockaddr_in_t &Server::getAddr(void) const {return (_addr);}
+const std::string &Server::getPasswd(void) const {return (_passwd);}
 
 void Server::run(void)
 {
 	while (true)
 	{
-		if (poll(_clients.data(), _clients.size(), -1) < 0)
+		if (poll(_pollfds.data(), _pollfds.size(), -1) < 0)
 			throw (ServerException());
-		for (size_t i = 0; i < _clients.size(); i++)
+		for (size_t i = 0; i < _pollfds.size(); i++)
 		{
-			if (_clients[i].revents & POLLIN)
+			if (_pollfds[i].revents & POLLIN)
 			{
-				if (_clients[i].fd == _poll.fd)
+				if (_pollfds[i].fd == _poll.fd)
 				{
 					try
 					{
 						Client new_client(*this);
-						_clients.push_back(new_client.getPoll());
+						_pollfds.push_back(new_client.getPoll());
+						_clients.push_back(new_client);
 					}
-					catch(const std::exception& e) {std::cerr << e.what() << std::endl;}
+					catch (const std::exception& e) {std::cerr << e.what() << std::endl;}
 				}
 				else
 				{
-					_bytes = recv(_clients[i].fd, _buff, BUFF_SIZE, 0);
+					_bytes = recv(_pollfds[i].fd, _buff, BUFF_SIZE, 0);
 					if (_bytes <= 0)
 					{
-						std::cout << "(info) >> Client " << _clients[i].fd << " disconnected." << std::endl;
-						close(_clients[i].fd);
-						_clients.erase(_clients.begin() + i);
+						std::cout << "(info) >> Client " << _pollfds[i].fd << " disconnected." << std::endl;
+						close(_pollfds[i].fd);
+						_pollfds.erase(_pollfds.begin() + i);
 						i--;
 					}
 					else
 					{
 						_buff[_bytes] = '\0';
-						std::cout << "(Client: " << _clients[i].fd << ") >> " << _buff;
+						std::cout << "(Client: " << _pollfds[i].fd << ") >> " << _buff;
 						for (size_t j = 1; j < _clients.size(); j++)
 							if (j != i)
-								send(_clients[j].fd, _buff, _bytes, 0);
+								send(_pollfds[j].fd, _buff, _bytes, 0);
 					}
 				}
 			}
