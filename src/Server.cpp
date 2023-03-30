@@ -1,4 +1,5 @@
 #include "irc.hpp"
+#include "Client.hpp"
 
 Server::Server(int port, std::string passwd): _passwd(passwd)
 {
@@ -39,17 +40,12 @@ void Server::run(void)
 			{
 				if (_clients[i].fd == _poll.fd)
 				{
-					pollfd_t new_client;
-					new_client.fd = accept(_poll.fd, (struct sockaddr *)&client_addr, &addrlen);
-					if (new_client.fd == -1)
+					try
 					{
-						std::cerr << "(error) >> Client could not connect." << std::endl;
-						break ;
+						Client new_client(*this);
+						_clients.push_back(new_client.getPoll());
 					}
-					new_client.events = POLLIN;
-					new_client.revents = 0;
-					_clients.push_back(new_client);
-					std::cout << "(info) >> Client connected." << std::endl;
+					catch(const std::exception& e) {std::cerr << e.what() << std::endl;}
 				}
 				else
 				{
@@ -64,7 +60,7 @@ void Server::run(void)
 					else
 					{
 						_buff[_bytes] = '\0';
-						std::cout << "(Client: " << _clients[i].fd << ") >> " << _buff << std::endl;
+						std::cout << "(Client: " << _clients[i].fd << ") >> " << _buff;
 						for (size_t j = 1; j < _clients.size(); j++)
 							if (j != i)
 								send(_clients[j].fd, _buff, _bytes, 0);

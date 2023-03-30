@@ -6,7 +6,7 @@ DEP_DIR= dep/
 SRC_DIR= src/
 INCLUDES= includes/
 
-SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp cmd/pass.cpp)
+SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Client.cpp cmd/pass.cpp)
 DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
