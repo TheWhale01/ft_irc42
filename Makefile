@@ -6,7 +6,7 @@ DEP_DIR= dep/
 SRC_DIR= src/
 INCLUDES= includes/
 
-SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp)
+SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp cmd/pass.cpp)
 DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
@@ -14,7 +14,7 @@ CXXFLAGS= -Wall -Wextra -Werror -I $(INCLUDES) -g -std=c++98
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(dir $@)
-	@mkdir -p $(DEP_DIR)
+	@mkdir -p $(subst $(OBJ_DIR), $(DEP_DIR), $(dir $@))
 	$(CXX) $(CXXFLAGS) -MMD -MP -MF $(patsubst $(OBJ_DIR)%.o, $(DEP_DIR)%.d, $@) -c $< -o $@
 
 $(NAME): $(OBJS)
