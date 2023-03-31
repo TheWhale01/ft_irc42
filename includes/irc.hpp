@@ -19,6 +19,10 @@
 // Errors
 #define ERR_NEEDMOREPARAMS		461
 #define ERR_ALREADYREGISTRED	462
+#define ERR_PASSWDMISMATCH		464
+#define ERR_NONICKNAMEGIVEN		431
+#define ERR_ERRONEUSNICKNAME	432
+#define ERR_NICKNAMEINUSE		433
 
 // Typedefs
 typedef struct pollfd pollfd_t;
@@ -29,9 +33,8 @@ typedef struct sockaddr_in sockaddr_in_t;
 #include "exception.hpp"
 
 // Prototypes
-int user(Server const &serv, std::vector<std::string> const &args);
-int nick(Server const &serv, std::vector<std::string> const &args);
-int pass(Server const &serv, std::vector<std::string> const &args);
+bool pass(Client &client, Server const &serv, std::vector<std::string> const &args);
+bool nick(Client &client, Server const &serv, std::vector<std::string> const &args);
 
 void str_toupper(std::string &str);
 

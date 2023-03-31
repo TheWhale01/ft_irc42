@@ -8,11 +8,14 @@ class Client
 		Client(Server &serv);
 		~Client() {}
 
-		const pollfd_t &getPoll(void) const {return (_poll);}
+		const pollfd_t &getPoll(void) const;
+		const bool &getRegist(void) const;
+		void setRegist(bool val);
 
 	private:
-		pollfd_t _poll;
-		std::string _username;
-		std::string _nickname;
-		std::string _realname;
+		pollfd_t 	_poll;
+		std::string	_username;
+		std::string	_nickname;
+		std::string	_realname;
+		bool		_regist;
 };

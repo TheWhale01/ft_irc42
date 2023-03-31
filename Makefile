@@ -7,7 +7,7 @@ SRC_DIR= src/
 INCLUDES= includes/
 
 SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Client.cpp exception.cpp cmd/pass.cpp \
-	cmd/nick.cpp cmd/user.cpp utils.cpp)
+	utils.cpp)
 DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
