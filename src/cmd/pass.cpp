@@ -48,11 +48,3 @@ bool nick(Client &client, Server const &serv, std::vector<std::string> const &ar
 	return (1);
 
 }
-
-bool user(Client &client, Server const &serv, std::vector<std::string> const &args)
-{
-	(void) client;
-	(void) serv;
-	(void) args;
-	client.setRegist(1);
-}

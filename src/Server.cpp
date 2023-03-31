@@ -32,6 +32,7 @@ const std::string &Server::getPasswd(void) const {return (_passwd);}
 
 void Server::run(void)
 {
+	signal(SIGINT, sigHandler);
 	while (true)
 	{
 		if (poll(_pollfds.data(), _pollfds.size(), -1) < 0)
@@ -106,6 +107,7 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 {
 	cmds.push_back("PASS");
 	cmds.push_back("NICK");
+	cmds.push_back("CAP");
 	cmds.push_back("USER");
 }
 
@@ -113,5 +115,6 @@ void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server const &, std:
 {
 	cmds_ptr[0] = &pass;
 	cmds_ptr[1] = &nick;
-	//cmds_ptr[2] = &user;
+	cmds_ptr[2] = &cap;
+	cmds_ptr[3] = &user;
 }

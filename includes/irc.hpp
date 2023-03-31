@@ -8,6 +8,7 @@
 
 // C++ includes
 #include <vector>
+#include <csignal>
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
@@ -35,7 +36,10 @@ typedef struct sockaddr_in sockaddr_in_t;
 // Prototypes
 bool pass(Client &client, Server const &serv, std::vector<std::string> const &args);
 bool nick(Client &client, Server const &serv, std::vector<std::string> const &args);
+bool cap(Client &client, Server const &serv, std::vector<std::string> const &args);
+bool user(Client &client, Server const &serv, std::vector<std::string> const &args);
 
+void sigHandler(int sig_id);
 void str_toupper(std::string &str);
 
 std::vector<std::string> split(std::string &str);

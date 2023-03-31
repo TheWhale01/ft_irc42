@@ -24,3 +24,9 @@ void Client::setRegist(bool val)
 {
 	this->_regist = val;
 }
+
+void Client::setUserName(std::string const &username) {_username = username;}
+void Client::setNickName(std::string const &nickname) {_nickname = nickname;}
+void Client::setRealName(std::string const &realname) {_realname = realname;}
+void Client::setHostName(std::string const &hostname) {_hostname = hostname;}
+void Client::setServerName(std::string const &servername) {_servername = servername;}
