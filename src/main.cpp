@@ -13,6 +13,6 @@ int main(int ac, char **av)
 		return (1);
 	Server serv(atoi(av[1]), av[2]);
 	try {serv.run();}
-	catch (std::exception const &e) {return (0);}
+	catch (KillServerException const &e) {return (0);}
 	return (0);
 }

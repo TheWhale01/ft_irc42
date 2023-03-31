@@ -6,7 +6,7 @@ class Client
 {
 	public:
 		Client(Server &serv);
-		~Client() {}
+		~Client();
 
 		const pollfd_t &getPoll(void) const;
 		const bool &getRegist(void) const;
@@ -18,6 +18,9 @@ class Client
 		void setHostName(std::string const &hostname);
 		void setServerName(std::string const &servername);
 
+		const std::string &getNickName(void) const ;
+		const std::string &getUserName(void) const ;
+
 	private:
 		pollfd_t 	_poll;
 		std::string	_username;
@@ -26,4 +29,5 @@ class Client
 		std::string _hostname;
 		std::string _servername;
 		bool		_regist;
+		bool		_can_co;
 };

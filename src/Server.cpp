@@ -29,6 +29,7 @@ Server::~Server(void)
 const pollfd_t &Server::getPoll(void) const {return (_poll);}
 const sockaddr_in_t &Server::getAddr(void) const {return (_addr);}
 const std::string &Server::getPasswd(void) const {return (_passwd);}
+const std::vector<Client> &Server::getClients(void) const {return (_clients);}
 
 void Server::run(void)
 {
@@ -59,13 +60,20 @@ void Server::run(void)
 						std::cout << "(info) >> Client " << _pollfds[i].fd << " disconnected." << std::endl;
 						close(_pollfds[i].fd);
 						_pollfds.erase(_pollfds.begin() + i);
+						_clients.erase(_clients.begin() + (i - 1));
 						i--;
 					}
 					else
 					{
 						_buff[_bytes] = '\0';
-						try {_exec_cmd(_clients[i - 1], _buff);}
-						catch (std::exception const &e) {std::cerr << e.what() << std::endl;}
+						try {_exec_cmd(_clients[i  - 1], _buff);}
+						catch (std::exception const &e)
+						{
+							std::string msg(e.what());
+							std::cerr << msg;
+							send(_clients[i - 1].getPoll().fd, msg.c_str(), msg.length(), 0);
+						}
+						// catch (std::exception const &e) {std::cerr << e.what() << std::endl;}
 						// for (size_t j = 1; j <= _clients.size(); j++)
 						// 	if (j != i)
 						// 		send(_pollfds[j].fd, _buff, _bytes, 0);
@@ -95,12 +103,17 @@ void Server::_exec_cmd(Client &client, std::string str)
 		if (args[0] == cmds[i])
 		{
 			args.erase(args.begin());
-			cmds_ptr[i](client, *this, args);
+			try {cmds_ptr[i](client, *this, args);}
+			catch (std::exception const &e)
+			{
+				std::cerr << e.what() << std::endl;
+				std::string msg = format_msg(e.what());
+				send(client.getPoll().fd, msg.c_str(), msg.length(), 0);
+			}
 			return ;
 		}
 	}
-	std::cerr << cmd << ": ";
-	throw (CommandNotFoundException());
+	throw (UnknownCommandException(cmd));
 }
 
 void Server::_get_commands(std::vector<std::string> &cmds)

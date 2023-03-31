@@ -15,6 +15,7 @@ class Server
 		const pollfd_t &getPoll(void) const ;
 		const sockaddr_in_t &getAddr(void) const ;
 		const std::string &getPasswd(void) const ;
+		const std::vector<Client> &getClients(void) const ;
 
 		void run(void);
 	

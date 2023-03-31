@@ -33,3 +33,16 @@ void str_toupper(std::string &str)
 	for (size_t i = 0; i < str.length(); i++)
 		str[i] = static_cast<char>(std::toupper(str[i]));
 }
+
+std::string format_msg(char const *msg)
+{
+	std::string new_msg(msg);
+
+	new_msg.append("\r\n");
+	return (new_msg);
+}
+
+void format_msg(std::string &str)
+{
+	str.append("\r\n");
+}

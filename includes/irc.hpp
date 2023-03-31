@@ -11,6 +11,7 @@
 #include <csignal>
 #include <cstring>
 #include <cstdlib>
+#include <sstream>
 #include <iostream>
 #include <algorithm>
 
@@ -40,6 +41,9 @@ bool cap(Client &client, Server const &serv, std::vector<std::string> const &arg
 bool user(Client &client, Server const &serv, std::vector<std::string> const &args);
 
 void sigHandler(int sig_id);
+void format_msg(std::string &str);
 void str_toupper(std::string &str);
+
+std::string format_msg(char const *msg);
 
 std::vector<std::string> split(std::string &str);
