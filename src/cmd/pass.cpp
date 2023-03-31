@@ -1,6 +1,6 @@
 #include "irc.hpp"
 
-bool pass(Server const &serv, std::string const &pass)
+int pass(Server const &serv, std::vector<std::string> const &args)
 {
-	return (serv.getPasswd() == pass);
+	return (serv.getPasswd() == args[0]);
 }

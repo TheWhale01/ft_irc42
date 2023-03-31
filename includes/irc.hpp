@@ -11,6 +11,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <iostream>
+#include <algorithm>
 
 #define SIM_USERS 50
 #define BUFF_SIZE 512
@@ -28,18 +29,10 @@ typedef struct sockaddr_in sockaddr_in_t;
 #include "exception.hpp"
 
 // Prototypes
-void exec(std::string str);
-bool pass(Server const &serv, std::string const &pass);
+int user(Server const &serv, std::vector<std::string> const &args);
+int nick(Server const &serv, std::vector<std::string> const &args);
+int pass(Server const &serv, std::vector<std::string> const &args);
 
-// Operator overloads
-template<class T>
-std::ostream &operator<<(std::ostream &stream, std::vector<T> const &v)
-{
-	typename std::vector<T>::const_iterator it;
+void str_toupper(std::string &str);
 
-	stream << "[";
-	for (it = v.begin(); it != v.end(); it++)
-		stream << *it << (it + 1 != v.end() ? ", " : "");
-	stream << "]";
-	return (stream);
-}
+std::vector<std::string> split(std::string &str);

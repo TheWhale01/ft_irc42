@@ -26,4 +26,8 @@ class Server
 		sockaddr_in_t _addr;
 		std::vector<Client> _clients;
 		std::vector<pollfd_t> _pollfds;
+
+		void _exec_cmd(std::string str);
+		void _get_commands(std::vector<std::string> &cmds);
+		void _get_commands_ptr(int (*cmds_ptr[])(Server const &, std::vector<std::string> const &));
 };

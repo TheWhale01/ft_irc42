@@ -63,8 +63,8 @@ void Server::run(void)
 					else
 					{
 						_buff[_bytes] = '\0';
-						exec(_buff);
-						// std::cout << "(Client: " << _pollfds[i].fd << ") >> " << _buff;
+						try {_exec_cmd(_buff);}
+						catch (std::exception const &e) {std::cerr << e.what() << std::endl;}
 						// for (size_t j = 1; j <= _clients.size(); j++)
 						// 	if (j != i)
 						// 		send(_pollfds[j].fd, _buff, _bytes, 0);
@@ -73,4 +73,43 @@ void Server::run(void)
 			}
 		}
 	}
+}
+
+// PRIVATE FUNCTION MEMBERS
+void Server::_exec_cmd(std::string str)
+{
+	std::vector<std::string> args = split(str);
+	if (!args.size())
+		return ;
+	std::vector<std::string> cmds;
+	int (*cmds_ptr[cmds.size()])(Server const &, std::vector<std::string> const &);
+	_get_commands(cmds);
+	_get_commands_ptr(cmds_ptr);
+
+	for (size_t i = 0; i < cmds.size(); i++)
+	{
+		str_toupper(args[0]);
+		if (args[0] == cmds[i])
+		{
+			cmds_ptr[i](*this, args);
+			return ;
+		}
+	}
+	args.clear();
+	std::cerr << args[0] << ": ";
+	throw (CommandNotFoundException());
+}
+
+void Server::_get_commands(std::vector<std::string> &cmds)
+{
+	cmds.push_back("PASS");
+	cmds.push_back("NICK");
+	cmds.push_back("USER");
+}
+
+void Server::_get_commands_ptr(int (*cmds_ptr[])(Server const &, std::vector<std::string> const &))
+{
+	cmds_ptr[0] = &pass;
+	cmds_ptr[1] = &nick;
+	cmds_ptr[2] = &user;
 }
