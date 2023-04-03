@@ -82,5 +82,5 @@ bool user(Client &client, Server const &serv, std::vector<std::string> const &ar
 		client.setRegist(true);
 		send(client.getPoll().fd, welcome.c_str(), welcome.length(), 0);
 	}
-	return (true);
+	return (1);
 }

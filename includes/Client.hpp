@@ -1,3 +1,5 @@
+#pragma once
+
 #include "irc.hpp"
 
 class Server;
@@ -8,8 +10,10 @@ class Client
 		Client(Server &serv);
 		~Client();
 
-		const pollfd_t &getPoll(void) const;
 		const bool &getRegist(void) const;
+		const pollfd_t &getPoll(void) const;
+		const std::string &getNickName(void) const;
+		const std::string &getUserName(void) const;
 
 		void setRegist(bool val);
 		void setUserName(std::string const &username);
@@ -17,9 +21,6 @@ class Client
 		void setRealName(std::string const &realname);
 		void setHostName(std::string const &hostname);
 		void setServerName(std::string const &servername);
-
-		const std::string &getNickName(void) const ;
-		const std::string &getUserName(void) const ;
 
 	private:
 		pollfd_t 	_poll;
