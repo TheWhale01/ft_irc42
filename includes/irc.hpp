@@ -36,9 +36,9 @@ typedef struct sockaddr_in sockaddr_in_t;
 #include "exception.hpp"
 
 // Prototypes
+bool cap(Client &client, Server const &serv, std::vector<std::string> const &args);
 bool pass(Client &client, Server const &serv, std::vector<std::string> const &args);
 bool nick(Client &client, Server const &serv, std::vector<std::string> const &args);
-bool cap(Client &client, Server const &serv, std::vector<std::string> const &args);
 bool user(Client &client, Server const &serv, std::vector<std::string> const &args);
 
 void sigHandler(int sig_id);

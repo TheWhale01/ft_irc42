@@ -13,8 +13,8 @@ Client::Client(Server &serv) : _regist(false)
 
 Client::~Client(void) {}
 
-const pollfd_t &Client::getPoll(void) const {return (this->_poll);}
-const bool &Client::getRegist(void) const {return (this->_regist);}
+const bool &Client::getRegist(void) const {return (_regist);}
+const pollfd_t &Client::getPoll(void) const {return (_poll);}
 std::string const &Client::getNickName(void) const {return (_nickname);}
 std::string const &Client::getUserName(void) const {return (_username);}
 std::string const &Client::getServerName(void) const {return (_servername);}

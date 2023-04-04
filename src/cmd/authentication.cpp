@@ -5,10 +5,7 @@ bool pass(Client &client, Server const &serv, std::vector<std::string> const &ar
 	if (args.size() != 1)
 		throw (NeedMoreParamsException(args[0]));
 	if (client.getRegist())
-	{
-		std::cout << "(debug) >> Already registered." << std::endl;
 		throw (AlreadyRegisteredExcpetion());
-	}
 	if (serv.getPasswd() != *args.begin())
 	{
 		std::cerr << "(error) >> Password incorrect\n";
@@ -48,7 +45,7 @@ bool nick(Client &client, Server const &serv, std::vector<std::string> const &ar
 			throw (NickNameInUseException(client.getNickName()));
 	check_nickname_syntax(args[0]);
 	client.setNickName(args[0]);
-	if (!client.getUserName().empty())
+	if (!client.getUserName().empty() && !client.getRegist())
 	{
 		std::string welcome;
 
@@ -74,7 +71,7 @@ bool user(Client &client, Server const &serv, std::vector<std::string> const &ar
 	client.setHostName(args[1]);
 	client.setServerName(args[2]);
 	client.setRealName(args[3]);
-	if (!client.getNickName().empty())
+	if (!client.getNickName().empty() && !client.getRegist())
 	{
 		std::string welcome;
 
@@ -82,5 +79,5 @@ bool user(Client &client, Server const &serv, std::vector<std::string> const &ar
 		client.setRegist(true);
 		send(client.getPoll().fd, welcome.c_str(), welcome.length(), 0);
 	}
-	return (true);
+	return (1);
 }
