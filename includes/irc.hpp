@@ -19,12 +19,13 @@
 #define BUFF_SIZE 512
 
 // Errors
-#define ERR_NEEDMOREPARAMS		461
-#define ERR_ALREADYREGISTRED	462
-#define ERR_PASSWDMISMATCH		464
-#define ERR_NONICKNAMEGIVEN		431
-#define ERR_ERRONEUSNICKNAME	432
-#define ERR_NICKNAMEINUSE		433
+#define ERR_UNKNOWNCOMMAND		"421"
+#define ERR_NONICKNAMEGIVEN		"431"
+#define ERR_ERRONEUSNICKNAME	"432"
+#define ERR_NICKNAMEINUSE		"433"
+#define ERR_NEEDMOREPARAMS		"461"
+#define ERR_ALREADYREGISTRED	"462"
+#define ERR_PASSWDMISMATCH		"464"
 
 // Typedefs
 typedef struct pollfd pollfd_t;
@@ -47,3 +48,4 @@ void str_toupper(std::string &str);
 std::string format_msg(char const *msg);
 
 std::vector<std::string> split(std::string &str);
+std::vector<std::string> split(const std::string& str, const std::string& delimiter);

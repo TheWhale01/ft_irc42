@@ -1,5 +1,20 @@
 #include "irc.hpp"
 
+std::vector<std::string> split(const std::string& str, const std::string& delimiter)
+{
+    std::vector<std::string> tokens;
+    size_t pos = 0, start = 0;
+
+	if (str == "\r\n")
+		return (tokens);
+    while ((pos = str.find(delimiter, start)) != std::string::npos) {
+        tokens.push_back(str.substr(start, pos - start));
+        start = pos + delimiter.length();
+    }
+    tokens.push_back(str.substr(start));
+    return (tokens);
+}
+
 std::vector<std::string> split(std::string &str)
 {
 	std::vector<std::string> words;
@@ -8,8 +23,6 @@ std::vector<std::string> split(std::string &str)
 
 	for (size_t i = 0; i < str.length(); i++)
 	{
-		if (str[i] == '\r' && str[i + 1] == '\n')
-			break;
 		if (str[i] == ' ' && !stop_at_colon)
 		{
 			if (current_word.length() > 0)

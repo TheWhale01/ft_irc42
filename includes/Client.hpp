@@ -20,6 +20,7 @@ class Client
 
 		const std::string &getNickName(void) const ;
 		const std::string &getUserName(void) const ;
+		const std::string &getServerName(void) const ;
 
 	private:
 		pollfd_t 	_poll;

@@ -2,9 +2,12 @@
 
 Server::Server(int port, std::string passwd): _passwd(passwd)
 {
+	int temp = 1;
 	_addr.sin_family = AF_INET;
 	_poll.fd = socket(_addr.sin_family, SOCK_STREAM, 0);
 	if (_poll.fd == -1)
+		throw (ServerException());
+	if (setsockopt(_poll.fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &temp, sizeof(temp)) < 0)
 		throw (ServerException());
 	_poll.events = POLLIN;
 	_poll.revents = 0;
@@ -66,17 +69,14 @@ void Server::run(void)
 					else
 					{
 						_buff[_bytes] = '\0';
-						try {_exec_cmd(_clients[i  - 1], _buff);}
-						catch (std::exception const &e)
+						std::string user_input(_buff);
+						std::vector<std::string> user_inputs = split(user_input, "\r\n");
+						std::vector<std::string>::iterator it;
+						for (it = user_inputs.begin(); it != user_inputs.end(); it++)
 						{
-							std::string msg(e.what());
-							std::cerr << msg;
-							send(_clients[i - 1].getPoll().fd, msg.c_str(), msg.length(), 0);
+							try {_exec_cmd(_clients[i  - 1], *it);}
+							catch (std::exception const &e) {std::cerr << e.what() << std::endl;}
 						}
-						// catch (std::exception const &e) {std::cerr << e.what() << std::endl;}
-						// for (size_t j = 1; j <= _clients.size(); j++)
-						// 	if (j != i)
-						// 		send(_pollfds[j].fd, _buff, _bytes, 0);
 					}
 				}
 			}
@@ -88,6 +88,7 @@ void Server::run(void)
 void Server::_exec_cmd(Client &client, std::string str)
 {
 	std::string cmd;
+	std::string cmd_not_found;
 	std::vector<std::string> args = split(str);
 	if (!args.size())
 		return ;
@@ -103,17 +104,14 @@ void Server::_exec_cmd(Client &client, std::string str)
 		if (args[0] == cmds[i])
 		{
 			args.erase(args.begin());
-			try {cmds_ptr[i](client, *this, args);}
-			catch (std::exception const &e)
-			{
-				std::cerr << e.what() << std::endl;
-				std::string msg = format_msg(e.what());
-				send(client.getPoll().fd, msg.c_str(), msg.length(), 0);
-			}
+			cmds_ptr[i](client, *this, args);
 			return ;
 		}
 	}
-	throw (UnknownCommandException(cmd));
+	// Unknown Command;
+	cmd_not_found = ":" + client.getServerName() + " " + ERR_UNKNOWNCOMMAND + " " + client.getNickName() + " " + cmd + " :Unknown Command\r\n";
+	std::cerr << cmd_not_found;
+	send(client.getPoll().fd, cmd_not_found.c_str(), cmd_not_found.length(), 0);
 }
 
 void Server::_get_commands(std::vector<std::string> &cmds)

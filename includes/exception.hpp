@@ -2,18 +2,6 @@
 #include <cstring>
 #include <stdexcept>
 
-class UnknownCommandException: public std::exception
-{
-	public:
-		explicit UnknownCommandException(std::string const &str);
-		~UnknownCommandException(void) throw();
-
-		const char *what(void) const throw();
-	
-	private:
-		std::string *_error_msg;
-};
-
 class NeedMoreParamsException: public std::exception
 {
 	public:
