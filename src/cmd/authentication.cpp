@@ -1,6 +1,6 @@
 #include "irc.hpp"
 
-bool pass(Client &client, Server const &serv, std::vector<std::string> const &args)
+bool pass(Client &client, Server &serv, std::vector<std::string> const &args)
 {
 	if (args.size() != 1)
 		throw (NeedMoreParamsException(args[0]));
@@ -35,7 +35,7 @@ static void check_nickname_syntax(std::string const &nickname)
 			throw (ErroneusNickNameException(nickname));
 }
 
-bool nick(Client &client, Server const &serv, std::vector<std::string> const &args)
+bool nick(Client &client, Server &serv, std::vector<std::string> const &args)
 {
 	// Need more errors !
 	if (!args.size())
@@ -56,7 +56,7 @@ bool nick(Client &client, Server const &serv, std::vector<std::string> const &ar
 	return (1);
 }
 
-bool user(Client &client, Server const &serv, std::vector<std::string> const &args)
+bool user(Client &client, Server &serv, std::vector<std::string> const &args)
 {
 	// RFC 1459
 	(void)serv;

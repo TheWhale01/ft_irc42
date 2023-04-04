@@ -33,6 +33,7 @@ const pollfd_t &Server::getPoll(void) const {return (_poll);}
 const sockaddr_in_t &Server::getAddr(void) const {return (_addr);}
 const std::string &Server::getPasswd(void) const {return (_passwd);}
 const std::vector<Client> &Server::getClients(void) const {return (_clients);}
+std::vector<Channel> &Server::getChannels(void) {return (_channels);}
 
 void Server::run(void)
 {
@@ -93,7 +94,7 @@ void Server::_exec_cmd(Client &client, std::string str)
 	if (!args.size())
 		return ;
 	std::vector<std::string> cmds;
-	bool (*cmds_ptr[cmds.size()])(Client &, Server const &, std::vector<std::string> const &);
+	bool (*cmds_ptr[cmds.size()])(Client &, Server &, std::vector<std::string> const &);
 	_get_commands(cmds);
 	_get_commands_ptr(cmds_ptr);
 
@@ -122,7 +123,7 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("USER");
 }
 
-void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server const &, std::vector<std::string> const &))
+void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vector<std::string> const &))
 {
 	cmds_ptr[0] = &pass;
 	cmds_ptr[1] = &nick;

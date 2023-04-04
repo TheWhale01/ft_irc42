@@ -19,6 +19,7 @@
 #define BUFF_SIZE 512
 
 // Errors
+#define ERR_NOSUCHCHANNEL		"403" //"<nom de canal> :No such channel"
 #define ERR_UNKNOWNCOMMAND		"421"
 #define ERR_NONICKNAMEGIVEN		"431"
 #define ERR_ERRONEUSNICKNAME	"432"
@@ -33,13 +34,19 @@ typedef struct sockaddr_in sockaddr_in_t;
 
 #include "Client.hpp"
 #include "Server.hpp"
+#include "Channel.hpp"
 #include "exception.hpp"
 
-// Prototypes
-bool cap(Client &client, Server const &serv, std::vector<std::string> const &args);
-bool pass(Client &client, Server const &serv, std::vector<std::string> const &args);
-bool nick(Client &client, Server const &serv, std::vector<std::string> const &args);
-bool user(Client &client, Server const &serv, std::vector<std::string> const &args);
+/*Prototypes*/
+
+// Authentication
+bool cap(Client &client, Server &serv, std::vector<std::string> const &args);
+bool pass(Client &client, Server &serv, std::vector<std::string> const &args);
+bool nick(Client &client, Server &serv, std::vector<std::string> const &args);
+bool user(Client &client, Server &serv, std::vector<std::string> const &args);
+
+// Channels
+bool join(Client &client, Server &serv, std::vector<std::string> const &args);
 
 void sigHandler(int sig_id);
 void format_msg(std::string &str);

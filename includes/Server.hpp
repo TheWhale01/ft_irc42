@@ -17,6 +17,8 @@ class Server
 		const sockaddr_in_t &getAddr(void) const;
 		const std::string &getPasswd(void) const;
 		const std::vector<Client> &getClients(void) const;
+		
+		std::vector<Channel> &getChannels(void);
 
 		void run(void);
 	
@@ -27,9 +29,10 @@ class Server
 		std::string _passwd;
 		sockaddr_in_t _addr;
 		std::vector<Client> _clients;
+		std::vector<Channel> _channels;
 		std::vector<pollfd_t> _pollfds;
 
 		void _exec_cmd(Client &client, std::string str);
 		void _get_commands(std::vector<std::string> &cmds);
-		void _get_commands_ptr(bool (*cmds_ptr[])(Client &, Server const &, std::vector<std::string> const &));
+		void _get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vector<std::string> const &));
 };

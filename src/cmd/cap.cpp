@@ -1,6 +1,6 @@
 #include "irc.hpp"
 
-bool cap(Client &client, Server const &serv, std::vector<std::string> const &args)
+bool cap(Client &client, Server &serv, std::vector<std::string> const &args)
 {
 	(void)serv;
 	if (!args.size())
