@@ -75,7 +75,7 @@ void Server::run(void)
 						for (it = user_inputs.begin(); it != user_inputs.end(); it++)
 						{
 							try {_exec_cmd(_clients[i  - 1], *it);}
-							catch (std::exception const &e) {std::cerr << e.what() << std::endl;}
+							catch (std::exception const &e) {std::cerr << e.what();}
 						}
 					}
 				}

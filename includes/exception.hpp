@@ -4,68 +4,60 @@
 #include <cstring>
 #include <stdexcept>
 
-class NeedMoreParamsException: public std::exception
+class AIrcStandardException: public std::exception
 {
 	public:
-		explicit NeedMoreParamsException(std::string const &str);
+		virtual const char *what(void) const throw() = 0;
+		virtual ~AIrcStandardException(void) throw();
+
+	protected:
+		std::string _cmd;
+		std::string _nickname;
+		std::string _servername;
+		std::string *_error_msg;
+};
+
+class UnknownCommandException: public AIrcStandardException
+{
+	public:
+		explicit UnknownCommandException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~UnknownCommandException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class NeedMoreParamsException: public AIrcStandardException
+{
+	public:
+		explicit NeedMoreParamsException(std::string const &servername, std::string const &nickname, std::string const &cmd);
 		~NeedMoreParamsException(void) throw();
 
-		virtual const char *what(void) const throw();
-	
-	private:
-		std::string *_error_msg;
+		const char *what(void) const throw();
 };
 
-class NickNameInUseException: public std::exception
+class NoNickNameGivenException: public AIrcStandardException
 {
 	public:
-		explicit NickNameInUseException(std::string const &str);
-		~NickNameInUseException(void) throw();
+		explicit NoNickNameGivenException(std::string const &servername, std::string const &nickname);
+		~NoNickNameGivenException(void) throw();
 
-		virtual const char *what(void) const throw();
-	
-	private:
-		std::string *_error_msg;
-};
-
-class ErroneusNickNameException: public std::exception
-{
-	public:
-		explicit ErroneusNickNameException(std::string const &str);
-		~ErroneusNickNameException(void) throw();
-
-		virtual const char *what(void) const throw();
-	
-	private:
-		std::string *_error_msg;
-};
-
-class ServerException: public std::exception
-{
-	public:
-		virtual const char *what(void) const throw();
+		const char *what(void) const throw();
 };
 
 class ClientCouldNotConnectException: public std::exception
 {
 	public:
-		virtual const char *what(void) const throw();
+		const char *what(void) const throw();
 };
 
-class AlreadyRegisteredExcpetion: public std::exception
+class ServerException: public std::exception
 {
 	public:
-		virtual const char *what(void) const throw();
-};
-
-class NoNickNameGivenException: public std::exception
-{
-	public:
-		virtual const char *what(void) const throw();
+		const char *what(void) const throw();
 };
 
 class KillServerException: public std::exception
 {
 	public:
-		virtual const char *what(void) const throw();
+		const char *what(void) const throw();
 };

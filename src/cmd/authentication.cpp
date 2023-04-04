@@ -3,9 +3,9 @@
 bool pass(Client &client, Server const &serv, std::vector<std::string> const &args)
 {
 	if (args.size() != 1)
-		throw (NeedMoreParamsException(args[0]));
+		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "PASS")); //tmp
 	if (client.getRegist())
-		throw (AlreadyRegisteredExcpetion());
+		throw (ServerException()); //tmp
 	if (serv.getPasswd() != *args.begin())
 	{
 		std::cerr << "(error) >> Password incorrect\n";
@@ -19,7 +19,7 @@ static void check_nickname_syntax(std::string const &nickname)
 	std::string charset;
 
 	if (nickname.length() > 9)
-		throw (ErroneusNickNameException(nickname));
+		throw (ServerException()); //tmp
 	for (char c = 'A'; c <= 'Z'; c++)
 	{
 		charset.push_back(c);
@@ -29,20 +29,20 @@ static void check_nickname_syntax(std::string const &nickname)
 		charset.push_back(c);
 	charset.insert(charset.length(), "[]`^_{}|");	
 	if ((nickname[0] < 'A' || nickname[0] > 'Z') && (nickname[0] < 'a' || nickname[0] > 'z'))
-		throw (ErroneusNickNameException(nickname));
+		throw (ServerException()); //tmp
 	for (size_t i = 0; i < nickname.length(); i++)
 		if (charset.find(nickname[i]) == std::string::npos)
-			throw (ErroneusNickNameException(nickname));
+			throw (ServerException()); //tmp
 }
 
 bool nick(Client &client, Server const &serv, std::vector<std::string> const &args)
 {
 	// Need more errors !
 	if (!args.size())
-		throw (NoNickNameGivenException());
+		throw (NoNickNameGivenException(client.getServerName(), client.getNickName())); //No Nickname given
 	for (size_t i = 0; i < serv.getClients().size(); i++)
 		if (serv.getClients()[i].getNickName() == args[0])
-			throw (NickNameInUseException(client.getNickName()));
+			throw (ServerException()); //tmp
 	check_nickname_syntax(args[0]);
 	client.setNickName(args[0]);
 	if (!client.getUserName().empty() && !client.getRegist())
@@ -61,11 +61,11 @@ bool user(Client &client, Server const &serv, std::vector<std::string> const &ar
 	// RFC 1459
 	(void)serv;
 	if (args.size() < 4)
-		throw (NeedMoreParamsException(args[0]));
+		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "USER"));
 	if (client.getRegist())
 	{
 		std::cout << "(debug) >> Already registered." << std::endl;
-		throw (AlreadyRegisteredExcpetion());
+		throw (ServerException()); //tmp
 	}
 	client.setUserName(args[0]);
 	client.setHostName(args[1]);

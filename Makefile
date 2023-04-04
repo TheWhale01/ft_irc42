@@ -8,8 +8,7 @@ INCLUDES= includes/
 
 SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Client.cpp cmd/authentication.cpp \
 	utils.cpp cmd/cap.cpp exceptions/exception.cpp exceptions/NeedMoreParamsException.cpp \
-	exceptions/ErroneusNickNameException.cpp exceptions/NickNameInUseException.cpp \
-	)
+	exceptions/UnknownCommandException.cpp exceptions/NoNickNameGivenException.cpp)
 DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
