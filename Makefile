@@ -10,7 +10,7 @@ SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Client.cpp cmd/authentication.
 	utils.cpp cmd/cap.cpp exceptions/exception.cpp exceptions/NeedMoreParamsException.cpp \
 	exceptions/UnknownCommandException.cpp exceptions/NoNickNameGivenException.cpp \
 	exceptions/ErroneusNickNameException.cpp exceptions/NickNameInUseException.cpp \
-	exceptions/AlreadyRegistredException.cpp)
+	exceptions/AlreadyRegistredException.cpp cmd/quit.cpp)
 DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 

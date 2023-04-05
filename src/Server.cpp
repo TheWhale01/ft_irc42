@@ -53,7 +53,7 @@ void Server::run(void)
 						_pollfds.push_back(new_client.getPoll());
 						_clients.push_back(new_client);
 					}
-					catch (const std::exception& e) {std::cerr << e.what() << std::endl;}
+					catch (const std::exception& e) {std::cerr << e.what();}
 				}
 				else
 				{
@@ -98,7 +98,7 @@ void Server::_exec_cmd(Client &client, std::string str)
 	if (!args.size())
 		return ;
 	std::vector<std::string> cmds;
-	bool (*cmds_ptr[cmds.size()])(Client &, Server const &, std::vector<std::string> const &);
+	bool (*cmds_ptr[cmds.size()])(Client &, Server &, std::vector<std::string> const &);
 	_get_commands(cmds);
 	_get_commands_ptr(cmds_ptr);
 
@@ -127,12 +127,14 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("NICK");
 	cmds.push_back("CAP");
 	cmds.push_back("USER");
+	cmds.push_back("QUIT");
 }
 
-void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server const &, std::vector<std::string> const &))
+void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vector<std::string> const &))
 {
 	cmds_ptr[0] = &pass;
 	cmds_ptr[1] = &nick;
 	cmds_ptr[2] = &cap;
 	cmds_ptr[3] = &user;
+	cmds_ptr[4] = &quit;
 }

@@ -31,5 +31,7 @@ class Server
 
 		void _exec_cmd(Client &client, std::string str);
 		void _get_commands(std::vector<std::string> &cmds);
-		void _get_commands_ptr(bool (*cmds_ptr[])(Client &, Server const &, std::vector<std::string> const &));
+		void _get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vector<std::string> const &));
+
+		friend bool quit(Client &client, Server &serv, std::vector<std::string> const &args);
 };
