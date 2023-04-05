@@ -28,6 +28,7 @@
 #define ERR_NEEDMOREPARAMS		"461"
 #define ERR_ALREADYREGISTRED	"462"
 #define ERR_PASSWDMISMATCH		"464"
+#define ERR_BANNEDFROMCHAN		"474" //"<canal> :Cannot join channel (+b)"
 
 // Answers
 #define RPL_NOTOPIC "331"

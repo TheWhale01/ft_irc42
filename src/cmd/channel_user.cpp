@@ -1,14 +1,34 @@
 #include "irc.hpp"
 
+std::string &format_reply(Client const &client, std::string const &code, std::string const &name)
+{
+	std::string answer = ":" + client.getServerName() + " " + code + " " + client.getNickName() + " " + name + " :";
+	return (answer);
+}
+
+std::string &print_user(Client const &client, Channel const &channel)
+{
+	std::string answer = ":" + client.getServerName() + " 353 " + client.getNickName() + " = " + channel.getChannelName() + " :";
+	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
+	{
+		if (channel.getChannelMembers()[i].second._operator == 1)
+			answer += "@" + channel.getChannelMembers()[i].first.getNickName();
+		else
+			answer += channel.getChannelMembers()[i].first.getNickName();
+	}
+	answer += "\r\n" + format_reply(client, "366", channel.getChannelName()) + "End of NAMES list\r\n";
+	return (answer);
+}
+
 bool join(Client &client, Server &serv, std::vector<std::string> const &args)
 {
 	if (args.size() != 1)
 		throw (NeedMoreParamsException(args[0]));
 	check_channel_syntax(args[0]);
 	check_same_name_as_user(serv, args[0]);
-	for (size_t i = 0; i < serv._channels.size(); i++)
+	for (size_t i = 0; i < serv.getChannels().size(); i++)
 	{
-		if (serv._channels[i].getChannelName() == args[0])
+		if (serv.getChannels()[i].getChannelName() == args[0])
 		{
 			join_channel(client, serv._channels[i]);
 			return (1);
@@ -22,14 +42,15 @@ void join_channel(Client &client, Channel &channel)
 {
 	std::string answer;
 	if (channel.getChannelTopic().empty())
-		answer = ":" + client.getServerName() + " 331 " + client.getNickName() + " " + channel.getChannelName() + " :No topic is set.\r\n";
+		answer = format_reply(client, "331", channel.getChannelName()) + "No topic is set.\r\n";
 	else
-		answer = ":" + client.getServerName() + " 332 " + client.getNickName() + " " + channel.getChannelName() + " :" + channel.getChannelTopic() + "\r\n";
+		answer = format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
 	if (!check_already_in_chan(client.getNickName(), channel))
 	{
-		//check_is_ban(client.getNickName(), channel);
+		check_is_ban(client.getNickName(), channel);
 		channel.addMemberToChannel(client, 0);
 	}
+	answer += print_user(client, channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
@@ -38,12 +59,19 @@ void create_channel(Client &client, Server &serv, std::string const &name)
 	Channel	new_channel(name);
 	new_channel.addMemberToChannel(client, 2);
 	serv._channels.push_back(new_channel);
+	std::string answer = format_reply(client, "331", name) + "No topic is set.\r\n";
+	answer += print_user(client, new_channel);
+	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
-// void check_is_ban(std::string const &nickname, Channel const &channel)
-// {
-
-// }
+void check_is_ban(std::string const &nickname, Channel const &channel)
+{
+	for (size_t i = 0; i < channel.getBanList().size(); i++)
+	{
+		if (channel.getBanList()[i].getNickName() == nickname)
+			throw (BannedFromChanException());
+	}
+}
 
 void check_same_name_as_user(Server &serv, std::string name)
 {
