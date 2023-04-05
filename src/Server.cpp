@@ -33,7 +33,7 @@ const pollfd_t &Server::getPoll(void) const {return (_poll);}
 const sockaddr_in_t &Server::getAddr(void) const {return (_addr);}
 const std::string &Server::getPasswd(void) const {return (_passwd);}
 const std::vector<Client> &Server::getClients(void) const {return (_clients);}
-std::vector<Channel> &Server::getChannels(void) {return (_channels);}
+const std::vector<Channel> &Server::getChannels(void) const {return (_channels);}
 
 void Server::run(void)
 {

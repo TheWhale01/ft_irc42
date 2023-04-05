@@ -10,6 +10,7 @@
 #include <vector>
 #include <csignal>
 #include <cstring>
+#include <utility>
 #include <cstdlib>
 #include <sstream>
 #include <iostream>
@@ -27,6 +28,10 @@
 #define ERR_NEEDMOREPARAMS		"461"
 #define ERR_ALREADYREGISTRED	"462"
 #define ERR_PASSWDMISMATCH		"464"
+
+// Answers
+#define RPL_NOTOPIC "331"
+#define RPL_TOPIC	"332"
 
 // Typedefs
 typedef struct pollfd pollfd_t;
