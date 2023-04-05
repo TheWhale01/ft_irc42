@@ -3,9 +3,9 @@
 bool pass(Client &client, Server const &serv, std::vector<std::string> const &args)
 {
 	if (args.size() != 1)
-		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "PASS")); //tmp
+		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "PASS"));
 	if (client.getRegist())
-		throw (ServerException()); //tmp
+		throw (AlreadyRegistredException(client.getServerName(), client.getNickName()));
 	if (serv.getPasswd() != *args.begin())
 	{
 		std::cerr << "(error) >> Password incorrect\n";
@@ -14,12 +14,12 @@ bool pass(Client &client, Server const &serv, std::vector<std::string> const &ar
 	return (1);
 }
 
-static void check_nickname_syntax(std::string const &nickname)
+static void check_nickname_syntax(Client const &client, std::string const &nickname)
 {
 	std::string charset;
 
 	if (nickname.length() > 9)
-		throw (ServerException()); //tmp
+		throw (ErroneusNickNameException(client.getServerName(), nickname));
 	for (char c = 'A'; c <= 'Z'; c++)
 	{
 		charset.push_back(c);
@@ -29,21 +29,21 @@ static void check_nickname_syntax(std::string const &nickname)
 		charset.push_back(c);
 	charset.insert(charset.length(), "[]`^_{}|");	
 	if ((nickname[0] < 'A' || nickname[0] > 'Z') && (nickname[0] < 'a' || nickname[0] > 'z'))
-		throw (ServerException()); //tmp
+		throw (ErroneusNickNameException(client.getServerName(), nickname));
 	for (size_t i = 0; i < nickname.length(); i++)
 		if (charset.find(nickname[i]) == std::string::npos)
-			throw (ServerException()); //tmp
+			throw (ErroneusNickNameException(client.getServerName(), nickname));
 }
 
 bool nick(Client &client, Server const &serv, std::vector<std::string> const &args)
 {
 	// Need more errors !
 	if (!args.size())
-		throw (NoNickNameGivenException(client.getServerName(), client.getNickName())); //No Nickname given
+		throw (NoNickNameGivenException(client.getServerName(), client.getNickName()));
 	for (size_t i = 0; i < serv.getClients().size(); i++)
 		if (serv.getClients()[i].getNickName() == args[0])
-			throw (ServerException()); //tmp
-	check_nickname_syntax(args[0]);
+			throw (NickNameInUseException(client.getServerName(), client.getNickName(), args[0]));
+	check_nickname_syntax(client, args[0]);
 	client.setNickName(args[0]);
 	if (!client.getUserName().empty() && !client.getRegist())
 	{
@@ -63,10 +63,7 @@ bool user(Client &client, Server const &serv, std::vector<std::string> const &ar
 	if (args.size() < 4)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "USER"));
 	if (client.getRegist())
-	{
-		std::cout << "(debug) >> Already registered." << std::endl;
-		throw (ServerException()); //tmp
-	}
+		throw (AlreadyRegistredException(client.getServerName(), client.getNickName()));
 	client.setUserName(args[0]);
 	client.setHostName(args[1]);
 	client.setServerName(args[2]);

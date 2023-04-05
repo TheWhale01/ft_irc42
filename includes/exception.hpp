@@ -17,6 +17,33 @@ class AIrcStandardException: public std::exception
 		std::string *_error_msg;
 };
 
+class AlreadyRegistredException: public AIrcStandardException
+{
+	public:
+		explicit AlreadyRegistredException(std::string const &servername, std::string const &nickname);
+		~AlreadyRegistredException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class NickNameInUseException: public AIrcStandardException
+{
+	public:
+		explicit NickNameInUseException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~NickNameInUseException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class ErroneusNickNameException: public AIrcStandardException
+{
+	public:
+		explicit ErroneusNickNameException(std::string const &servername, std::string const &nickname);
+		~ErroneusNickNameException(void) throw();
+
+		const char *what(void) const throw();
+};
+
 class UnknownCommandException: public AIrcStandardException
 {
 	public:

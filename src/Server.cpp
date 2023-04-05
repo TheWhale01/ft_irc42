@@ -75,7 +75,12 @@ void Server::run(void)
 						for (it = user_inputs.begin(); it != user_inputs.end(); it++)
 						{
 							try {_exec_cmd(_clients[i  - 1], *it);}
-							catch (std::exception const &e) {std::cerr << e.what();}
+							catch (std::exception const &e)
+							{
+								std::string error_msg(e.what());
+								std::cerr << error_msg;
+								send(_clients[i - 1].getPoll().fd, error_msg.c_str(), error_msg.length(), 0);
+							}
 						}
 					}
 				}
@@ -109,7 +114,9 @@ void Server::_exec_cmd(Client &client, std::string str)
 		}
 	}
 	// Unknown Command;
-	cmd_not_found = ":" + client.getServerName() + " " + ERR_UNKNOWNCOMMAND + " " + client.getNickName() + " " + cmd + " :Unknown Command\r\n";
+	cmd_not_found = ":" + (client.getServerName().empty() ? "localhost" : client.getServerName()) + " "
+		+ ERR_UNKNOWNCOMMAND + " " + (client.getNickName().empty() ? "*" : client.getNickName()) + " " + cmd
+		+ " :Unknown command\r\n";
 	std::cerr << cmd_not_found;
 	send(client.getPoll().fd, cmd_not_found.c_str(), cmd_not_found.length(), 0);
 }
