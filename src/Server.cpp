@@ -121,6 +121,7 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("NICK");
 	cmds.push_back("CAP");
 	cmds.push_back("USER");
+	cmds.push_back("JOIN");
 }
 
 void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vector<std::string> const &))
@@ -129,4 +130,5 @@ void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vecto
 	cmds_ptr[1] = &nick;
 	cmds_ptr[2] = &cap;
 	cmds_ptr[3] = &user;
+	cmds_ptr[4] = &join;
 }

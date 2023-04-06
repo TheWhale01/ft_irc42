@@ -19,7 +19,7 @@ const std::string &Client::getNickName(void) const {return (_nickname);}
 const std::string &Client::getUserName(void) const {return (_username);}
 const std::string &Client::getServerName(void) const {return (_servername);}
 
-void Client::setRegist(bool val) {this->_regist = val;}
+void Client::setRegist(bool val) {_regist = val;}
 void Client::setUserName(std::string const &username) {_username = username;}
 void Client::setNickName(std::string const &nickname) {_nickname = nickname;}
 void Client::setRealName(std::string const &realname) {_realname = realname;}

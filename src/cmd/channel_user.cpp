@@ -47,7 +47,6 @@ void join_channel(Client &client, Channel &channel)
 		answer = format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
 	if (!check_already_in_chan(client.getNickName(), channel))
 	{
-		check_is_ban(client.getNickName(), channel);
 		channel.addMemberToChannel(client, 0);
 	}
 	answer += print_user(client, channel);
@@ -64,34 +63,27 @@ void create_channel(Client &client, Server &serv, std::string const &name)
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
-void check_is_ban(std::string const &nickname, Channel const &channel)
-{
-	for (size_t i = 0; i < channel.getBanList().size(); i++)
-	{
-		if (channel.getBanList()[i].getNickName() == nickname)
-			throw (BannedFromChanException());
-	}
-}
-
 void check_same_name_as_user(Server &serv, std::string name)
 {
-	name.erase(name.begin());
+	std::string cpy = name;
+	cpy.erase(name.begin());
 	for (size_t i = 0; i < serv.getClients().size(); i++)
 	{
-		if (serv.getClients()[i].getNickName() == name)
-			throw (NoSuchChannelException());
+		if (serv.getClients()[i].getNickName() == cpy)
+			throw (NeedMoreParamsException(name)); //throw (NoSuchChannelException(name));
 	}
 }
 
 void check_channel_syntax(std::string const &channel)
 {
+	std::string charset = " ," + 7;
 	if (channel.size() > 200)
-		throw (NoSuchChannelException());
+		throw (NeedMoreParamsException(channel)); //throw (NoSuchChannelException(name));
 	if (channel[0] != '&' && channel[0] != '#')
-		throw (NoSuchChannelException());
-	for (size_t i = 1; i < channel.size(); i++)
-		if (!isalpha(channel[i]) && channel[i] != '_' && channel[i] != '-' && channel[i] != '.')
-			throw (NoSuchChannelException());
+		throw (NeedMoreParamsException(channel)); //throw (NoSuchChannelException(name));
+	for (size_t i = 0; i < channel.length(); i++)
+		if (charset.find(channel[i]) == std::string::npos)
+			throw (NeedMoreParamsException(channel)); //throw (NoSuchChannelException(name));
 }
 
 bool check_already_in_chan(std::string const &nickname, Channel const &channel)
