@@ -20,7 +20,11 @@
 # define BUFF_SIZE 512
 
 // Errors
+# define ERR_NOSUCHNICK			"401" //"<pseudonyme> :No such nick/channel"
 # define ERR_NOSUCHCHANNEL		"403" //"<nom de canal> :No such channel"
+# define ERR_CANNOTSENDTOCHAN	"404" //"<nom de canal> :Cannot send to channel"
+# define ERR_NORECIPIENT		"411" //:No recipient given (<commande>)"
+# define ERR_NOTEXTTOSEND		"412" //":No text to send
 # define ERR_UNKNOWNCOMMAND		"421"
 # define ERR_NONICKNAMEGIVEN	"431"
 # define ERR_ERRONEUSNICKNAME	"432"
@@ -53,6 +57,8 @@ bool quit(Client &client, Server &serv, std::vector<std::string> const &args);
 
 //channels
 bool join(Client &client, Server &serv, std::vector<std::string> const &args);
+bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args);
+bool notice(Client &client, Server &serv, std::vector<std::string> const &args);
 
 void sigHandler(int sig_id);
 void format_msg(std::string &str);

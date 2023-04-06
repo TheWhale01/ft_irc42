@@ -130,6 +130,8 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("USER");
 	cmds.push_back("QUIT");
 	cmds.push_back("JOIN");
+	cmds.push_back("PRIVMSG");
+	cmds.push_back("NOTICE");
 }
 
 void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vector<std::string> const &))
@@ -140,4 +142,6 @@ void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vecto
 	cmds_ptr[3] = &user;
 	cmds_ptr[4] = &quit;
 	cmds_ptr[5] = &join;
+	cmds_ptr[6] = &privmsg;
+	cmds_ptr[7] = &notice;
 }

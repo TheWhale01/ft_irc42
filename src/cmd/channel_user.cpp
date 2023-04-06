@@ -26,7 +26,8 @@ void create_channel(Client &client, Server &serv, std::string const &name)
 	Channel	new_channel(name);
 	new_channel.addMemberToChannel(client, 2);
 	serv._channels.push_back(new_channel);
-	std::string answer = format_reply(client, "331", name) + "No topic is set.\r\n";
+	std::string answer = "Welcome " + client.getNickName() + " to the channel " + name + "\r\n"; 
+	answer += format_reply(client, "331", name) + "No topic is set.\r\n";
 	answer += print_user(client, new_channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
@@ -35,17 +36,12 @@ void check_channel_syntax(std::string const &channel)
 {
 	std::string charset = " ,\a";
 	if (channel.size() > 200)
-		throw (NeedMoreParamsException(channel, channel, channel)); //throw (NoSuchChannelException(name));
+		throw (std::exception()); //throw (NoSuchChannelException(name));
 	if (channel[0] != '&' && channel[0] != '#')
-		throw (NeedMoreParamsException(channel, channel, channel)); //throw (NoSuchChannelException(name));
+		throw (std::exception()); //throw (NoSuchChannelException(name));
 	for (size_t i = 0; i < channel.length(); i++)
-	{
 		if (charset.find(channel[i]) != std::string::npos)
-		{
-			std::cout << "la\n";
-			throw (NeedMoreParamsException(channel, channel, channel)); //throw (NoSuchChannelException(name));
-		}
-	}
+			throw (std::exception()); //throw (NoSuchChannelException(name));
 }
 
 bool check_already_in_chan(std::string const &nickname, Channel const &channel)
@@ -54,6 +50,15 @@ bool check_already_in_chan(std::string const &nickname, Channel const &channel)
 		if (channel.getChannelMembers()[i].first.getNickName() == nickname)
 			return (1);
 	return (0); 
+}
+
+void welcome_all(Channel const &channel, std::string const &channelname, std::string const &name)
+{
+	std::string msg = "Welcome " + name + " to the channel " + channelname + "\r\n"; 
+	for (size_t i; i < channel.getChannelMembers().size(); i++)
+	{
+		send(channel.getChannelMembers()[i].first.getPoll().fd, msg.c_str(), msg.length(), 0);
+	}
 }
 
 void join_channel(Client &client, Channel &channel)
@@ -66,6 +71,7 @@ void join_channel(Client &client, Channel &channel)
 	if (!check_already_in_chan(client.getNickName(), channel))
 	{
 		channel.addMemberToChannel(client, 0);
+		welcome_all(channel, channel.getChannelName(), client.getNickName());
 	}
 	answer += print_user(client, channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
@@ -87,50 +93,3 @@ bool join(Client &client, Server &serv, std::vector<std::string> const &args)
 	create_channel(client, serv, args[0]);
 	return (1);
 }
-
-
-
-// size_t	search_index_channel(Server &serv, std::string const &name)
-// {
-// 	for (size_t i = 0; i < serv.getChannels().size(); i++)
-// 	{
-// 		if (serv.getChannels()[i].getChannelName() == name)
-// 			return (i);
-// 	}
-// 	throw (NoSuchChannelException());
-// }
-
-// size_t search_index_members_in_channel(size_t i, )
-// {
-// 	for (size_t j = 0; j < serv.getChannels()[i].getChannelMembers().size(); j++)
-// 	{
-// 		if (serv.getChannels()[i].getChannelMembers()[j].getNickName() == nickname)
-// 		{
-// 			serv.getChannels()[i].getChannelMembers().erase(serv.getChannels()[i].getChannelMembers().begin() + j);
-// 			if ()
-// 			return (1);
-// 		}
-// 	}
-// 	throw (NoSuchChannelException());
-// }
-
-// // void	search_client_in_channel(Server &serv, Client &client, std::string &name)
-// // {
-// // 	size_t i = search_channel(serv, name);
-
-// // 	for (size_t j = 0; j < serv.getChannels()[i].getChannelMembers().size(); j++)
-// // 	{
-// // 		if (serv.getChannels()[i].getChannelMembers()[j].getNickName() == name)
-// // 			return (j);
-// // 	}
-// // 	throw (NoSuchChannelException());
-// // }
-
-// bool part(Client &client, Server &serv, std::vector<std::string> const &args)
-// {
-// 	size_t i = search_index_channel(serv, args[0]);
-	
-
-
-// 	throw (NoSuchChannelException());
-// }
