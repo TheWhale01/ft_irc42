@@ -14,6 +14,8 @@ std::string print_user(Client const &client, Channel const &channel)
 			answer += "@" + channel.getChannelMembers()[i].first.getNickName();
 		else
 			answer += channel.getChannelMembers()[i].first.getNickName();
+		if (i + 1 != channel.getChannelMembers().size())
+			answer += " ";
 	}
 	answer += "\r\n" + format_reply(client, "366", channel.getChannelName()) + "End of NAMES list\r\n";
 	return (answer);
