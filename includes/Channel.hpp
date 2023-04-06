@@ -1,6 +1,18 @@
 #pragma once
 
-#include "irc.hpp"
+class Client;
+
+class Permission
+{
+	public:
+
+		Permission(int byte);
+		~Permission();
+
+		bool	_member;
+		bool	_creator;
+		bool	_operator;
+};
 
 class Channel
 {
@@ -23,16 +35,4 @@ class Channel
 		std::string									_topic;
 		std::string									_channelname;
 		std::vector<std::pair<Client, Permission> >	_channelmembers;
-};
-
-class Permission
-{
-	public:
-
-		Permission(int byte);
-		~Permission();
-
-		bool	_member;
-		bool	_creator;
-		bool	_operator;
 };

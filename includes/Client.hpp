@@ -1,7 +1,5 @@
 #pragma once
 
-#include "irc.hpp"
-
 class Server;
 
 class Client
