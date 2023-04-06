@@ -33,6 +33,7 @@ const pollfd_t &Server::getPoll(void) const {return (_poll);}
 const sockaddr_in_t &Server::getAddr(void) const {return (_addr);}
 const std::string &Server::getPasswd(void) const {return (_passwd);}
 const std::vector<Client> &Server::getClients(void) const {return (_clients);}
+const std::vector<Channel> &Server::getChannels(void) const {return (_channels);}
 
 void Server::run(void)
 {
@@ -128,6 +129,7 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("CAP");
 	cmds.push_back("USER");
 	cmds.push_back("QUIT");
+	cmds.push_back("JOIN");
 }
 
 void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vector<std::string> const &))
@@ -137,4 +139,5 @@ void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vecto
 	cmds_ptr[2] = &cap;
 	cmds_ptr[3] = &user;
 	cmds_ptr[4] = &quit;
+	cmds_ptr[5] = &join;
 }

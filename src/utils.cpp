@@ -23,6 +23,8 @@ std::vector<std::string> split(std::string &str)
 
 	for (size_t i = 0; i < str.length(); i++)
 	{
+		if (str[i] == '\n')
+  			break ;
 		if (str[i] == ' ' && !stop_at_colon)
 		{
 			if (current_word.length() > 0)

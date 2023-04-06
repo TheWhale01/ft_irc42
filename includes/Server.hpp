@@ -1,8 +1,7 @@
 #pragma once
 
-#include "irc.hpp"
-
 class Client;
+class Channel;
 
 class Server
 {
@@ -17,7 +16,9 @@ class Server
 		const sockaddr_in_t &getAddr(void) const;
 		const std::string &getPasswd(void) const;
 		const std::vector<Client> &getClients(void) const;
+		const std::vector<Channel> &getChannels(void) const;
 
+		std::vector<Channel> _channels;
 		void run(void);
 	
 	private:

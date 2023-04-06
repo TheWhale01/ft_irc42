@@ -15,11 +15,11 @@ Client::~Client(void) {}
 
 const bool &Client::getRegist(void) const {return (_regist);}
 const pollfd_t &Client::getPoll(void) const {return (_poll);}
-std::string const &Client::getNickName(void) const {return (_nickname);}
-std::string const &Client::getUserName(void) const {return (_username);}
-std::string const &Client::getServerName(void) const {return (_servername);}
+const std::string &Client::getNickName(void) const {return (_nickname);}
+const std::string &Client::getUserName(void) const {return (_username);}
+const std::string &Client::getServerName(void) const {return (_servername);}
 
-void Client::setRegist(bool val) {this->_regist = val;}
+void Client::setRegist(bool val) {_regist = val;}
 void Client::setUserName(std::string const &username) {_username = username;}
 void Client::setNickName(std::string const &nickname) {_nickname = nickname;}
 void Client::setRealName(std::string const &realname) {_realname = realname;}
