@@ -26,7 +26,7 @@ void create_channel(Client &client, Server &serv, std::string const &name)
 	Channel	new_channel(name);
 	new_channel.addMemberToChannel(client, 2);
 	serv._channels.push_back(new_channel);
-	std::string answer = "Welcome " + client.getNickName() + " to the channel " + name + "\r\n"; 
+	std::string answer = format_msg(client.getNickName(), client.getUserName(), client.getServerName(),	"JOIN " + name) + "\n\r";
 	answer += format_reply(client, "331", name) + "No topic is set.\r\n";
 	answer += print_user(client, new_channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
@@ -52,27 +52,18 @@ bool check_already_in_chan(std::string const &nickname, Channel const &channel)
 	return (0); 
 }
 
-void welcome_all(Channel const &channel, std::string const &channelname, std::string const &name)
-{
-	std::string msg = "Welcome " + name + " to the channel " + channelname + "\r\n"; 
-	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
-	{
-		send(channel.getChannelMembers()[i].first.getPoll().fd, msg.c_str(), msg.length(), 0);
-	}
-}
-
 void join_channel(Client &client, Channel &channel)
 {
 	std::string answer;
-	if (channel.getChannelTopic().empty())
-		answer = format_reply(client, "331", channel.getChannelName()) + "No topic is set.\r\n";
-	else
-		answer = format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
 	if (!check_already_in_chan(client.getNickName(), channel))
 	{
 		channel.addMemberToChannel(client, 0);
-		welcome_all(channel, channel.getChannelName(), client.getNickName());
+		answer = format_msg(client.getNickName(), client.getUserName(), client.getServerName(),	"JOIN " + channel.getChannelName()) + "\n\r";;
 	}
+	if (channel.getChannelTopic().empty())
+		answer += format_reply(client, "331", channel.getChannelName()) + "No topic is set.\r\n";
+	else
+		answer += format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
 	answer += print_user(client, channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }

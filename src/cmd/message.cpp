@@ -13,7 +13,6 @@ void send_to_members_in_chan(Channel const &channel, std::string const &name, st
 	}
 	throw (std::exception()); //throw (CannotSendToChanException());
 }
-//faut t'il mettre le \r\n et comment gèrer le :
 
 Channel const &search_channel(std::string const &name, std::vector<Channel> const &channel)
 {
@@ -31,6 +30,11 @@ Client const &search_client(std::string const &name, std::vector<Client> const &
 	throw (std::exception()); //throw (NoSuchNickException());
 }
 
+std::string format_msg(std::string const &nickname, std::string const &username, std::string const &hostname, std::string const &message)
+{
+	return ("PRIVMSG " + nickname + "!" + username + "@" + hostname + ": " + message);
+}
+
 void send_to_user(Client const &client, std::string const &message)
 {
 	send(client.getPoll().fd, message.c_str(), message.length(), 0);
@@ -44,12 +48,12 @@ bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
 		throw (std::exception()); //throw (NoTextToSendException());
 	if (args[0][1] == '#' || args[0][1] == '&')
 	{
-		send_to_members_in_chan(search_channel(args[0], serv.getChannels()), client.getNickName(), args[1]);
+		send_to_members_in_chan(search_channel(args[0], serv.getChannels()), client.getNickName(), format_msg(client.getNickName(), client.getUserName(), client.getServerName(), args[1]));;
 	}
 	else
 	{
-		std::cout << args[1];
-		send_to_user(search_client(args[0], serv.getClients()), args[1]);
+		std::cout <<  format_msg(client.getNickName(), client.getUserName(), client.getServerName(), args[1]) << std::endl;
+		send_to_user(search_client(args[0], serv.getClients()), format_msg(client.getNickName(), client.getUserName(), client.getServerName(), args[1]));
 	}
 	return (1);
 }
