@@ -40,7 +40,7 @@ void Server::run(void)
 	signal(SIGINT, sigHandler);
 	while (true)
 	{
-		if (poll(_pollfds.data(), _pollfds.size(), -1) < 0)
+		if (poll(_pollfds.data(), _pollfds.size(), TIMEOUT) < 0)
 			throw (ServerException());
 		for (size_t i = 0; i < _pollfds.size(); i++)
 		{

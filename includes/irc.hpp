@@ -16,6 +16,7 @@
 # include <iostream>
 # include <algorithm>
 
+# define TIMEOUT 10
 # define SIM_USERS 50
 # define BUFF_SIZE 512
 
