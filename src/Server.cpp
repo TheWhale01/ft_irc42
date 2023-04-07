@@ -100,8 +100,8 @@ void Server::_exec_cmd(Client &client, std::string str)
 	if (!args.size())
 		return ;
 	std::vector<std::string> cmds;
-	bool (*cmds_ptr[cmds.size()])(Client &, Server &, std::vector<std::string> const &);
 	_get_commands(cmds);
+	bool (*cmds_ptr[cmds.size()])(Client &, Server &, std::vector<std::string> const &);
 	_get_commands_ptr(cmds_ptr);
 
 	for (size_t i = 0; i < cmds.size(); i++)
