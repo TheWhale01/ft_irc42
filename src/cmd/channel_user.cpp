@@ -55,7 +55,7 @@ bool check_already_in_chan(std::string const &nickname, Channel const &channel)
 void welcome_all(Channel const &channel, std::string const &channelname, std::string const &name)
 {
 	std::string msg = "Welcome " + name + " to the channel " + channelname + "\r\n"; 
-	for (size_t i; i < channel.getChannelMembers().size(); i++)
+	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
 	{
 		send(channel.getChannelMembers()[i].first.getPoll().fd, msg.c_str(), msg.length(), 0);
 	}

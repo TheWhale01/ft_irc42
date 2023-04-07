@@ -6,7 +6,7 @@ void send_to_members_in_chan(Channel const &channel, std::string const &name, st
 	{
 		if (channel.getChannelMembers()[i].first.getNickName() == name)
 		{
-			for (size_t j = 0; j < channel.getChannelMembers().size(); i++)
+			for (size_t j = 0; j < channel.getChannelMembers().size(); j++)
 				send(channel.getChannelMembers()[j].first.getPoll().fd, message.c_str(), message.length(), 0);
 			return ;
 		}
@@ -48,6 +48,7 @@ bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
 	}
 	else
 	{
+		std::cout << args[1];
 		send_to_user(search_client(args[0], serv.getClients()), args[1]);
 	}
 	return (1);
@@ -55,5 +56,8 @@ bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
 
 bool notice(Client &client, Server &serv, std::vector<std::string> const &args)
 {
+	(void) client;
+	(void) serv;
+	(void) args;
 	return (1);
 }
