@@ -21,11 +21,11 @@
 # define BUFF_SIZE 512
 
 // Errors
-# define ERR_NOSUCHNICK			"401" //"<pseudonyme> :No such nick/channel"
-# define ERR_NOSUCHCHANNEL		"403" //"<nom de canal> :No such channel"
-# define ERR_CANNOTSENDTOCHAN	"404" //"<nom de canal> :Cannot send to channel"
-# define ERR_NORECIPIENT		"411" //:No recipient given (<commande>)"
-# define ERR_NOTEXTTOSEND		"412" //":No text to send
+# define ERR_NOSUCHNICK			"401"
+# define ERR_NOSUCHCHANNEL		"403"
+# define ERR_CANNOTSENDTOCHAN	"404"
+# define ERR_NORECIPIENT		"411"
+# define ERR_NOTEXTTOSEND		"412"
 # define ERR_UNKNOWNCOMMAND		"421"
 # define ERR_NONICKNAMEGIVEN	"431"
 # define ERR_ERRONEUSNICKNAME	"432"

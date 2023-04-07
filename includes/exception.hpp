@@ -17,6 +17,51 @@ class AIrcStandardException: public std::exception
 		std::string *_error_msg;
 };
 
+class NoTextToSendException: public AIrcStandardException
+{
+	public:
+		explicit NoTextToSendException(std::string const &servername, std::string const &nickname);
+		~NoTextToSendException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class NoRecipientException: public AIrcStandardException
+{
+	public:
+		explicit NoRecipientException(std::string const &servername, std::string const &nickname);
+		~NoRecipientException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class CannotSendToChanException: public AIrcStandardException
+{
+	public:
+		explicit CannotSendToChanException(std::string const &servername, std::string const &nickname);
+		~CannotSendToChanException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class NoSuchNickException: public AIrcStandardException
+{
+	public:
+		explicit NoSuchNickException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~NoSuchNickException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class NoSuchChannelException: public AIrcStandardException
+{
+	public:
+		explicit NoSuchChannelException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~NoSuchChannelException(void) throw();
+
+		const char *what(void) const throw();
+};
+
 class AlreadyRegistredException: public AIrcStandardException
 {
 	public:
