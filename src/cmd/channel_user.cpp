@@ -32,16 +32,16 @@ void create_channel(Client &client, Server &serv, std::string const &name)
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
-void check_channel_syntax(std::string const &channel)
+void check_channel_syntax(Client const &client, std::string const &channel)
 {
 	std::string charset = " ,\a";
 	if (channel.size() > 200)
-		throw (std::exception()); //throw (NoSuchChannelException(name));
+		throw (NoSuchChannelException(client.getServerName(), client.getNickName(), channel));
 	if (channel[0] != '&' && channel[0] != '#')
-		throw (std::exception()); //throw (NoSuchChannelException(name));
+		throw (NoSuchChannelException(client.getServerName(), client.getNickName(), channel));
 	for (size_t i = 0; i < channel.length(); i++)
 		if (charset.find(channel[i]) != std::string::npos)
-			throw (std::exception()); //throw (NoSuchChannelException(name));
+			throw (NoSuchChannelException(client.getServerName(), client.getNickName(), channel));
 }
 
 bool check_already_in_chan(std::string const &nickname, Channel const &channel)
@@ -72,7 +72,7 @@ bool join(Client &client, Server &serv, std::vector<std::string> const &args)
 {
 	if (args.size() != 1)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "JOIN"));
-	check_channel_syntax(args[0]);
+	check_channel_syntax(client, args[0]);
 	for (size_t i = 0; i < serv.getChannels().size(); i++)
 	{
 		if (serv.getChannels()[i].getChannelName() == args[0])

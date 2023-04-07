@@ -7,11 +7,13 @@ SRC_DIR= src/
 INCLUDES= includes/
 
 SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Channel.cpp Client.cpp cmd/authentication.cpp \
-	utils.cpp cmd/cap.cpp exceptions/exception.cpp exceptions/NeedMoreParamsException.cpp \
-	exceptions/UnknownCommandException.cpp exceptions/NoNickNameGivenException.cpp \
-	exceptions/ErroneusNickNameException.cpp exceptions/NickNameInUseException.cpp \
-	exceptions/AlreadyRegistredException.cpp cmd/quit.cpp cmd/channel_user.cpp cmd/message.cpp\
-	)
+	utils.cpp cmd/cap.cpp exceptions/exception.cpp cmd/quit.cpp cmd/channel_user.cpp \
+	cmd/message.cpp exceptions/NeedMoreParamsException.cpp exceptions/UnknownCommandException.cpp \
+	exceptions/NoNickNameGivenException.cpp exceptions/ErroneusNickNameException.cpp \
+	exceptions/NickNameInUseException.cpp exceptions/AlreadyRegistredException.cpp \
+	exceptions/NoSuchChannelException.cpp exceptions/NoSuchNickException.cpp \
+	exceptions/CannotSendToChanException.cpp exceptions/NoRecipientException.cpp \
+	exceptions/NoTextToSendException.cpp)
 DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
@@ -27,6 +29,10 @@ $(NAME): $(OBJS)
 
 all: $(NAME)
 
+sanitize: fclean
+sanitize: CXXFLAGS=-Wall -Wextra -Werror -I $(INCLUDES) -g -std=c++98 -fsanitize=address
+sanitize: $(NAME)
+
 clean:
 	rm -rf $(OBJ_DIR) $(DEP_DIR)
 
@@ -37,4 +43,4 @@ re: fclean all
 
 -include $(DEP)
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re sanitize
