@@ -3,6 +3,7 @@
 Server::Server(int port, std::string passwd): _passwd(passwd)
 {
 	int temp = 1;
+	bzero(&addrlen, sizeof(addrlen));
 	_addr.sin_family = AF_INET;
 	_poll.fd = socket(_addr.sin_family, SOCK_STREAM, 0);
 	if (_poll.fd == -1)

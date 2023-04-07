@@ -26,8 +26,7 @@ void create_channel(Client &client, Server &serv, std::string const &name)
 	Channel	new_channel(name);
 	new_channel.addMemberToChannel(client, 2);
 	serv._channels.push_back(new_channel);
-	std::string answer = format_msg(client.getNickName(), client.getUserName(), client.getServerName(),	"JOIN " + name) + "\n\r";
-	answer += format_reply(client, "331", name) + "No topic is set.\r\n";
+	std::string answer = format_msg(client) + "JOIN " + name + "\r\n";
 	answer += print_user(client, new_channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
@@ -58,12 +57,13 @@ void join_channel(Client &client, Channel &channel)
 	if (!check_already_in_chan(client.getNickName(), channel))
 	{
 		channel.addMemberToChannel(client, 0);
-		answer = format_msg(client.getNickName(), client.getUserName(), client.getServerName(),	"JOIN " + channel.getChannelName()) + "\n\r";;
+		answer = format_msg(client) + "JOIN " + channel.getChannelName() + "\r\n";
 	}
 	if (channel.getChannelTopic().empty())
-		answer += format_reply(client, "331", channel.getChannelName()) + "No topic is set.\r\n";
+		answer += format_msg(client) + format_reply(client, "331", channel.getChannelName()) + "No topic is set.\r\n";
 	else
-		answer += format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
+		answer += format_msg(client) + format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
+	std::cout << answer << std::endl;
 	answer += print_user(client, channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }

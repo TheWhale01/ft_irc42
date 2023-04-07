@@ -46,7 +46,7 @@ typedef struct sockaddr_in sockaddr_in_t;
 # include "Channel.hpp"
 # include "Server.hpp"
 # include "exception.hpp"
-class channel;
+
 /*Prototypes*/
 
 // Authentication
@@ -66,7 +66,7 @@ void format_msg(std::string &str);
 void str_toupper(std::string &str);
 
 std::string format_msg(char const *msg);
-std::string format_msg(std::string const &nickname, std::string const &username, std::string const &hostname, std::string const &message);
+std::string format_msg(Client const &client);
 
 std::vector<std::string> split(std::string &str);
 std::vector<std::string> split(const std::string& str, const std::string& delimiter);
