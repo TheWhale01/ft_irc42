@@ -2,13 +2,19 @@
 
 void send_to_members_in_chan(Client const &client, Channel const &channel, std::string const &name, std::string const &message)
 {
-	std::cout << message << std::endl;
+	std::cout << "message envoyé au client pour prvmsg dans channel= " << message << std::endl;
 	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
 	{
 		if (channel.getChannelMembers()[i].first.getNickName() == name)
 		{
 			for (size_t j = 0; j < channel.getChannelMembers().size(); j++)
-				send(channel.getChannelMembers()[j].first.getPoll().fd, message.c_str(), message.length(), 0);
+			{
+				if (channel.getChannelMembers()[j].first.getNickName() != name)
+				{
+					std::cout << "fd envoie pour la personne dans channel: "<< channel.getChannelMembers()[j].first.getPoll().fd << std::endl;
+					send(channel.getChannelMembers()[j].first.getPoll().fd, message.c_str(), message.length(), 0);
+				}
+			}
 			return ;
 		}
 	}
@@ -41,7 +47,7 @@ std::string format_msg(Client const &client)
 
 void send_to_user(Client const &client, std::string const &message)
 {
-	std::cout << message << std::endl;
+	std::cout << "message envoyer en prvmsg au client= " << message << std::endl;
 	send(client.getPoll().fd, message.c_str(), message.length(), 0);
 }
 
@@ -53,13 +59,12 @@ bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
 		throw (NoRecipientException(client.getServerName(), client.getNickName()));
 	if (args[0][0] == '#' || args[0][0] == '&')
 	{
-		send_to_members_in_chan(client, search_channel(client, args[0], serv.getChannels()), client.getNickName(), format_msg(client) + "PRIVMSG " + args[0] + ":" + args[1] + "\r\n");
+		send_to_members_in_chan(client, search_channel(client, args[0], serv.getChannels()), client.getNickName(), format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n");
 	}
 	else
 	{
-		std::cout << "weofweifowejf" << std::endl;
-		std::cout << client.getPoll().fd << std::endl;
-		send_to_user(search_client(client, args[0], serv.getClients()), format_msg(client) + "PRIVMSG " + args[0] + ":" + args[1]);
+		std::cout << "fd a qui envoyé le message privé= " <<client.getPoll().fd << std::endl;
+		send_to_user(search_client(client, args[0], serv.getClients()), format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n");
 	}
 	return (1);
 }

@@ -71,7 +71,7 @@ void Server::run(void)
 					else
 					{
 						_buff[_bytes] = '\0';
-						std::cout << _buff << std::endl;
+						std::cout << "message recu= " << _buff << std::endl;
 						std::string user_input(_buff);
 						std::vector<std::string> user_inputs = split(user_input, "\r\n");
 						std::vector<std::string>::iterator it;
