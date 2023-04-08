@@ -60,7 +60,7 @@ bool quit(Client &client, Server &serv, std::vector<std::string> const &args);
 bool join(Client &client, Server &serv, std::vector<std::string> const &args);
 bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args);
 bool notice(Client &client, Server &serv, std::vector<std::string> const &args);
-void send_to_members_in_chan(Client const &client, Channel const &channel, std::string const &name, std::string const &message);
+void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender);
 
 void sigHandler(int sig_id);
 void format_msg(std::string &str);

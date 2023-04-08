@@ -17,7 +17,7 @@ std::string print_user(Client const &client, Channel const &channel)
 		if (i + 1 != channel.getChannelMembers().size())
 			answer += " ";
 	}
-	answer += "\r\n" + format_reply(client, "366", channel.getChannelName()) + " :End of /NAMES list\r\n";
+	answer += "\r\n" + format_reply(client, "366", channel.getChannelName()) + "End of /NAMES list\r\n";
 	return (answer);
 }
 
@@ -28,7 +28,6 @@ void create_channel(Client &client, Server &serv, std::string const &name)
 	serv._channels.push_back(new_channel);
 	std::string answer = format_msg(client) + "JOIN " + name + "\r\n";
 	answer += print_user(client, new_channel);
-	std::cout << "JOIN new channel ENVOYE AU CLIENT= " << answer << std::endl;
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
@@ -59,12 +58,11 @@ void join_channel(Client &client, Channel &channel)
 	{
 		channel.addMemberToChannel(client, 0);
 		answer = format_msg(client) + "JOIN " + channel.getChannelName() + "\r\n";
-		send_to_members_in_chan(client, channel, client.getNickName(), answer);
+		send_to_members_in_chan(channel, answer, client.getNickName());
 	}
 	if (!channel.getChannelTopic().empty())
 		answer += format_msg(client) + format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
 	answer += print_user(client, channel);
-	std::cout << "JOIN ENVOYE AU CLIENT= " << answer << std::endl;
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 

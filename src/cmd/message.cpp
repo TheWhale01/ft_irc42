@@ -1,24 +1,8 @@
 #include "irc.hpp"
 
-void send_to_members_in_chan(Client const &client, Channel const &channel, std::string const &name, std::string const &message)
+std::string format_msg(Client const &client) //:<nickname>!<username>@<hostname> "
 {
-	std::cout << "message envoyé au client pour prvmsg dans channel= " << message << std::endl;
-	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
-	{
-		if (channel.getChannelMembers()[i].first.getNickName() == name)
-		{
-			for (size_t j = 0; j < channel.getChannelMembers().size(); j++)
-			{
-				if (channel.getChannelMembers()[j].first.getNickName() != name)
-				{
-					std::cout << "fd envoie pour la personne dans channel: "<< channel.getChannelMembers()[j].first.getPoll().fd << std::endl;
-					send(channel.getChannelMembers()[j].first.getPoll().fd, message.c_str(), message.length(), 0);
-				}
-			}
-			return ;
-		}
-	}
-	throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
+	return (":" + client.getNickName() + "!" + client.getUserName() + "@" + client.getServerName() + " ");
 }
 
 Channel const &search_channel(Client const &client, std::string const &name, std::vector<Channel> const &channel)
@@ -33,22 +17,37 @@ Client const &search_client(Client const &client, std::string const &name, std::
 {
 	for (size_t i = 0; i < clients.size(); i++)
 		if (clients[i].getNickName() == name)
-		{
-			std::cout << clients[i].getPoll().fd << std::endl;
 			return (clients[i]);
-		}
 	throw (NoSuchNickException(client.getServerName(), client.getNickName(), name));
 }
 
-std::string format_msg(Client const &client)
+std::string const search_user_in_channel(Client const &client, Channel const &channel)
 {
-	return (":" + client.getNickName() + "!" + client.getUserName() + "@" + client.getServerName() + " ");
+	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
+	{
+		if (channel.getChannelMembers()[i].first.getNickName() == client.getNickName())
+			return (channel.getChannelMembers()[i].first.getNickName());
+	}
+	return (std::string());
 }
 
 void send_to_user(Client const &client, std::string const &message)
 {
-	std::cout << "message envoyer en prvmsg au client= " << message << std::endl;
 	send(client.getPoll().fd, message.c_str(), message.length(), 0);
+}
+
+void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender)
+{
+	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
+	{
+		if (!sender.empty())
+		{
+			if (channel.getChannelMembers()[i].first.getNickName() != sender)
+				send(channel.getChannelMembers()[i].first.getPoll().fd, message.c_str(), message.length(), 0);
+		}
+		else
+			send(channel.getChannelMembers()[i].first.getPoll().fd, message.c_str(), message.length(), 0);
+	}
 }
 
 bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
@@ -59,12 +58,16 @@ bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
 		throw (NoRecipientException(client.getServerName(), client.getNickName()));
 	if (args[0][0] == '#' || args[0][0] == '&')
 	{
-		send_to_members_in_chan(client, search_channel(client, args[0], serv.getChannels()), client.getNickName(), format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n");
+		Channel const &channel = search_channel(client, args[0], serv.getChannels());
+		std::string const &nickname = search_user_in_channel(client, channel);
+		if (nickname.empty())
+			throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
+		send_to_members_in_chan(channel, format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n", nickname);
 	}
 	else
 	{
-		std::cout << "fd a qui envoyé le message privé= " <<client.getPoll().fd << std::endl;
-		send_to_user(search_client(client, args[0], serv.getClients()), format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n");
+		Client const &cli = search_client(client, args[0], serv.getClients());
+		send_to_user(cli, format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n");
 	}
 	return (1);
 }
