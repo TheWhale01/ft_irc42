@@ -14,7 +14,16 @@ bool kick(Client &client, Server &serv, std::vector<std::string> const &args)
 {
 	if (args.size() < 2)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "KICK"));
-	Channel const &channel = search_channel(args[0], serv.getChannels());
+	size_t j = 0;
+	Channel channel;
+	for (; j < serv.getChannels().size(); j++)
+	{
+		if (serv.getChannels()[j].getChannelName() == args[0])
+		{
+			channel = serv.getChannels()[j];
+			break;
+		}
+	}
 	if (channel.getChannelName().empty())
 		throw (NoSuchChannelException(client.getServerName(), client.getNickName(), args[0]));
 	std::pair<Client, bool>	const &member = search_user_in_channel(client, channel);
@@ -30,10 +39,9 @@ bool kick(Client &client, Server &serv, std::vector<std::string> const &args)
 				send_to_members_in_chan(channel, format_msg(client) + "KICK " + args[0] + " " + args[1] + " :" + args[2] + "\r\n", std::string());
 			else
 				send_to_members_in_chan(channel, format_msg(client) + "KICK " + args[0] + " " + args[1] + " :" + args[1] + "\r\n", std::string());
-			std::cout << "alive" << std::endl;
-			channel.deleteChannelMember(args[1]); //pteit modif serv.
-			if (channel.getChannelMembers().size() == 0)
-				serv._channels.erase(serv._channels.begin() + i);
+			serv._channels[j].deleteChannelMember(args[1]);
+			if (serv._channels[j].getChannelMembers().size() == 0)
+				serv._channels.erase(serv._channels.begin() + j);
 			return (1);
 		}
 	}
