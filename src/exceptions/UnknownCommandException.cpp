@@ -1,7 +1,6 @@
 #include "irc.hpp"
 
-UnknownCommandException::UnknownCommandException(std::string const &servername, std::string const &nickname,
-	std::string const &cmd)
+UnknownCommandException::UnknownCommandException(std::string const &servername, std::string const &nickname, std::string const &cmd)
 {
 	_cmd = cmd;
 	_nickname = nickname;

@@ -1,7 +1,6 @@
 #include "irc.hpp"
 
-NotOnChannelException::NotOnChannelException(std::string const &servername, std::string const &nickname,
-	std::string const &cmd)
+NotOnChannelException::NotOnChannelException(std::string const &servername, std::string const &nickname, std::string const &cmd)
 {
 	_cmd = cmd;
 	_nickname = nickname;

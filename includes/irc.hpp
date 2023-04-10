@@ -20,6 +20,11 @@
 # define SIM_USERS 50
 # define BUFF_SIZE 512
 
+// Mods
+
+# define MODE_I 1 << 0
+# define MODE_T 1 << 1
+
 // Errors
 # define ERR_NOSUCHNICK			"401"
 # define ERR_NOSUCHCHANNEL		"403"
@@ -30,14 +35,19 @@
 # define ERR_NONICKNAMEGIVEN	"431"
 # define ERR_ERRONEUSNICKNAME	"432"
 # define ERR_NICKNAMEINUSE		"433"
+# define ERR_USERNOTINCHANNEL	"441"
 # define ERR_NOTONCHANNEL		"442"
 # define ERR_NEEDMOREPARAMS		"461"
 # define ERR_ALREADYREGISTRED	"462"
 # define ERR_PASSWDMISMATCH		"464"
+# define ERR_CHANOPRIVSNEEDED	"482"
 
-// Answers
-# define RPL_NOTOPIC "331"
-# define RPL_TOPIC	"332"
+// Reply
+# define RPL_WELCOME			"001"
+# define RPL_NOTOPIC			"331"
+# define RPL_TOPIC				"332"
+# define RPL_NAMREPLY			"353"
+# define RPL_ENDOFNAMES			"366"
 
 // Typedefs
 typedef struct pollfd pollfd_t;
@@ -58,17 +68,18 @@ bool user(Client &client, Server &serv, std::vector<std::string> const &args);
 bool quit(Client &client, Server &serv, std::vector<std::string> const &args);
 
 //channels
-bool join(Client &client, Server &serv, std::vector<std::string> const &args);
-bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args);
-bool notice(Client &client, Server &serv, std::vector<std::string> const &args);
 bool part(Client &client, Server &serv, std::vector<std::string> const &args);
+bool join(Client &client, Server &serv, std::vector<std::string> const &args);
 bool topic(Client &client, Server &serv, std::vector<std::string> const &args);
+bool notice(Client &client, Server &serv, std::vector<std::string> const &args);
+bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args);
+bool kick(Client &client, Server &serv, std::vector<std::string> const &args);
 
 //channel utils
 void send_to_user(Client const &client, std::string const &message);
-std::string const search_user_in_channel(Client const &client, Channel const &channel);
 Client const &search_client(std::string const &name, std::vector<Client> const &clients);
 Channel const &search_channel(std::string const &name, std::vector<Channel> const &channel);
+std::pair<Client, bool> const &search_user_in_channel(Client const &client, Channel const &channel);
 void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender);
 
 void sigHandler(int sig_id);

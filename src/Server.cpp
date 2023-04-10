@@ -136,6 +136,7 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("NOTICE");
 	cmds.push_back("PART");
 	cmds.push_back("TOPIC");
+	cmds.push_back("KICK");
 }
 
 void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vector<std::string> const &))
@@ -150,4 +151,5 @@ void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vecto
 	cmds_ptr[7] = &notice;
 	cmds_ptr[8] = &part;
 	cmds_ptr[9] = &topic;
+	cmds_ptr[10] = &kick;
 }

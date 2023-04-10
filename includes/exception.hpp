@@ -12,6 +12,7 @@ class AIrcStandardException: public std::exception
 
 	protected:
 		std::string _cmd;
+		std::string _user;
 		std::string _nickname;
 		std::string _servername;
 		std::string *_error_msg;
@@ -58,6 +59,15 @@ class NotOnChannelException: public AIrcStandardException
 	public:
 		explicit NotOnChannelException(std::string const &servername, std::string const &nickname, std::string const &cmd);
 		~NotOnChannelException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class UserNotInChannelException: public AIrcStandardException
+{
+	public:
+		explicit UserNotInChannelException(std::string const &servername, std::string const &nickname, std::string const &cmd, std::string const &user);
+		~UserNotInChannelException(void) throw();
 
 		const char *what(void) const throw();
 };
@@ -121,6 +131,15 @@ class NoNickNameGivenException: public AIrcStandardException
 	public:
 		explicit NoNickNameGivenException(std::string const &servername, std::string const &nickname);
 		~NoNickNameGivenException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class ChanoPrivsNeededException: public AIrcStandardException
+{
+	public:
+		explicit ChanoPrivsNeededException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~ChanoPrivsNeededException(void) throw();
 
 		const char *what(void) const throw();
 };

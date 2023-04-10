@@ -2,17 +2,17 @@
 
 class Client;
 
-class Permission
-{
-	public:
+// class Permission
+// {
+// 	public:
 
-		Permission(int byte);
-		~Permission(void);
+// 		Permission(int byte);
+// 		~Permission(void);
 
-		bool	_member;
-		bool	_creator;
-		bool	_operator;
-};
+// 		bool	_member;
+// 		bool	_creator;
+// 		bool	_operator;
+// };
 
 class Channel
 {
@@ -22,17 +22,19 @@ class Channel
 		Channel(std::string const &channel);
 		~Channel();
 
+		const int &getChannelPermission(void) const;
 		const std::string &getChannelName(void) const;
 		const std::string &getChannelTopic(void) const;
-		const std::vector<std::pair<Client, Permission> >  &getChannelMembers(void) const;
+		const std::vector<std::pair<Client, bool> > &getChannelMembers(void) const;
 
 		void setChannelTopic(std::string const &topic);
 		void deleteChannelMember(std::string const &name);
-		void addMemberToChannel(Client const &client, int byte);
+		void addMemberToChannel(Client const &client, bool byte);
 
 
 	private:
-		std::string									_topic;
-		std::string									_channelname;
-		std::vector<std::pair<Client, Permission> >	_channelmembers;
+		int										_permission;
+		std::string								_topic;
+		std::string								_channelname;
+		std::vector<std::pair<Client, bool> >	_channelmembers;
 };

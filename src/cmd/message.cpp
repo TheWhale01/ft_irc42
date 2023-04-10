@@ -32,10 +32,10 @@ bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
 		Channel const &channel = search_channel(args[0], serv.getChannels());
 		if (channel.getChannelName().empty())
 			throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
-		std::string const &nickname = search_user_in_channel(client, channel);
-		if (nickname.empty())
+		std::pair<Client, bool>	const &member = search_user_in_channel(client, channel);
+		if (member.first.getNickName().empty())
 			throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
-		send_to_members_in_chan(channel, format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n", nickname);
+		send_to_members_in_chan(channel, format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n", member.first.getNickName());
 	}
 	else
 	{
@@ -58,10 +58,10 @@ bool notice(Client &client, Server &serv, std::vector<std::string> const &args)
 		Channel const &channel = search_channel(args[0], serv.getChannels());
 		if (channel.getChannelName().empty())
 			return (0);
-		std::string const &nickname = search_user_in_channel(client, channel);
-		if (nickname.empty())
+		std::pair<Client, bool>	const &member = search_user_in_channel(client, channel);
+		if (member.first.getNickName().empty())
 			return (0);
-		send_to_members_in_chan(channel, format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n", nickname);
+		send_to_members_in_chan(channel, format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n", member.first.getNickName());
 	}
 	else
 	{

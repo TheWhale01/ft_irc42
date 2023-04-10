@@ -1,7 +1,6 @@
 #include "irc.hpp"
 
-NoSuchChannelException::NoSuchChannelException(std::string const &servername, std::string const &nickname,
-	std::string const &cmd)
+NoSuchChannelException::NoSuchChannelException(std::string const &servername, std::string const &nickname, std::string const &cmd)
 {
 	_cmd = cmd;
 	_nickname = nickname;

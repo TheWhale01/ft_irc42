@@ -1,7 +1,6 @@
 #include "irc.hpp"
 
-NeedMoreParamsException::NeedMoreParamsException(std::string const &servername, std::string const &nickname,
-	std::string const &cmd)
+NeedMoreParamsException::NeedMoreParamsException(std::string const &servername, std::string const &nickname, std::string const &cmd)
 {
 	_cmd = cmd;
 	_nickname = nickname;

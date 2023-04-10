@@ -1,7 +1,6 @@
 #include "irc.hpp"
 
-NickNameInUseException::NickNameInUseException(std::string const &servername, std::string const &nickname,
-	std::string const &cmd)
+NickNameInUseException::NickNameInUseException(std::string const &servername, std::string const &nickname, std::string const &cmd)
 {
 	_cmd = cmd;
 	_nickname = nickname;

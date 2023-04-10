@@ -1,5 +1,12 @@
 #include "irc.hpp"
 
+std::string format_reply(Client const &client, std::string const &code, std::string const &name)
+{
+	if (name.empty())
+		return (":" + client.getServerName() + " " + code + " " + client.getNickName() + " :");
+	return (":" + client.getServerName() + " " + code + " " + client.getNickName() + " " + name + " :");
+}
+
 std::string format_msg(Client const &client)
 {
 	return (":" + client.getNickName() + "!" + client.getUserName() + "@" + client.getServerName() + " ");
@@ -23,12 +30,13 @@ Client const &search_client(std::string const &name, std::vector<Client> const &
 	return (notfound);
 }
 
-std::string const search_user_in_channel(Client const &client, Channel const &channel)
+std::pair<Client, bool> const &search_user_in_channel(Client const &client, Channel const &channel)
 {
+	std::pair<Client, bool> const &notfound = std::pair<Client, bool>(Client(), 0);
 	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
 	{
 		if (channel.getChannelMembers()[i].first.getNickName() == client.getNickName())
-			return (channel.getChannelMembers()[i].first.getNickName());
+			return (channel.getChannelMembers()[i]);
 	}
-	return (std::string());
+	return (notfound);
 }

@@ -1,32 +1,25 @@
 #include "irc.hpp"
 
-std::string format_reply(Client const &client, std::string const &code, std::string const &name)
-{
-	if (name.empty())
-		return (":" + client.getServerName() + " " + code + " " + client.getNickName() + " :");
-	return (":" + client.getServerName() + " " + code + " " + client.getNickName() + " " + name + " :");
-}
-
 std::string print_user(Client const &client, Channel const &channel)
 {
-	std::string answer = ":" + client.getServerName() + " 353 " + client.getNickName() + " = " + channel.getChannelName() + " :";
+	std::string answer = ":" + client.getServerName() + " " + RPL_NAMREPLY + " " + client.getNickName() + " = " + channel.getChannelName() + " :";
 	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
 	{
-		if (channel.getChannelMembers()[i].second._operator == 1)
+		if (channel.getChannelMembers()[i].second == 1)
 			answer += "@" + channel.getChannelMembers()[i].first.getNickName();
 		else
 			answer += channel.getChannelMembers()[i].first.getNickName();
 		if (i + 1 != channel.getChannelMembers().size())
 			answer += " ";
 	}
-	answer += "\r\n" + format_reply(client, "366", channel.getChannelName()) + "End of /NAMES list\r\n";
+	answer += "\r\n" + format_reply(client, RPL_ENDOFNAMES, channel.getChannelName()) + "End of /NAMES list\r\n";
 	return (answer);
 }
 
 void create_channel(Client &client, Server &serv, std::string const &name)
 {
 	Channel	new_channel(name);
-	new_channel.addMemberToChannel(client, 2);
+	new_channel.addMemberToChannel(client, true);
 	serv._channels.push_back(new_channel);
 	std::string answer = format_msg(client) + "JOIN " + name + "\r\n";
 	answer += print_user(client, new_channel);
@@ -58,12 +51,12 @@ void join_channel(Client &client, Channel &channel)
 	std::string answer;
 	if (!check_already_in_chan(client.getNickName(), channel))
 	{
-		channel.addMemberToChannel(client, 0);
+		channel.addMemberToChannel(client, false);
 		answer = format_msg(client) + "JOIN " + channel.getChannelName() + "\r\n";
 		send_to_members_in_chan(channel, answer, client.getNickName());
 	}
 	if (!channel.getChannelTopic().empty())
-		answer += format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
+		answer += format_reply(client, RPL_TOPIC, channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
 	answer += print_user(client, channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
@@ -92,15 +85,18 @@ bool part(Client &client, Server &serv, std::vector<std::string> const &args)
 	Channel const &channel = search_channel(args[0], serv.getChannels());
 	if (channel.getChannelName().empty())
 		throw (NoSuchChannelException(client.getServerName(), client.getNickName(), args[0]));
-	std::string const &nickname = search_user_in_channel(client, channel);
-	if (nickname.empty())
+	std::pair<Client, bool> const &member = search_user_in_channel(client, channel);
+	if (member.first.getNickName().empty())
 		throw (NotOnChannelException(client.getServerName(), client.getNickName(), args[0]));
-	send_to_members_in_chan(channel, format_msg(client) + "PART " + args[0] + " :" + nickname + "\r\n", nickname);
+	if (args.size() >= 2)
+		send_to_members_in_chan(channel, format_msg(client) + "PART " + args[0] + " :" + args[1] + "\r\n",  member.first.getNickName());
+	else
+		send_to_members_in_chan(channel, format_msg(client) + "PART " + args[0] + " :" + client.getNickName() + "\r\n",  member.first.getNickName());
 	for (size_t i = 0; i < serv.getChannels().size(); i++)
 	{
 		if (serv.getChannels()[i].getChannelName() == args[0])
 		{
-			serv._channels[i].deleteChannelMember(nickname);
+			serv._channels[i].deleteChannelMember(member.first.getNickName());
 			if (channel.getChannelMembers().size() == 0)
 				serv._channels.erase(serv._channels.begin() + i);
 			return (1);
