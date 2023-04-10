@@ -1,6 +1,6 @@
 #include "irc.hpp"
 
-Channel::Channel() {}
+Channel::Channel(void) {_channelname = std::string();}
 Channel::Channel(std::string const &channel) : _channelname(channel) {}
 Channel::~Channel(void) {}
 
@@ -12,6 +12,17 @@ void Channel::addMemberToChannel(Client const &client, int byte) {_channelmember
 
 void Channel::setChannelTopic(std::string const &topic) {_topic = topic;}
 
+void Channel::deleteChannelMember(std::string const &name)
+{
+	for (size_t i = 0; i < _channelmembers.size(); i++)
+	{
+		if (_channelmembers[i].first.getNickName() == name)
+		{
+			_channelmembers.erase(_channelmembers.begin() + i);
+			return ;
+		}
+	}
+}
 
 
 

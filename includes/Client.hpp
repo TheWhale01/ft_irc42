@@ -5,8 +5,9 @@ class Server;
 class Client
 {
 	public:
+		Client(void);
 		Client(Server &serv);
-		~Client();
+		~Client(void);
 
 		const bool &getRegist(void) const;
 		const pollfd_t &getPoll(void) const;

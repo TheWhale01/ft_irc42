@@ -2,6 +2,8 @@
 
 std::string format_reply(Client const &client, std::string const &code, std::string const &name)
 {
+	if (name.empty())
+		return (":" + client.getServerName() + " " + code + " " + client.getNickName() + " :");
 	return (":" + client.getServerName() + " " + code + " " + client.getNickName() + " " + name + " :");
 }
 
@@ -61,7 +63,7 @@ void join_channel(Client &client, Channel &channel)
 		send_to_members_in_chan(channel, answer, client.getNickName());
 	}
 	if (!channel.getChannelTopic().empty())
-		answer += format_msg(client) + format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
+		answer += format_reply(client, "332", channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
 	answer += print_user(client, channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
@@ -80,5 +82,29 @@ bool join(Client &client, Server &serv, std::vector<std::string> const &args)
 		}
 	}
 	create_channel(client, serv, args[0]);
+	return (1);
+}
+
+bool part(Client &client, Server &serv, std::vector<std::string> const &args)
+{
+	if (args.size() == 0)
+		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "PART"));
+	Channel const &channel = search_channel(args[0], serv.getChannels());
+	if (channel.getChannelName().empty())
+		throw (NoSuchChannelException(client.getServerName(), client.getNickName(), args[0]));
+	std::string const &nickname = search_user_in_channel(client, channel);
+	if (nickname.empty())
+		throw (NotOnChannelException(client.getServerName(), client.getNickName(), args[0]));
+	send_to_members_in_chan(channel, format_msg(client) + "PART " + args[0] + " :" + nickname + "\r\n", nickname);
+	for (size_t i = 0; i < serv.getChannels().size(); i++)
+	{
+		if (serv.getChannels()[i].getChannelName() == args[0])
+		{
+			serv._channels[i].deleteChannelMember(nickname);
+			if (channel.getChannelMembers().size() == 0)
+				serv._channels.erase(serv._channels.begin() + i);
+			return (1);
+		}
+	}
 	return (1);
 }

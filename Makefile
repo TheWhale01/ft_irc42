@@ -13,7 +13,8 @@ SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Channel.cpp Client.cpp cmd/aut
 	exceptions/NickNameInUseException.cpp exceptions/AlreadyRegistredException.cpp \
 	exceptions/NoSuchChannelException.cpp exceptions/NoSuchNickException.cpp \
 	exceptions/CannotSendToChanException.cpp exceptions/NoRecipientException.cpp \
-	exceptions/NoTextToSendException.cpp)
+	exceptions/NoTextToSendException.cpp exceptions/NotOnChannelException.cpp cmd/utils.cpp \
+	cmd/channel_oper.cpp)
 DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 

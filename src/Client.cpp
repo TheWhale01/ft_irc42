@@ -1,5 +1,7 @@
 #include "irc.hpp"
 
+Client::Client(void) {_nickname = std::string();}
+
 Client::Client(Server &serv) : _nickname(""), _regist(false)
 {
 	_poll.fd = accept(serv.getPoll().fd, (struct sockaddr *)(&(serv.client_addr)), &(serv.addrlen));

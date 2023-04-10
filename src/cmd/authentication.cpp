@@ -49,7 +49,7 @@ bool nick(Client &client, Server &serv, std::vector<std::string> const &args)
 	{
 		std::string welcome;
 
-		welcome = "001 " + client.getNickName() + " :Welcome to the fucked up IRC server!\r\n";
+		welcome = format_reply(client, "001", "") + "Welcome to the fucked up IRC server!\r\n";
 		client.setRegist(true);
 		send(client.getPoll().fd, welcome.c_str(), welcome.length(), 0);
 	}
@@ -72,7 +72,7 @@ bool user(Client &client, Server &serv, std::vector<std::string> const &args)
 	{
 		std::string welcome;
 
-		welcome = "001 " + client.getNickName() + " :Welcome to the fucked up IRC server!\r\n";
+		welcome = format_reply(client, "001", "") + "Welcome to the fucked up IRC server!\r\n";
 		client.setRegist(true);
 		send(client.getPoll().fd, welcome.c_str(), welcome.length(), 0);
 	}

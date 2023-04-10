@@ -30,6 +30,7 @@
 # define ERR_NONICKNAMEGIVEN	"431"
 # define ERR_ERRONEUSNICKNAME	"432"
 # define ERR_NICKNAMEINUSE		"433"
+# define ERR_NOTONCHANNEL		"442"
 # define ERR_NEEDMOREPARAMS		"461"
 # define ERR_ALREADYREGISTRED	"462"
 # define ERR_PASSWDMISMATCH		"464"
@@ -60,6 +61,14 @@ bool quit(Client &client, Server &serv, std::vector<std::string> const &args);
 bool join(Client &client, Server &serv, std::vector<std::string> const &args);
 bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args);
 bool notice(Client &client, Server &serv, std::vector<std::string> const &args);
+bool part(Client &client, Server &serv, std::vector<std::string> const &args);
+bool topic(Client &client, Server &serv, std::vector<std::string> const &args);
+
+//channel utils
+void send_to_user(Client const &client, std::string const &message);
+std::string const search_user_in_channel(Client const &client, Channel const &channel);
+Client const &search_client(std::string const &name, std::vector<Client> const &clients);
+Channel const &search_channel(std::string const &name, std::vector<Channel> const &channel);
 void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender);
 
 void sigHandler(int sig_id);
@@ -67,7 +76,8 @@ void format_msg(std::string &str);
 void str_toupper(std::string &str);
 
 std::string format_msg(char const *msg);
-std::string format_msg(Client const &client);
+std::string format_msg(Client const &client); //:<nickname>!<username>@<hostname> "
+std::string format_reply(Client const &client, std::string const &code, std::string const &name);
 
 std::vector<std::string> split(std::string &str);
 std::vector<std::string> split(const std::string& str, const std::string& delimiter);

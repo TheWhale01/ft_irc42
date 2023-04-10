@@ -7,7 +7,7 @@ class Permission
 	public:
 
 		Permission(int byte);
-		~Permission();
+		~Permission(void);
 
 		bool	_member;
 		bool	_creator;
@@ -27,7 +27,7 @@ class Channel
 		const std::vector<std::pair<Client, Permission> >  &getChannelMembers(void) const;
 
 		void setChannelTopic(std::string const &topic);
-
+		void deleteChannelMember(std::string const &name);
 		void addMemberToChannel(Client const &client, int byte);
 
 

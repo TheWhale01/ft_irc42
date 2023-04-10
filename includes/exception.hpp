@@ -53,6 +53,15 @@ class NoSuchNickException: public AIrcStandardException
 		const char *what(void) const throw();
 };
 
+class NotOnChannelException: public AIrcStandardException
+{
+	public:
+		explicit NotOnChannelException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~NotOnChannelException(void) throw();
+
+		const char *what(void) const throw();
+};
+
 class NoSuchChannelException: public AIrcStandardException
 {
 	public:

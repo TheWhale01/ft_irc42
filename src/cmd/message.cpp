@@ -1,43 +1,14 @@
 #include "irc.hpp"
 
-std::string format_msg(Client const &client) //:<nickname>!<username>@<hostname> "
-{
-	return (":" + client.getNickName() + "!" + client.getUserName() + "@" + client.getServerName() + " ");
-}
-
-Channel const &search_channel(Client const &client, std::string const &name, std::vector<Channel> const &channel)
-{
-	for (size_t i = 0; i < channel.size(); i++)
-		if (channel[i].getChannelName() == name)
-			return (channel[i]);
-	throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
-}
-
-Client const &search_client(Client const &client, std::string const &name, std::vector<Client> const &clients)
-{
-	for (size_t i = 0; i < clients.size(); i++)
-		if (clients[i].getNickName() == name)
-			return (clients[i]);
-	throw (NoSuchNickException(client.getServerName(), client.getNickName(), name));
-}
-
-std::string const search_user_in_channel(Client const &client, Channel const &channel)
-{
-	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
-	{
-		if (channel.getChannelMembers()[i].first.getNickName() == client.getNickName())
-			return (channel.getChannelMembers()[i].first.getNickName());
-	}
-	return (std::string());
-}
-
 void send_to_user(Client const &client, std::string const &message)
 {
+	std::cout << "message top one member: " << message << std::endl;
 	send(client.getPoll().fd, message.c_str(), message.length(), 0);
 }
 
 void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender)
 {
+	std::cout << "message all members: " << message << std::endl;
 	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
 	{
 		if (!sender.empty())
@@ -58,7 +29,9 @@ bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
 		throw (NoRecipientException(client.getServerName(), client.getNickName()));
 	if (args[0][0] == '#' || args[0][0] == '&')
 	{
-		Channel const &channel = search_channel(client, args[0], serv.getChannels());
+		Channel const &channel = search_channel(args[0], serv.getChannels());
+		if (channel.getChannelName().empty())
+			throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
 		std::string const &nickname = search_user_in_channel(client, channel);
 		if (nickname.empty())
 			throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
@@ -66,7 +39,9 @@ bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
 	}
 	else
 	{
-		Client const &cli = search_client(client, args[0], serv.getClients());
+		Client const &cli = search_client(args[0], serv.getClients());
+		if (cli.getNickName().empty())
+			throw (NoSuchNickException(client.getServerName(), client.getNickName(), args[0]));
 		send_to_user(cli, format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n");
 	}
 	return (1);
@@ -74,8 +49,26 @@ bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args)
 
 bool notice(Client &client, Server &serv, std::vector<std::string> const &args)
 {
-	(void) client;
-	(void) serv;
-	(void) args;
+	if (args.size() == 0)
+		return (0);
+	if (args.size() < 2 || args[1].empty())
+		return (0);
+	if (args[0][0] == '#' || args[0][0] == '&')
+	{
+		Channel const &channel = search_channel(args[0], serv.getChannels());
+		if (channel.getChannelName().empty())
+			return (0);
+		std::string const &nickname = search_user_in_channel(client, channel);
+		if (nickname.empty())
+			return (0);
+		send_to_members_in_chan(channel, format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n", nickname);
+	}
+	else
+	{
+		Client const &cli = search_client(args[0], serv.getClients());
+		if (cli.getNickName().empty())
+			return (0);
+		send_to_user(cli, format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n");
+	}
 	return (1);
 }
