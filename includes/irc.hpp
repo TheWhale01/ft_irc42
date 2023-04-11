@@ -52,8 +52,9 @@
 // Typedefs
 typedef struct pollfd pollfd_t;
 typedef struct sockaddr_in sockaddr_in_t;
-
 # include "Client.hpp"
+typedef std::vector<std::pair<Client, bool> >::iterator iter_member;
+
 # include "Channel.hpp"
 # include "Server.hpp"
 # include "exception.hpp"

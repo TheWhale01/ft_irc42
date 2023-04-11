@@ -33,11 +33,11 @@ class Server
 		void privmsg(Client &client, std::vector<std::string> const &args);
 
 		void create_channel(Client &client, std::string const &name);
-		std::pair<Client, bool> const &search_user_in_channel(Client const &client, Channel const &channel);
+		iter_member search_user_in_channel(Client const &client, Channel &channel);
 		Client const &search_client(std::string const &name, std::vector<Client> const &clients);
 		Channel const &search_channel(std::string const &name, std::vector<Channel> const &channel);
 
-	public:
+	private:
 		int _bytes;
 		char _buff[BUFF_SIZE + 1];
 		pollfd_t _poll;
@@ -50,4 +50,5 @@ class Server
 		void _exec_cmd(Client &client, std::string str);
 		void _get_commands(std::vector<std::string> &cmds);
 		void _get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &));
+		friend Channel;
 };

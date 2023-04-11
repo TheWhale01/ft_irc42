@@ -30,13 +30,20 @@ Client const &Server::search_client(std::string const &name, std::vector<Client>
 	return (notfound);
 }
 
-std::pair<Client, bool> const &Server::search_user_in_channel(Client const &client, Channel const &channel)
+iter_member Server::search_user_in_channel(Client const &client, Channel &channel)
 {
-	std::pair<Client, bool> const &notfound = std::pair<Client, bool>();
-	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
+	for (iter_member it = channel. it != channel. it++)
 	{
-		if (channel.getChannelMembers()[i].first.getNickName() == client.getNickName())
-			return (channel.getChannelMembers()[i]);
 	}
-	return (notfound);
 }
+
+// std::pair<Client, bool> const &Server::search_user_in_channel(Client const &client, Channel const &channel)
+// {
+// 	std::pair<Client, bool> const &notfound = std::pair<Client, bool>();
+// 	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
+// 	{
+// 		if (channel.getChannelMembers()[i].first.getNickName() == client.getNickName())
+// 			return (channel.getChannelMembers()[i]);
+// 	}
+// 	return (notfound);
+// }
