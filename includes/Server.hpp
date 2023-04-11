@@ -21,7 +21,7 @@ class Server
 		std::vector<Channel> _channels;
 		void run(void);
 	
-	private:
+	public:
 		int _bytes;
 		char _buff[BUFF_SIZE + 1];
 		pollfd_t _poll;

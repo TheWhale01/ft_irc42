@@ -52,6 +52,7 @@
 // Typedefs
 typedef struct pollfd pollfd_t;
 typedef struct sockaddr_in sockaddr_in_t;
+typedef typename std::vector<std::pair<Client, bool> >::iterator iter_member;
 
 # include "Client.hpp"
 # include "Channel.hpp"
@@ -77,9 +78,9 @@ bool kick(Client &client, Server &serv, std::vector<std::string> const &args);
 
 //channel utils
 void send_to_user(Client const &client, std::string const &message);
-Client const &search_client(std::string const &name, std::vector<Client> const &clients);
-Channel const &search_channel(std::string const &name, std::vector<Channel> const &channel);
-std::pair<Client, bool> const &search_user_in_channel(Client const &client, Channel const &channel);
+Client *search_client(std::string const &name, std::vector<Client> const &clients);
+Channel *search_channel(std::string const &name, std::vector<Channel> const &channel);
+iter_member search_user_in_channel(Client const &client, Channel const &channel);
 void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender);
 
 void sigHandler(int sig_id);
