@@ -1,15 +1,5 @@
 #include "irc.hpp"
 
-void Server::pass(Client &client, std::vector<std::string> const &args)
-{
-	if (args.size() != 1)
-		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "PASS"));
-	if (client.getRegist())
-		throw (AlreadyRegistredException(client.getServerName(), client.getNickName()));
-	if (this->getPasswd() != *args.begin())
-		std::cerr << "(error) >> Password incorrect\n";
-}
-
 static void check_nickname_syntax(Client const &client, std::string const &nickname)
 {
 	std::string charset;
@@ -42,27 +32,6 @@ void Server::nick(Client &client, std::vector<std::string> const &args)
 	check_nickname_syntax(client, args[0]);
 	client.setNickName(args[0]);
 	if (!client.getUserName().empty() && !client.getRegist())
-	{
-		std::string welcome;
-
-		welcome = format_reply(client, RPL_WELCOME, "") + "Welcome to the fucked up IRC server!\r\n";
-		client.setRegist(true);
-		send(client.getPoll().fd, welcome.c_str(), welcome.length(), 0);
-	}
-}
-
-void Server::user(Client &client, std::vector<std::string> const &args)
-{
-	// RFC 1459
-	if (args.size() < 4)
-		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "USER"));
-	if (client.getRegist())
-		throw (AlreadyRegistredException(client.getServerName(), client.getNickName()));
-	client.setUserName(args[0]);
-	client.setHostName(args[1]);
-	client.setServerName(args[2]);
-	client.setRealName(args[3]);
-	if (!client.getNickName().empty() && !client.getRegist())
 	{
 		std::string welcome;
 

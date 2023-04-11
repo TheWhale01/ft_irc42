@@ -8,6 +8,7 @@
 
 // C++ includes
 # include <vector>
+# include <map>
 # include <csignal>
 # include <cstring>
 # include <utility>
@@ -49,27 +50,25 @@
 # define RPL_NAMREPLY			"353"
 # define RPL_ENDOFNAMES			"366"
 
-// Typedefs
 typedef struct pollfd pollfd_t;
 typedef struct sockaddr_in sockaddr_in_t;
 # include "Client.hpp"
-typedef std::vector<std::pair<Client, bool> >::iterator iter_member;
-
+typedef std::vector<std::pair<Client, int> >::iterator iter_member;
+typedef std::vector<Client>::iterator iter_client;
 # include "Channel.hpp"
+typedef std::vector<Channel>::iterator iter_channel;
 # include "Server.hpp"
 # include "exception.hpp"
-
-/*Prototypes*/
-
-void send_to_user(Client const &client, std::string const &message);
-void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender);
 
 void sigHandler(int sig_id);
 void format_msg(std::string &str);
 void str_toupper(std::string &str);
+void send_to_user(Client const &client, std::string const &message);
+void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender);
 
 std::string format_msg(char const *msg);
 std::string format_msg(Client const &client); //:<nickname>!<username>@<hostname> "
+std::string print_all_user(Client const &client, Channel const &channel); 
 std::string format_reply(Client const &client, std::string const &code, std::string const &name);
 
 std::vector<std::string> split(std::string &str);

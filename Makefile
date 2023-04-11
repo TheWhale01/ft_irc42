@@ -6,19 +6,21 @@ DEP_DIR= dep/
 SRC_DIR= src/
 INCLUDES= includes/
 
-SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Channel.cpp Client.cpp cmd/authentication.cpp \
-	utils.cpp cmd/channel_oper.cpp cmd/cap.cpp exceptions/exception.cpp cmd/quit.cpp cmd/channel_user.cpp \
-	cmd/message.cpp exceptions/NeedMoreParamsException.cpp exceptions/UnknownCommandException.cpp \
+SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Channel.cpp Client.cpp utils.cpp cmd/cap.cpp \
+	cmd/join.cpp cmd/kick.cpp cmd/notice.cpp cmd/part.cpp cmd/privmsg.cpp cmd/quit.cpp \
+	cmd/topic.cpp cmd/pass.cpp cmd/nick.cpp cmd/user.cpp cmd/utils.cpp cmd/mode.cpp \
+	exceptions/exception.cpp \
+	exceptions/NeedMoreParamsException.cpp exceptions/UnknownCommandException.cpp \
 	exceptions/NoNickNameGivenException.cpp exceptions/ErroneusNickNameException.cpp \
 	exceptions/NickNameInUseException.cpp exceptions/AlreadyRegistredException.cpp \
 	exceptions/NoSuchChannelException.cpp exceptions/NoSuchNickException.cpp \
 	exceptions/CannotSendToChanException.cpp exceptions/NoRecipientException.cpp \
-	exceptions/NoTextToSendException.cpp exceptions/NotOnChannelException.cpp cmd/utils.cpp \
+	exceptions/NoTextToSendException.cpp exceptions/NotOnChannelException.cpp \
 	exceptions/ChanoPrivsNeededException.cpp exceptions/UserNotInChannelException.cpp)
 DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
-CXXFLAGS= -I $(INCLUDES) -g -std=c++98
+CXXFLAGS= -Wall -Wextra -Werror -I $(INCLUDES) -g -std=c++98
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(dir $@)

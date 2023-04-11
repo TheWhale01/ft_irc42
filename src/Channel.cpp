@@ -1,25 +1,27 @@
 #include "irc.hpp"
 
-Channel::Channel(void) {_channelname = std::string();}
-Channel::Channel(std::string const &channel) : _permission(0), _channelname(channel) {}
+Channel::Channel(std::string const &channel) : _mode(0), _channelname(channel) {}
 Channel::~Channel(void) {}
 
-const int &Channel::getChannelPermission(void) const {return (_permission);}
+const int &Channel::getChannelMode(void) const {return (_mode);}
 const std::string &Channel::getChannelTopic(void) const {return (_topic);}
 const std::string &Channel::getChannelName(void) const {return (_channelname);}
-const std::vector<std::pair<Client, bool> > &Channel::getChannelMembers(void) const {return (_channelmembers);}
+const std::vector<std::pair<Client, int> > &Channel::getChannelMembers(void) const {return (_channelmembers);}
 
-void Channel::addMemberToChannel(Client const &client, bool oper) {_channelmembers.push_back(std::make_pair(client, oper));}
+void Channel::addMemberToChannel(Client const &client, int oper) {_channelmembers.push_back(std::make_pair(client, oper));}
 void Channel::setChannelTopic(std::string const &topic) {_topic = topic;}
-
-void Channel::deleteChannelMember(std::string const &name)
+void Channel::setChannelmode(std::string mode)
 {
-	for (size_t i = 0; i < _channelmembers.size(); i++)
+	if (mode == "+t")
 	{
-		if (_channelmembers[i].first.getNickName() == name)
-		{
-			_channelmembers.erase(_channelmembers.begin() + i);
-			return ;
-		}
+		std::cout << "mode t activé" << std::endl;
+		_mode |= MODE_T;
+	}
+	else
+	{
+		std::cout << "mode t désactivé" << std::endl;
+		_mode &= ~MODE_T;
 	}
 }
+
+void Channel::deleteChannelMember(iter_member it) {_channelmembers.erase(it);}
