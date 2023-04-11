@@ -52,7 +52,6 @@
 // Typedefs
 typedef struct pollfd pollfd_t;
 typedef struct sockaddr_in sockaddr_in_t;
-typedef typename std::vector<std::pair<Client, bool> >::iterator iter_member;
 
 # include "Client.hpp"
 # include "Channel.hpp"
@@ -61,26 +60,7 @@ typedef typename std::vector<std::pair<Client, bool> >::iterator iter_member;
 
 /*Prototypes*/
 
-// Authentication
-bool cap(Client &client, Server &serv, std::vector<std::string> const &args);
-bool pass(Client &client, Server &serv, std::vector<std::string> const &args);
-bool nick(Client &client, Server &serv, std::vector<std::string> const &args);
-bool user(Client &client, Server &serv, std::vector<std::string> const &args);
-bool quit(Client &client, Server &serv, std::vector<std::string> const &args);
-
-//channels
-bool part(Client &client, Server &serv, std::vector<std::string> const &args);
-bool join(Client &client, Server &serv, std::vector<std::string> const &args);
-bool topic(Client &client, Server &serv, std::vector<std::string> const &args);
-bool notice(Client &client, Server &serv, std::vector<std::string> const &args);
-bool privmsg(Client &client, Server &serv, std::vector<std::string> const &args);
-bool kick(Client &client, Server &serv, std::vector<std::string> const &args);
-
-//channel utils
 void send_to_user(Client const &client, std::string const &message);
-Client *search_client(std::string const &name, std::vector<Client> const &clients);
-Channel *search_channel(std::string const &name, std::vector<Channel> const &channel);
-iter_member search_user_in_channel(Client const &client, Channel const &channel);
 void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender);
 
 void sigHandler(int sig_id);

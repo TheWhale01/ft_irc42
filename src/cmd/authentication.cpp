@@ -1,17 +1,13 @@
 #include "irc.hpp"
 
-bool pass(Client &client, Server &serv, std::vector<std::string> const &args)
+void Server::pass(Client &client, std::vector<std::string> const &args)
 {
 	if (args.size() != 1)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "PASS"));
 	if (client.getRegist())
 		throw (AlreadyRegistredException(client.getServerName(), client.getNickName()));
-	if (serv.getPasswd() != *args.begin())
-	{
+	if (this->getPasswd() != *args.begin())
 		std::cerr << "(error) >> Password incorrect\n";
-		return (0);
-	}
-	return (1);
 }
 
 static void check_nickname_syntax(Client const &client, std::string const &nickname)
@@ -35,13 +31,13 @@ static void check_nickname_syntax(Client const &client, std::string const &nickn
 			throw (ErroneusNickNameException(client.getServerName(), nickname));
 }
 
-bool nick(Client &client, Server &serv, std::vector<std::string> const &args)
+void Server::nick(Client &client, std::vector<std::string> const &args)
 {
 	// Need more errors !
 	if (!args.size())
 		throw (NoNickNameGivenException(client.getServerName(), client.getNickName()));
-	for (size_t i = 0; i < serv.getClients().size(); i++)
-		if (serv.getClients()[i].getNickName() == args[0])
+	for (size_t i = 0; i < this->getClients().size(); i++)
+		if (this->getClients()[i].getNickName() == args[0])
 			throw (NickNameInUseException(client.getServerName(), client.getNickName(), args[0]));
 	check_nickname_syntax(client, args[0]);
 	client.setNickName(args[0]);
@@ -53,13 +49,11 @@ bool nick(Client &client, Server &serv, std::vector<std::string> const &args)
 		client.setRegist(true);
 		send(client.getPoll().fd, welcome.c_str(), welcome.length(), 0);
 	}
-	return (1);
 }
 
-bool user(Client &client, Server &serv, std::vector<std::string> const &args)
+void Server::user(Client &client, std::vector<std::string> const &args)
 {
 	// RFC 1459
-	(void)serv;
 	if (args.size() < 4)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "USER"));
 	if (client.getRegist())
@@ -76,5 +70,4 @@ bool user(Client &client, Server &serv, std::vector<std::string> const &args)
 		client.setRegist(true);
 		send(client.getPoll().fd, welcome.c_str(), welcome.length(), 0);
 	}
-	return (1);
 }

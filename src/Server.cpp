@@ -102,7 +102,7 @@ void Server::_exec_cmd(Client &client, std::string str)
 		return ;
 	std::vector<std::string> cmds;
 	_get_commands(cmds);
-	bool (*cmds_ptr[cmds.size()])(Client &, Server &, std::vector<std::string> const &);
+	void (Server::*cmds_ptr[cmds.size()])(Client &, std::vector<std::string> const &);
 	_get_commands_ptr(cmds_ptr);
 
 	for (size_t i = 0; i < cmds.size(); i++)
@@ -112,7 +112,7 @@ void Server::_exec_cmd(Client &client, std::string str)
 		if (args[0] == cmds[i])
 		{
 			args.erase(args.begin());
-			cmds_ptr[i](client, *this, args);
+			(this->*(cmds_ptr[i]))(client, args);
 			return ;
 		}
 	}
@@ -139,17 +139,17 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("KICK");
 }
 
-void Server::_get_commands_ptr(bool (*cmds_ptr[])(Client &, Server &, std::vector<std::string> const &))
+void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &))
 {
-	cmds_ptr[0] = &pass;
-	cmds_ptr[1] = &nick;
-	cmds_ptr[2] = &cap;
-	cmds_ptr[3] = &user;
-	cmds_ptr[4] = &quit;
-	cmds_ptr[5] = &join;
-	cmds_ptr[6] = &privmsg;
-	cmds_ptr[7] = &notice;
-	cmds_ptr[8] = &part;
-	cmds_ptr[9] = &topic;
-	cmds_ptr[10] = &kick;
+	cmds_ptr[0] = &Server::pass;
+	cmds_ptr[1] = &Server::nick;
+	cmds_ptr[2] = &Server::cap;
+	cmds_ptr[3] = &Server::user;
+	cmds_ptr[4] = &Server::quit;
+	cmds_ptr[5] = &Server::join;
+	cmds_ptr[6] = &Server::privmsg;
+	cmds_ptr[7] = &Server::notice;
+	cmds_ptr[8] = &Server::part;
+	cmds_ptr[9] = &Server::topic;
+	cmds_ptr[10] = &Server::kick;
 }

@@ -2,18 +2,6 @@
 
 class Client;
 
-// class Permission
-// {
-// 	public:
-
-// 		Permission(int byte);
-// 		~Permission(void);
-
-// 		bool	_member;
-// 		bool	_creator;
-// 		bool	_operator;
-// };
-
 class Channel
 {
 	public:

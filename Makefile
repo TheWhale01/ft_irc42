@@ -18,7 +18,7 @@ SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Channel.cpp Client.cpp cmd/aut
 DEP= $(patsubst $(SRC_DIR)%.cpp, $(DEP_DIR)%.d, $(SRCS))
 OBJS= $(patsubst $(SRC_DIR)%.cpp, $(OBJ_DIR)%.o, $(SRCS))
 
-CXXFLAGS= -Wall -Wextra -Werror -I $(INCLUDES) -g -std=c++98
+CXXFLAGS= -I $(INCLUDES) -g -std=c++98
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(dir $@)

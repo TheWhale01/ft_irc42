@@ -16,11 +16,11 @@ std::string print_user(Client const &client, Channel const &channel)
 	return (answer);
 }
 
-void create_channel(Client &client, Server &serv, std::string const &name)
+void Server::create_channel(Client &client, std::string const &name)
 {
 	Channel	new_channel(name);
 	new_channel.addMemberToChannel(client, true);
-	serv._channels.push_back(new_channel);
+	_channels.push_back(new_channel);
 	std::string answer = format_msg(client) + "JOIN " + name + "\r\n";
 	answer += print_user(client, new_channel);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
@@ -61,28 +61,27 @@ void join_channel(Client &client, Channel &channel)
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
-bool join(Client &client, Server &serv, std::vector<std::string> const &args)
+void Server::join(Client &client, std::vector<std::string> const &args)
 {
 	if (args.size() != 1)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "JOIN"));
 	check_channel_syntax(client, args[0]);
-	for (size_t i = 0; i < serv.getChannels().size(); i++)
+	for (size_t i = 0; i < this->getChannels().size(); i++)
 	{
-		if (serv.getChannels()[i].getChannelName() == args[0])
+		if (this->getChannels()[i].getChannelName() == args[0])
 		{
-			join_channel(client, serv._channels[i]);
-			return (1);
+			join_channel(client, this->_channels[i]);
+			return ;
 		}
 	}
-	create_channel(client, serv, args[0]);
-	return (1);
+	create_channel(client, args[0]);
 }
 
-bool part(Client &client, Server &serv, std::vector<std::string> const &args)
+void Server::part(Client &client, std::vector<std::string> const &args)
 {
 	if (args.size() == 0)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "PART"));
-	Channel const &channel = search_channel(args[0], serv.getChannels());
+	Channel const &channel = search_channel(args[0], this->getChannels());
 	if (channel.getChannelName().empty())
 		throw (NoSuchChannelException(client.getServerName(), client.getNickName(), args[0]));
 	std::pair<Client, bool> const &member = search_user_in_channel(client, channel);
@@ -92,15 +91,14 @@ bool part(Client &client, Server &serv, std::vector<std::string> const &args)
 		send_to_members_in_chan(channel, format_msg(client) + "PART " + args[0] + " :" + args[1] + "\r\n",  member.first.getNickName());
 	else
 		send_to_members_in_chan(channel, format_msg(client) + "PART " + args[0] + " :" + client.getNickName() + "\r\n",  member.first.getNickName());
-	for (size_t i = 0; i < serv.getChannels().size(); i++)
+	for (size_t i = 0; i < this->getChannels().size(); i++)
 	{
-		if (serv.getChannels()[i].getChannelName() == args[0])
+		if (this->getChannels()[i].getChannelName() == args[0])
 		{
-			serv._channels[i].deleteChannelMember(member.first.getNickName());
+			this->_channels[i].deleteChannelMember(member.first.getNickName());
 			if (channel.getChannelMembers().size() == 0)
-				serv._channels.erase(serv._channels.begin() + i);
-			return (1);
+				this->_channels.erase(this->_channels.begin() + i);
+			return ;
 		}
 	}
-	return (1);
 }
