@@ -72,6 +72,15 @@ class NoSuchNickException: public AIrcStandardException
 		const char *what(void) const throw();
 };
 
+class UnknownModeException: public AIrcStandardException
+{
+	public:
+		explicit UnknownModeException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~UnknownModeException(void) throw();
+
+		const char *what(void) const throw();
+};
+
 class NotOnChannelException: public AIrcStandardException
 {
 	public:

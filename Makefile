@@ -9,7 +9,8 @@ INCLUDES= includes/
 SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Channel.cpp Client.cpp utils.cpp cmd/cap.cpp \
 	cmd/join.cpp cmd/kick.cpp cmd/notice.cpp cmd/part.cpp cmd/privmsg.cpp cmd/quit.cpp \
 	cmd/topic.cpp cmd/pass.cpp cmd/nick.cpp cmd/user.cpp cmd/utils.cpp cmd/mode.cpp \
-	exceptions/exception.cpp exceptions/UserDontMatchException.cpp exceptions/UModeUnknowFlagsException.cpp \
+	exceptions/exception.cpp exceptions/UserDontMatchException.cpp exceptions/UnknownModeException.cpp \
+	exceptions/UModeUnknowFlagsException.cpp \
 	exceptions/NeedMoreParamsException.cpp exceptions/UnknownCommandException.cpp \
 	exceptions/NoNickNameGivenException.cpp exceptions/ErroneusNickNameException.cpp \
 	exceptions/NickNameInUseException.cpp exceptions/AlreadyRegistredException.cpp \
