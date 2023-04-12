@@ -1,5 +1,6 @@
 #include "irc.hpp"
 
+Channel::Channel(void) {}
 Channel::Channel(std::string const &channel) : _mode(0), _channelname(channel) {}
 Channel::~Channel(void) {}
 
@@ -20,8 +21,8 @@ void Channel::setChannelmode(std::string mode)
 	else
 	{
 		std::cout << "mode t désactivé" << std::endl;
-		_mode &= ~MODE_T;
+		_mode &= -(MODE_T) - 1;
 	}
 }
 
-void Channel::deleteChannelMember(iter_member it) {_channelmembers.erase(it);}
+void Channel::deleteChannelMember(Channel::iter_member it) {_channelmembers.erase(it);}

@@ -22,7 +22,6 @@
 # define BUFF_SIZE 512
 
 // Mods
-
 # define MODE_I 1 << 0
 # define MODE_T 1 << 1
 
@@ -52,11 +51,9 @@
 
 typedef struct pollfd pollfd_t;
 typedef struct sockaddr_in sockaddr_in_t;
+
 # include "Client.hpp"
-typedef std::vector<std::pair<Client, int> >::iterator iter_member;
-typedef std::vector<Client>::iterator iter_client;
 # include "Channel.hpp"
-typedef std::vector<Channel>::iterator iter_channel;
 # include "Server.hpp"
 # include "exception.hpp"
 

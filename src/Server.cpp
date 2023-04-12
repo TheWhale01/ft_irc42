@@ -18,6 +18,9 @@ Server::Server(int port, std::string passwd): _passwd(passwd)
 		throw (ServerException());
 	if (listen(_poll.fd, SIM_USERS) == -1)
 		throw (ServerException());
+	_pollfds.reserve(11);
+	_clients.reserve(10);
+	_channels.reserve(5);
 	_pollfds.push_back(_poll);
 	std::cout << "Server started on port: " << ntohs(_addr.sin_port) << std::endl;
 	return ;
@@ -124,11 +127,18 @@ void Server::_exec_cmd(Client &client, std::string str)
 	send(client.getPoll().fd, cmd_not_found.c_str(), cmd_not_found.length(), 0);
 }
 
+void Server::sendToChannels(Client const &client, std::string const &msg)
+{
+	for (size_t j = 0; j < _channels.size(); j++)
+		if (_channels[j].search_user_in_channel(client.getNickName()) != _channels[j].getChannelMembers().end())
+			send_to_members_in_chan(_channels[j], msg.c_str(), "");
+}
+
 void Server::_get_commands(std::vector<std::string> &cmds)
 {
+	cmds.reserve(15);
 	cmds.push_back("PASS");
 	cmds.push_back("NICK");
-	cmds.push_back("CAP");
 	cmds.push_back("USER");
 	cmds.push_back("QUIT");
 	cmds.push_back("JOIN");
@@ -138,20 +148,21 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("TOPIC");
 	cmds.push_back("KICK");
 	cmds.push_back("MODE");
+	cmds.push_back("PING");
 }
 
 void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &))
 {
 	cmds_ptr[0] = &Server::pass;
 	cmds_ptr[1] = &Server::nick;
-	cmds_ptr[2] = &Server::cap;
-	cmds_ptr[3] = &Server::user;
-	cmds_ptr[4] = &Server::quit;
-	cmds_ptr[5] = &Server::join;
-	cmds_ptr[6] = &Server::privmsg;
-	cmds_ptr[7] = &Server::notice;
-	cmds_ptr[8] = &Server::part;
-	cmds_ptr[9] = &Server::topic;
-	cmds_ptr[10] = &Server::kick;
-	cmds_ptr[11] = &Server::mode;
+	cmds_ptr[2] = &Server::user;
+	cmds_ptr[3] = &Server::quit;
+	cmds_ptr[4] = &Server::join;
+	cmds_ptr[5] = &Server::privmsg;
+	cmds_ptr[6] = &Server::notice;
+	cmds_ptr[7] = &Server::part;
+	cmds_ptr[8] = &Server::topic;
+	cmds_ptr[9] = &Server::kick;
+	cmds_ptr[10] = &Server::mode;
+	cmds_ptr[11] = &Server::ping;
 }

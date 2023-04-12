@@ -49,9 +49,9 @@ void send_to_members_in_chan(Channel const &channel, std::string const &message,
 	}
 }
 
-iter_channel Server::search_channel(std::string const &name)
+Channel::iter_channel Server::search_channel(std::string const &name)
 {
-	iter_channel it = _channels.begin();
+	Channel::iter_channel it = _channels.begin();
 	for (; it != _channels.end(); it++)
 	{
 		if ((*it).getChannelName() == name)
@@ -61,9 +61,9 @@ iter_channel Server::search_channel(std::string const &name)
 	return (it);
 }
 
-iter_client Server::search_client(std::string const &name)
+Client::iterator Server::search_client(std::string const &name)
 {
-	iter_client it = _clients.begin();
+	Client::iterator it = _clients.begin();
 	for (; it != _clients.end(); it++)
 	{
 		if ((*it).getNickName() == name)
@@ -73,9 +73,9 @@ iter_client Server::search_client(std::string const &name)
 	return (it);
 }
 
-iter_member Channel::search_user_in_channel(std::string const &nickname)
+Channel::iter_member Channel::search_user_in_channel(std::string const &nickname)
 {
-	iter_member it = _channelmembers.begin();
+	Channel::iter_member it = _channelmembers.begin();
 	for (; it != _channelmembers.end(); it++)
 	{
 		if ((*it).first.getNickName() == nickname)

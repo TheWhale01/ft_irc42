@@ -19,7 +19,6 @@ class Server
 		const std::vector<Channel> &getChannels(void) const;
 
 		void run(void);
-		void cap(Client &client, std::vector<std::string> const &args);
 		void pass(Client &client, std::vector<std::string> const &args);
 		void nick(Client &client, std::vector<std::string> const &args);
 		void user(Client &client, std::vector<std::string> const &args);
@@ -32,10 +31,13 @@ class Server
 		void notice(Client &client, std::vector<std::string> const &args);
 		void privmsg(Client &client, std::vector<std::string> const &args);
 		void mode(Client &client, std::vector<std::string> const &args);
+		void ping(Client &client, std::vector<std::string> const &args);
 
 		void create_channel(Client &client, std::string const &name);
-		iter_client search_client(std::string const &name);
-		iter_channel search_channel(std::string const &name);
+		void sendToChannels(Client const &client, std::string const &msg);
+
+		Client::iterator search_client(std::string const &name);
+		Channel::iter_channel search_channel(std::string const &name);
 
 	private:
 		int _bytes;

@@ -9,6 +9,8 @@ class Client
 		Client(Server &serv);
 		~Client(void);
 
+		typedef std::vector<Client>::iterator iterator;
+
 		const bool &getRegist(void) const;
 		const pollfd_t &getPoll(void) const;
 		const std::string &getNickName(void) const;

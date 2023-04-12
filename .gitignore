@@ -5,3 +5,4 @@ ircserv
 test*
 a.out
 ircserv
+callgrind*

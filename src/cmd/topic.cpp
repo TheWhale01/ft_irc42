@@ -5,10 +5,10 @@ void Server::topic(Client &client, std::vector<std::string> const &args)
 	if (args.size() == 0)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "TOPIC"));
 
-	iter_channel channel = search_channel(args[0]);
+	Channel::iter_channel channel = search_channel(args[0]);
 	if (channel == _channels.end())
 		throw (NoSuchChannelException(client.getServerName(), client.getNickName(), args[0]));
-	iter_member member = (*channel).search_user_in_channel(client.getNickName());
+	Channel::iter_member member = channel->search_user_in_channel(client.getNickName());
 	if (member == (*channel).getChannelMembers().end())
 		throw (NotOnChannelException(client.getServerName(), client.getNickName(), args[0]));
 	if (args.size() == 2)

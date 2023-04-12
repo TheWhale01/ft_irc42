@@ -10,6 +10,9 @@ class Channel
 		Channel(std::string const &channel);
 		~Channel();
 
+		typedef std::vector<Channel>::iterator iter_channel;
+		typedef std::vector<std::pair<Client, int> >::iterator iter_member;
+
 		const int &getChannelMode(void) const;
 		const std::string &getChannelName(void) const;
 		const std::string &getChannelTopic(void) const;
@@ -17,11 +20,10 @@ class Channel
 
 		void setChannelTopic(std::string const &topic);
 		void setChannelmode(std::string mode);
-		void deleteChannelMember(iter_member it);
+		void deleteChannelMember(Channel::iter_member it);
 		void addMemberToChannel(Client const &client, int modes);
 
-		iter_member search_user_in_channel(std::string const &nickname);
-
+		Channel::iter_member search_user_in_channel(std::string const &nickname);
 
 	private:
 		int										_mode;

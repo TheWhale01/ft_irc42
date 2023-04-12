@@ -1,6 +1,6 @@
 #include "irc.hpp"
 
-Client::Client(void) {_nickname = std::string();}
+Client::Client(void) {}
 
 Client::Client(Server &serv) : _nickname(""), _regist(false)
 {
