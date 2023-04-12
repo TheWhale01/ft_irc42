@@ -36,6 +36,24 @@ class NoRecipientException: public AIrcStandardException
 		const char *what(void) const throw();
 };
 
+class UserDontMatchException: public AIrcStandardException
+{
+	public:
+		explicit UserDontMatchException(std::string const &servername, std::string const &nickname);
+		~UserDontMatchException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class UModeUnknowFlagsException: public AIrcStandardException
+{
+	public:
+		explicit UModeUnknowFlagsException(std::string const &servername, std::string const &nickname);
+		~UModeUnknowFlagsException(void) throw();
+
+		const char *what(void) const throw();
+};
+
 class CannotSendToChanException: public AIrcStandardException
 {
 	public:

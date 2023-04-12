@@ -20,7 +20,7 @@ void Channel::setChannelmode(std::string mode)
 	else
 	{
 		std::cout << "mode t désactivé" << std::endl;
-		_mode &= ~MODE_T;
+		_mode &= -(MODE_T) - 1;
 	}
 }
 

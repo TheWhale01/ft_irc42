@@ -21,10 +21,16 @@
 # define SIM_USERS 50
 # define BUFF_SIZE 512
 
-// Mods
+// Channel Modes
 
-# define MODE_I 1 << 0
-# define MODE_T 1 << 1
+# define MODE_I		1 << 0
+# define MODE_T		1 << 1
+# define MODE_O		1 << 2
+
+// User Modes
+
+# define MODE_o		1 << 0
+# define MODE_i		1 << 1
 
 // Errors
 # define ERR_NOSUCHNICK			"401"
@@ -42,9 +48,13 @@
 # define ERR_ALREADYREGISTRED	"462"
 # define ERR_PASSWDMISMATCH		"464"
 # define ERR_CHANOPRIVSNEEDED	"482"
+# define ERR_UMODEUNKNOWNFLAG	"501"
+# define ERR_USERSDONTMATCH		"502"
 
 // Reply
 # define RPL_WELCOME			"001"
+# define RPL_UMODEIS			"221"
+# define RPL_CHANNELMODEIS		"324"
 # define RPL_NOTOPIC			"331"
 # define RPL_TOPIC				"332"
 # define RPL_NAMREPLY			"353"
