@@ -10,13 +10,15 @@ class Channel
 		Channel(std::string const &channel);
 		~Channel();
 
-		const int &getChannelMode(void) const;
+		const int &getChannelModes(void) const;
 		const std::string &getChannelName(void) const;
 		const std::string &getChannelTopic(void) const;
+		const std::string getChannelMode(void) const;
 		const std::vector<std::pair<Client, int> > &getChannelMembers(void) const;
 
 		void setChannelTopic(std::string const &topic);
-		void setChannelmode(std::string mode);
+		void setChannelMode(char const &mode);
+		void unsetChannelMode(char const &mode);
 		void deleteChannelMember(iter_member it);
 		void addMemberToChannel(Client const &client, int modes);
 

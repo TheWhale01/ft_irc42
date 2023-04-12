@@ -23,14 +23,10 @@
 
 // Channel Modes
 
-# define MODE_I		1 << 0
-# define MODE_T		1 << 1
-# define MODE_O		1 << 2
+# define MODE_T		1 << 0
+# define MODE_I		1 << 1
 
 // User Modes
-
-# define MODE_o		1 << 0
-# define MODE_i		1 << 1
 
 // Errors
 # define ERR_NOSUCHNICK			"401"

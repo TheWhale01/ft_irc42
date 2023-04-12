@@ -13,7 +13,7 @@ void Server::topic(Client &client, std::vector<std::string> const &args)
 		throw (NotOnChannelException(client.getServerName(), client.getNickName(), args[0]));
 	if (args.size() == 2)
 	{
-		if (((*channel).getChannelMode() & MODE_T) != 0)
+		if (((*channel).getChannelModes() & MODE_T) != 0)
 		{
 			if ((*member).second == false)
 				throw (ChanoPrivsNeededException(client.getServerName(), client.getNickName(), args[0]));

@@ -27,3 +27,23 @@ void Client::setNickName(std::string const &nickname) {_nickname = nickname;}
 void Client::setRealName(std::string const &realname) {_realname = realname;}
 void Client::setHostName(std::string const &hostname) {_hostname = hostname;}
 void Client::setServerName(std::string const &servername) {_servername = servername;}
+
+std::string const Client::getClientMode(void) const
+{
+	std::string modes;
+	if (_mode & MODE_I)
+		modes += "i ";
+	return (modes);
+}
+
+void Client::setClientMode(char const &mode)
+{
+	if (mode == 'i')
+		_mode |= MODE_I;
+}
+
+void Client::unsetClientMode(char const &mode)
+{
+	if (mode == 'i')
+		_mode &= -(MODE_I) - 1;
+}
