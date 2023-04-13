@@ -34,7 +34,7 @@ $(NAME): $(OBJS)
 all: $(NAME)
 
 sanitize: fclean
-sanitize: CXXFLAGS=-Wall -Wextra -Werror -I $(INCLUDES) -g -std=c++98 -fsanitize=address
+sanitize: CXXFLAGS= -Wall -Wextra -Werror -I $(INCLUDES) -g -std=c++98 -fsanitize=address
 sanitize: $(NAME)
 
 clean:
