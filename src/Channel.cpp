@@ -26,7 +26,7 @@ void Channel::setChannelMode(char const &mode)
 {
 	if (mode == 't')
 		_mode |= MODE_T;
-	if (mode == 'i')
+	else if (mode == 'i')
 		_mode |= MODE_I;
 }
 
@@ -34,7 +34,7 @@ void Channel::unsetChannelMode(char const &mode)
 {
 	if (mode == 't')
 		_mode &= -(MODE_T) - 1;
-	if (mode == 'i')
+	else if (mode == 'i')
 		_mode &= -(MODE_I) - 1;
 }
 

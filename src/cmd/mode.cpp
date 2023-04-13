@@ -35,12 +35,16 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 					if (args[1][i] == 'o')
 					{
 						mode_args++;
-						if (args.size() < mode_args + 2)
-							return ;
-						target = channel->search_user_in_channel(args[1 + mode_args]);
-						if (target == channel->getChannelMembers().end())
+						if (args.size() < mode_args + 2) {
+							mode_args--;
 							continue ;
-						if (sign == 1) {
+						}
+						target = channel->search_user_in_channel(args[1 + mode_args]);
+						if (target == channel->getChannelMembers().end()) {
+							send_to_user(client, ":" + client.getServerName() + " 441 " + args[0] + " MODE " + args[1 + mode_args] + " :They aren't on that channel\r\n");
+							continue ;
+						}
+						else if (sign == 1) {
 							target->second = 1;
 							send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :+" + args[1][i] + " " + args[mode_args + 2] + "\r\n", std::string());
 						}
