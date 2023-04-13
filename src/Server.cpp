@@ -74,7 +74,7 @@ void Server::run(void)
 					else
 					{
 						_buff[_bytes] = '\0';
-						std::cout << "message recu= " << _buff << std::endl;
+						std::cout << "message received= " << _buff << std::endl;
 						std::string user_input(_buff);
 						std::vector<std::string> user_inputs = split(user_input, "\r\n");
 						std::vector<std::string>::iterator it;
@@ -174,6 +174,7 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("MODE");
 	cmds.push_back("PING");
 	cmds.push_back("WHOIS");
+	cmds.push_back("INVITE");
 }
 
 void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &))
@@ -191,4 +192,5 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 	cmds_ptr[10] = &Server::mode;
 	cmds_ptr[11] = &Server::ping;
 	cmds_ptr[12] = &Server::whois;
+	cmds_ptr[13] = &Server::invite;
 }

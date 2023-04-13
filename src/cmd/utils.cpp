@@ -30,13 +30,13 @@ std::string format_msg(Client const &client)
 
 void send_to_user(Client const &client, std::string const &message)
 {
-	std::cout << "message top one member: " << message << std::endl;
+	std::cout << "message sent for user=  " << message << std::endl;
 	send(client.getPoll().fd, message.c_str(), message.length(), 0);
 }
 
 void send_to_members_in_chan(Channel const &channel, std::string const &message, std::string const &sender)
 {
-	std::cout << "message all members: " << message << std::endl;
+	std::cout << "message sent for channel= " << message << std::endl;
 	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
 	{
 		if (!sender.empty())
@@ -54,10 +54,9 @@ Channel::iter_channel Server::search_channel(std::string const &name)
 	Channel::iter_channel it = _channels.begin();
 	for (; it != _channels.end(); it++)
 	{
-		if ((*it).getChannelName() == name)
+		if (it->getChannelName() == name)
 			return (it);
 	}
-	std::cout << "pas trouvé client !" << std::endl;
 	return (it);
 }
 
@@ -66,10 +65,9 @@ Client::iterator Server::search_client(std::string const &name)
 	Client::iterator it = _clients.begin();
 	for (; it != _clients.end(); it++)
 	{
-		if ((*it).getNickName() == name)
+		if (it->getNickName() == name)
 			return (it);
 	}
-	std::cout << "pas trouvé client !" << std::endl;
 	return (it);
 }
 
@@ -78,9 +76,8 @@ Channel::iter_member Channel::search_user_in_channel(std::string const &nickname
 	Channel::iter_member it = _channelmembers.begin();
 	for (; it != _channelmembers.end(); it++)
 	{
-		if ((*it).first->getNickName() == nickname)
+		if (it->first->getNickName() == nickname)
 			return (it);
 	}
-	std::cout << "pas trouvé client !" << std::endl;
 	return (it);
 }

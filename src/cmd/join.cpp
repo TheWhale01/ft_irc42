@@ -47,7 +47,7 @@ void join_channel(Client &client, Channel &channel)
 
 void Server::join(Client &client, std::vector<std::string> const &args)
 {
-	if (args.size() != 1)
+	if (args.size() < 1)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "JOIN"));
 	check_channel_syntax(client, args[0]);
 	for (size_t i = 0; i < this->getChannels().size(); i++)

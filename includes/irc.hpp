@@ -26,6 +26,7 @@
 
 # define MODE_T		1 << 0
 # define MODE_I		1 << 1
+# define MODE_M		1 << 2
 
 // User Modes
 
@@ -41,6 +42,7 @@
 # define ERR_NICKNAMEINUSE		"433"
 # define ERR_USERNOTINCHANNEL	"441"
 # define ERR_NOTONCHANNEL		"442"
+# define ERR_USERONCHANNEL		"443"
 # define ERR_NOTREGISTERED		"451"
 # define ERR_NEEDMOREPARAMS		"461"
 # define ERR_ALREADYREGISTRED	"462"
@@ -60,6 +62,7 @@
 # define RPL_CHANNELMODEIS		"324"
 # define RPL_NOTOPIC			"331"
 # define RPL_TOPIC				"332"
+# define RPL_INVITING			"341"
 # define RPL_NAMREPLY			"353"
 # define RPL_ENDOFNAMES			"366"
 

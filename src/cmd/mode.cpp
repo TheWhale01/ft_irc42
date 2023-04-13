@@ -2,7 +2,7 @@
 
 void Server::mode(Client &client, std::vector<std::string> const &args)
 {
-	int sign = 0;
+	char sign = '!';
 	size_t mode_args = 0;
 	std::string charset;
 	Channel::iter_member target;
@@ -23,14 +23,14 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 			throw (NotOnChannelException(client.getServerName(), client.getNickName(), args[0]));
 		if (member_cli->second == 0)
 			throw (ChanoPrivsNeededException(client.getServerName(), client.getNickName(), args[0]));
-		charset = "tio";
+		charset = "tiom";
 		for (size_t i = 0; i < args[1].size(); i++)
 		{
 			if (args[1][i] == '+')
-				sign = 1;
+				sign = '+';
 			else if (args[1][i] == '-')
-				sign = -1;
-			else if (sign != 0 && (charset.find(args[1][i]) != std::string::npos))
+				sign = '-';
+			else if (sign != '!' && (charset.find(args[1][i]) != std::string::npos))
 			{
 					if (args[1][i] == 'o')
 					{
@@ -44,22 +44,12 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 							send_to_user(client, ":" + client.getServerName() + " 441 " + args[0] + " MODE " + args[1 + mode_args] + " :They aren't on that channel\r\n");
 							continue ;
 						}
-						else if (sign == 1) {
-							target->second = 1;
-							send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :+" + args[1][i] + " " + args[mode_args + 2] + "\r\n", std::string());
-						}
-						else {
-							target->second = 0;
-							send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :-" + args[1][i] + " " + args[mode_args + 2] +  + "\r\n", std::string());
-						}
-					}
-					else if (sign == 1) {
-						send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :+" + args[1][i] + "\r\n", std::string());
-						channel->setChannelMode(args[1][i]);
+						(sign == '+') ? target->second = 1 : target->second = 0; 
+						send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :" + sign + args[1][i] + " " + args[mode_args + 2] + "\r\n", std::string());
 					}
 					else {
-						send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :-" + args[1][i] + "\r\n", std::string());
-						channel->unsetChannelMode(args[1][i]);
+						(sign == '+') ? channel->setChannelMode(args[1][i]) : channel->unsetChannelMode(args[1][i]);
+						send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :" + sign + args[1][i] + "\r\n", std::string());
 					}
 			}
 			else
@@ -82,19 +72,13 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 		for (size_t i = 0; i < args[1].size(); i++)
 		{
 			if (args[1][i] == '+')
-				sign = 1;
+				sign = '+';
 			else if (args[1][i] == '-')
-				sign = -1;
-			else if (sign != 0 && (charset.find(args[1][i]) != std::string::npos))
+				sign = '-';
+			else if (sign != '!' && (charset.find(args[1][i]) != std::string::npos))
 			{
-				if (sign == 1) {
-					cli->setClientMode(args[1][i]);
-					send_to_user(client, format_msg(client) + "MODE " + args[0] + " :+" + args[1][i] + "\r\n");
-				}
-				else {
-					cli->unsetClientMode(args[1][i]);
-					send_to_user(client, format_msg(client) + "MODE " + args[0] + " :-" + args[1][i] + "\r\n");
-				}
+				(sign == '+') ? cli->setClientMode(args[1][i]) : cli->unsetClientMode(args[1][i]);
+				send_to_user(client, format_msg(client) + "MODE " + args[0] + " :" + sign + args[1][i] + "\r\n");
 			}
 			else
 				send_to_user(client, ":" + client.getServerName() + " 501 " + client.getNickName() + " MODE :Unknown " + args[1][i] + " flag\r\n");

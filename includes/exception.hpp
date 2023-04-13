@@ -108,6 +108,15 @@ class UserNotInChannelException: public AIrcStandardException
 		const char *what(void) const throw();
 };
 
+class UserOnChannelException: public AIrcStandardException
+{
+	public:
+		explicit UserOnChannelException(std::string const &servername, std::string const &nickname, std::string const &cmd, std::string const &user);
+		~UserOnChannelException(void) throw();
+
+		const char *what(void) const throw();
+};
+
 class NoSuchChannelException: public AIrcStandardException
 {
 	public:

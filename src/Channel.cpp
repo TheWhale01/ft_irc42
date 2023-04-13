@@ -19,6 +19,8 @@ std::string const Channel::getChannelMode(void) const
 		modes += "t ";
 	if (_mode & MODE_I)
 		modes += "i ";
+	if (_mode & MODE_M)
+		modes += "m ";
 	return (modes);
 }
 
@@ -28,6 +30,8 @@ void Channel::setChannelMode(char const &mode)
 		_mode |= MODE_T;
 	else if (mode == 'i')
 		_mode |= MODE_I;
+	else if (mode == 'm')
+		_mode |= MODE_M;
 }
 
 void Channel::unsetChannelMode(char const &mode)
@@ -36,6 +40,8 @@ void Channel::unsetChannelMode(char const &mode)
 		_mode &= -(MODE_T) - 1;
 	else if (mode == 'i')
 		_mode &= -(MODE_I) - 1;
+	else if (mode == 'm')
+		_mode &= -(MODE_M) - 1;
 }
 
 void Channel::deleteChannelMember(Channel::iter_member it) {_channelmembers.erase(it);}

@@ -19,23 +19,24 @@ class Server
 		const std::vector<Channel> &getChannels(void) const;
 
 		void run(void);
+
 		void pass(Client &client, std::vector<std::string> const &args);
 		void nick(Client &client, std::vector<std::string> const &args);
 		void user(Client &client, std::vector<std::string> const &args);
 		void quit(Client &client, std::vector<std::string> const &args);
-
 		void join(Client &client, std::vector<std::string> const &args);
 		void part(Client &client, std::vector<std::string> const &args);
 		void kick(Client &client, std::vector<std::string> const &args);
-		void topic(Client &client, std::vector<std::string> const &args);
-		void notice(Client &client, std::vector<std::string> const &args);
-		void privmsg(Client &client, std::vector<std::string> const &args);
 		void mode(Client &client, std::vector<std::string> const &args);
 		void ping(Client &client, std::vector<std::string> const &args);
+		void whois(Client &client, std::vector<std::string> const &args);
+		void topic(Client &client, std::vector<std::string> const &args);
+		void notice(Client &client, std::vector<std::string> const &args);
+		void invite(Client &client, std::vector<std::string> const &args);
+		void privmsg(Client &client, std::vector<std::string> const &args);
 
 		void create_channel(Client &client, std::string const &name);
 		void sendToChannels(Client const &client, std::string const &msg);
-		void whois(Client &client, std::vector<std::string> const &args);
 
 		Client::iterator search_client(std::string const &name);
 		Channel::iter_channel search_channel(std::string const &name);

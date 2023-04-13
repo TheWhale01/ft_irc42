@@ -2,8 +2,6 @@
 
 void Server::notice(Client &client, std::vector<std::string> const &args)
 {
-	if (args.size() == 0)
-		return ;
 	if (args.size() < 2 || args[1].empty())
 		return ;
 	if (args[0][0] == '#' || args[0][0] == '&')
@@ -11,10 +9,14 @@ void Server::notice(Client &client, std::vector<std::string> const &args)
 		Channel::iter_channel channel = search_channel(args[0]);
 		if (channel == _channels.end())
 			return ;
-		Channel::iter_member member = (*channel).search_user_in_channel(client.getNickName());
-		if (member == (*channel).getChannelMembers().end())
+		Channel::iter_member member = channel->search_user_in_channel(client.getNickName());
+		if (member == channel->getChannelMembers().end())
 			return ;
-		send_to_members_in_chan((*channel), format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n", (*member).first->getNickName());
+		if (channel->getChannelModes() & MODE_M) {
+			if (member->second != 1)
+				return ;
+		}
+		send_to_members_in_chan((*channel), format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n", member->first->getNickName());
 	}
 	else
 	{
