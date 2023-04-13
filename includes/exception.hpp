@@ -18,6 +18,15 @@ class AIrcStandardException: public std::exception
 		std::string *_error_msg;
 };
 
+class NotRegisteredException: public AIrcStandardException
+{
+	public:
+		explicit NotRegisteredException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~NotRegisteredException(void) throw();
+
+		const char *what(void) const throw();
+};
+
 class NoTextToSendException: public AIrcStandardException
 {
 	public:

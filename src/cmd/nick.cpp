@@ -23,22 +23,21 @@ static void check_nickname_syntax(Client const &client, std::string const &nickn
 
 void Server::nick(Client &client, std::vector<std::string> const &args)
 {
-	// Need more errors !
-	std::string msg;
+	std::string welcome;
 	if (!args.size())
 		throw (NoNickNameGivenException(client.getServerName(), client.getNickName()));
 	for (size_t i = 0; i < this->getClients().size(); i++)
 		if (this->getClients()[i].getNickName() == args[0])
 			throw (NickNameInUseException(client.getServerName(), client.getNickName(), args[0]));
 	check_nickname_syntax(client, args[0]);
-	msg = format_msg(client) + "NICK " + args[0] + "\r\n";
+	client.setNickName(args[0]);
 	if (!client.getUserName().empty() && !client.getRegist())
 	{
-		msg = format_reply(client, RPL_WELCOME, "") + "Welcome to the fucked up IRC server!\r\n";
+		welcome = format_reply(client, RPL_WELCOME, "") + "Welcome to the fucked up IRC server!\r\n";
 		client.setRegist(true);
-		send(client.getPoll().fd, msg.c_str(), msg.length(), 0);
 	}
-	else
-		sendToChannels(client, msg);
-	client.setNickName(args[0]);
+	else if (client.getRegist())
+		welcome = format_msg(client) + "NICK " + args[0] + "\r\n";
+	send(client.getPoll().fd, welcome.c_str(), welcome.length(), 0);
+	std::cout << "(debug) >> " << welcome;
 }

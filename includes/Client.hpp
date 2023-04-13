@@ -11,6 +11,8 @@ class Client
 
 		typedef std::vector<Client>::iterator iterator;
 
+		int		_can_co;
+
 		const bool &getRegist(void) const;
 		const pollfd_t &getPoll(void) const;
 		const std::string &getNickName(void) const;
@@ -32,5 +34,4 @@ class Client
 		std::string _hostname;
 		std::string _servername;
 		bool		_regist;
-		bool		_can_co;
 };

@@ -100,14 +100,14 @@ void Server::_exec_cmd(Client &client, std::string str)
 {
 	std::string cmd;
 	std::string cmd_not_found;
+	std::vector<std::string> cmds;
 	std::vector<std::string> args = split(str);
+
 	if (!args.size())
 		return ;
-	std::vector<std::string> cmds;
 	_get_commands(cmds);
 	void (Server::*cmds_ptr[cmds.size()])(Client &, std::vector<std::string> const &);
 	_get_commands_ptr(cmds_ptr);
-
 	for (size_t i = 0; i < cmds.size(); i++)
 	{
 		str_toupper(args[0]);
@@ -115,11 +115,17 @@ void Server::_exec_cmd(Client &client, std::string str)
 		if (args[0] == cmds[i])
 		{
 			args.erase(args.begin());
+			if ((!client._can_co && i) || (!client.getRegist() && i > 2) || (client._can_co == 2))
+			{
+				client._can_co = 2;
+				if (client._can_co == 2 && !i)
+					return ;
+				throw (NotRegisteredException(client.getServerName(), client.getNickName(), cmds[i]));
+			}
 			(this->*(cmds_ptr[i]))(client, args);
 			return ;
 		}
 	}
-	// Unknown Command;
 	cmd_not_found = ":" + (client.getServerName().empty() ? "localhost" : client.getServerName()) + " "
 		+ ERR_UNKNOWNCOMMAND + " " + (client.getNickName().empty() ? "*" : client.getNickName()) + " " + cmd
 		+ " :Unknown command\r\n";

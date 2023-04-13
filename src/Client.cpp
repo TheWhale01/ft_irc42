@@ -9,7 +9,7 @@ Client::Client(Server &serv) : _nickname(""), _regist(false)
 		throw (ClientCouldNotConnectException());
 	_poll.events = POLLIN;
 	_poll.revents = 0;
-	_can_co = false;
+	_can_co = 0;
 	std::cout << "(info) >> Client " << _poll.fd << " connected." << std::endl;
 }
 

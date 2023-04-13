@@ -8,4 +8,6 @@ void Server::pass(Client &client, std::vector<std::string> const &args)
 		throw (AlreadyRegistredException(client.getServerName(), client.getNickName()));
 	if (this->getPasswd() != *args.begin())
 		std::cerr << "(error) >> Password incorrect\n";
+	else
+		client._can_co = 1;
 }
