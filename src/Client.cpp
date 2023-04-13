@@ -15,8 +15,11 @@ Client::Client(Server &serv) : _nickname(""), _regist(false)
 
 Client::~Client(void) {}
 
+bool Client::operator==(Client const &rhs) {return (_nickname == rhs._nickname);}
+
 const bool &Client::getRegist(void) const {return (_regist);}
 const pollfd_t &Client::getPoll(void) const {return (_poll);}
+const std::string &Client::getRealName(void) const {return (_realname);}
 const std::string &Client::getNickName(void) const {return (_nickname);}
 const std::string &Client::getUserName(void) const {return (_username);}
 const std::string &Client::getServerName(void) const {return (_servername);}

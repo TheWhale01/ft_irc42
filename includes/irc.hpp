@@ -20,6 +20,7 @@
 # define TIMEOUT 10
 # define SIM_USERS 50
 # define BUFF_SIZE 512
+# define VERSION_NB "1.0"
 
 // Channel Modes
 
@@ -51,6 +52,10 @@
 
 // Reply
 # define RPL_WELCOME			"001"
+# define RPL_WHOISUSER			"311"
+# define RPL_WHOISSERVER		"312"
+# define RPL_ENDOFWHOIS			"318"
+# define RPL_WHOISCHANNELS		"319"
 # define RPL_UMODEIS			"221"
 # define RPL_CHANNELMODEIS		"324"
 # define RPL_NOTOPIC			"331"

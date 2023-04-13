@@ -9,7 +9,7 @@ INCLUDES= includes/
 SRCS= $(addprefix $(SRC_DIR), main.cpp Server.cpp Channel.cpp Client.cpp utils.cpp \
 	cmd/join.cpp cmd/kick.cpp cmd/notice.cpp cmd/part.cpp cmd/privmsg.cpp cmd/quit.cpp \
 	cmd/topic.cpp cmd/pass.cpp cmd/nick.cpp cmd/user.cpp cmd/utils.cpp cmd/mode.cpp \
-	cmd/ping.cpp \
+	cmd/ping.cpp cmd/whois.cpp\
 	exceptions/exception.cpp exceptions/UnknownModeException.cpp \
 	exceptions/UserDontMatchException.cpp exceptions/UModeUnknowFlagsException.cpp \
 	exceptions/NeedMoreParamsException.cpp exceptions/UnknownCommandException.cpp \

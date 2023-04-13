@@ -25,7 +25,7 @@ void check_channel_syntax(Client const &client, std::string const &channel)
 bool check_already_in_chan(std::string const &nickname, Channel const &channel)
 {
 	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
-		if (channel.getChannelMembers()[i].first.getNickName() == nickname)
+		if (channel.getChannelMembers()[i].first->getNickName() == nickname)
 			return (1);
 	return (0); 
 }

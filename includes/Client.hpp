@@ -11,10 +11,13 @@ class Client
 
 		typedef std::vector<Client>::iterator iterator;
 
+		bool operator==(Client const &rhs);
+
 		int		_can_co;
 
 		const bool &getRegist(void) const;
 		const pollfd_t &getPoll(void) const;
+		const std::string &getRealName(void) const;
 		const std::string &getNickName(void) const;
 		const std::string &getUserName(void) const;
 		const std::string &getServerName(void) const;

@@ -14,7 +14,7 @@ void Server::notice(Client &client, std::vector<std::string> const &args)
 		Channel::iter_member member = (*channel).search_user_in_channel(client.getNickName());
 		if (member == (*channel).getChannelMembers().end())
 			return ;
-		send_to_members_in_chan((*channel), format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n", (*member).first.getNickName());
+		send_to_members_in_chan((*channel), format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n", (*member).first->getNickName());
 	}
 	else
 	{

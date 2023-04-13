@@ -140,6 +140,24 @@ void Server::sendToChannels(Client const &client, std::string const &msg)
 			send_to_members_in_chan(_channels[j], msg.c_str(), "");
 }
 
+std::vector<Channel> Server::getChannels(Client const &client)
+{
+	std::vector<Channel> v;
+
+	for (Channel::iter_channel it = _channels.begin(); it != _channels.end(); it++)
+		if (it->search_user_in_channel(client.getNickName()) != it->getChannelMembers().end())
+			v.push_back(*it);
+	return (v);
+}
+
+Client &Server::getUserFromNickName(std::string const &nickname)
+{
+	for (Client::iterator it = _clients.begin(); it != _clients.end(); it++)
+		if (it->getNickName() == nickname)
+			return (*it);
+	return (*(_clients.end()));
+}
+
 void Server::_get_commands(std::vector<std::string> &cmds)
 {
 	cmds.reserve(15);
@@ -155,6 +173,7 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("KICK");
 	cmds.push_back("MODE");
 	cmds.push_back("PING");
+	cmds.push_back("WHOIS");
 }
 
 void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &))
@@ -171,4 +190,5 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 	cmds_ptr[9] = &Server::kick;
 	cmds_ptr[10] = &Server::mode;
 	cmds_ptr[11] = &Server::ping;
+	cmds_ptr[12] = &Server::whois;
 }

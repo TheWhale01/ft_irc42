@@ -6,9 +6,9 @@ std::string print_all_user(Client const &client, Channel const &channel)
 	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
 	{
 		if (channel.getChannelMembers()[i].second == 1)
-			answer += "@" + channel.getChannelMembers()[i].first.getNickName();
+			answer += "@" + channel.getChannelMembers()[i].first->getNickName();
 		else
-			answer += channel.getChannelMembers()[i].first.getNickName();
+			answer += channel.getChannelMembers()[i].first->getNickName();
 		if (i + 1 != channel.getChannelMembers().size())
 			answer += " ";
 	}
@@ -41,11 +41,11 @@ void send_to_members_in_chan(Channel const &channel, std::string const &message,
 	{
 		if (!sender.empty())
 		{
-			if (channel.getChannelMembers()[i].first.getNickName() != sender)
-				send(channel.getChannelMembers()[i].first.getPoll().fd, message.c_str(), message.length(), 0);
+			if (channel.getChannelMembers()[i].first->getNickName() != sender)
+				send(channel.getChannelMembers()[i].first->getPoll().fd, message.c_str(), message.length(), 0);
 		}
 		else
-			send(channel.getChannelMembers()[i].first.getPoll().fd, message.c_str(), message.length(), 0);
+			send(channel.getChannelMembers()[i].first->getPoll().fd, message.c_str(), message.length(), 0);
 	}
 }
 
@@ -78,7 +78,7 @@ Channel::iter_member Channel::search_user_in_channel(std::string const &nickname
 	Channel::iter_member it = _channelmembers.begin();
 	for (; it != _channelmembers.end(); it++)
 	{
-		if ((*it).first.getNickName() == nickname)
+		if ((*it).first->getNickName() == nickname)
 			return (it);
 	}
 	std::cout << "pas trouvé client !" << std::endl;

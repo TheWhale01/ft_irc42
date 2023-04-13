@@ -17,7 +17,7 @@ void Server::privmsg(Client &client, std::vector<std::string> const &args)
 			std::cout << "cest mort" << std::endl;
 			throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
 		}
-		send_to_members_in_chan((*channel), format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n", (*member).first.getNickName());
+		send_to_members_in_chan((*channel), format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n", (*member).first->getNickName());
 	}
 	else
 	{

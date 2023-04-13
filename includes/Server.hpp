@@ -35,9 +35,14 @@ class Server
 
 		void create_channel(Client &client, std::string const &name);
 		void sendToChannels(Client const &client, std::string const &msg);
+		void whois(Client &client, std::vector<std::string> const &args);
 
 		Client::iterator search_client(std::string const &name);
 		Channel::iter_channel search_channel(std::string const &name);
+
+		std::vector<Channel> getChannels(Client const &client);
+
+		Client &getUserFromNickName(std::string const &nickname);
 
 	private:
 		int _bytes;
