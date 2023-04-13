@@ -13,14 +13,16 @@ class Channel
 		typedef std::vector<Channel>::iterator iter_channel;
 		typedef std::vector<std::pair<Client, int> >::iterator iter_member;
 
-		const int &getChannelMode(void) const;
+		const int &getChannelModes(void) const;
 		const std::string &getChannelName(void) const;
 		const std::string &getChannelTopic(void) const;
+		const std::string getChannelMode(void) const;
 		const std::vector<std::pair<Client, int> > &getChannelMembers(void) const;
 
 		void setChannelTopic(std::string const &topic);
-		void setChannelmode(std::string mode);
-		void deleteChannelMember(Channel::iter_member it);
+		void setChannelMode(char const &mode);
+		void unsetChannelMode(char const &mode);
+		void deleteChannelMember(iter_member it);
 		void addMemberToChannel(Client const &client, int modes);
 
 		Channel::iter_member search_user_in_channel(std::string const &nickname);
