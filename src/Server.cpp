@@ -18,9 +18,9 @@ Server::Server(int port, std::string passwd): _passwd(passwd)
 		throw (ServerException());
 	if (listen(_poll.fd, SIM_USERS) == -1)
 		throw (ServerException());
-	// _pollfds.reserve(11);
-	// _clients.reserve(10);
-	// _channels.reserve(5);
+	_pollfds.reserve(11);
+	_clients.reserve(10);
+	_channels.reserve(5);
 	_pollfds.push_back(_poll);
 	std::cout << "Server started on port: " << ntohs(_addr.sin_port) << std::endl;
 	return ;
@@ -71,7 +71,7 @@ void Server::run(void)
 						close(_pollfds[i].fd);
 						_pollfds.erase(_pollfds.begin() + i);
 						_clients.erase(_clients.begin() + (i - 1));
-						delete _clients[i];
+						delete _clients[i - 1];
 						i--;
 					}
 					else
@@ -163,7 +163,7 @@ Client::iterator Server::getUserFromNickName(std::string const &nickname)
 
 void Server::_get_commands(std::vector<std::string> &cmds)
 {
-	// cmds.reserve(15);
+	cmds.reserve(15);
 	cmds.push_back("PASS");
 	cmds.push_back("NICK");
 	cmds.push_back("USER");
@@ -177,6 +177,7 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("MODE");
 	cmds.push_back("PING");
 	cmds.push_back("WHOIS");
+	cmds.push_back("WHO");
 }
 
 void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &))
@@ -194,4 +195,41 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 	cmds_ptr[10] = &Server::mode;
 	cmds_ptr[11] = &Server::ping;
 	cmds_ptr[12] = &Server::whois;
+	cmds_ptr[13] = &Server::who;
 }
+
+// Bare minimum to run a bot
+/*
+#include <iostream>
+#include <sys/socket.h>
+#include <cassert>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <unistd.h>
+
+# define BUFF_SIZE 1024
+# define SERVER_PORT 80
+
+int main(int ac, char **av)
+{
+	if (ac != 2)
+		return (0);
+	char buff[BUFF_SIZE + 1];
+	std::string request = "GET / HTTP/1.1\r\nHost: " + std::string(av[1]) + "\r\n\r\n";
+	struct protoent *protoent = getprotobyname("tcp");
+	int sock_fd = socket(AF_INET, SOCK_STREAM, protoent->p_proto);
+	struct hostent *hostent = gethostbyname(av[1]);
+	in_addr_t in_addr = inet_addr(inet_ntoa(*(struct in_addr *)*(hostent->h_addr_list)));
+	struct sockaddr_in sockaddr;
+	sockaddr.sin_addr.s_addr = in_addr;
+	sockaddr.sin_family = AF_INET;
+	sockaddr.sin_port = htons(SERVER_PORT);
+	connect(sock_fd, (struct sockaddr *)&sockaddr, sizeof(sockaddr));
+	send(sock_fd, request.c_str(), request.length(), 0);
+	int bytes = read(sock_fd, buff, BUFF_SIZE);
+	buff[bytes] = '\0';
+	std::cout << buff << std::endl;
+	close(sock_fd);
+	return (0);
+}
+*/

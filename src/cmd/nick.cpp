@@ -6,14 +6,14 @@ static void check_nickname_syntax(Client const &client, std::string const &nickn
 
 	if (nickname.length() > 9)
 		throw (ErroneusNickNameException(client.getServerName(), nickname));
+	charset = "[]`^_{}|";
 	for (char c = 'A'; c <= 'Z'; c++)
 	{
 		charset.push_back(c);
 		charset.push_back(c + 32);
 	}
-	for (char c = '1'; c <= '9'; c++)
+	for (char c = '0'; c <= '9'; c++)
 		charset.push_back(c);
-	charset.insert(charset.length(), "[]`^_{}|");	
 	if ((nickname[0] < 'A' || nickname[0] > 'Z') && (nickname[0] < 'a' || nickname[0] > 'z'))
 		throw (ErroneusNickNameException(client.getServerName(), nickname));
 	for (size_t i = 0; i < nickname.length(); i++)

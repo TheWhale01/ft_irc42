@@ -13,6 +13,7 @@ class Client
 
 		int		_can_co;
 
+		const int &getMode(void) const;
 		const bool &getRegist(void) const;
 		const pollfd_t &getPoll(void) const;
 		const std::string &getRealName(void) const;
