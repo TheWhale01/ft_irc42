@@ -15,6 +15,7 @@ Client::Client(Server &serv) : _nickname(""), _regist(false)
 
 Client::~Client(void) {}
 
+const int &Client::getMode(void) const {return (_mode);}
 const bool &Client::getRegist(void) const {return (_regist);}
 const pollfd_t &Client::getPoll(void) const {return (_poll);}
 const std::string &Client::getRealName(void) const {return (_realname);}
