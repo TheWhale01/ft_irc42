@@ -66,7 +66,7 @@ Client::iterator Server::search_client(std::string const &name)
 	Client::iterator it = _clients.begin();
 	for (; it != _clients.end(); it++)
 	{
-		if ((*it).getNickName() == name)
+		if ((*it)->getNickName() == name)
 			return (it);
 	}
 	std::cout << "pas trouvé client !" << std::endl;

@@ -18,9 +18,9 @@ Server::Server(int port, std::string passwd): _passwd(passwd)
 		throw (ServerException());
 	if (listen(_poll.fd, SIM_USERS) == -1)
 		throw (ServerException());
-	_pollfds.reserve(11);
-	_clients.reserve(10);
-	_channels.reserve(5);
+	// _pollfds.reserve(11);
+	// _clients.reserve(10);
+	// _channels.reserve(5);
 	_pollfds.push_back(_poll);
 	std::cout << "Server started on port: " << ntohs(_addr.sin_port) << std::endl;
 	return ;
@@ -30,13 +30,15 @@ Server::~Server(void)
 {
 	for (size_t i = 0; i < _pollfds.size(); i++)
 		close(_pollfds[i].fd);
+	for (size_t i = 0; i < _clients.size(); i++)
+		delete _clients[i];
 	return ;
 }
 
 const pollfd_t &Server::getPoll(void) const {return (_poll);}
 const sockaddr_in_t &Server::getAddr(void) const {return (_addr);}
 const std::string &Server::getPasswd(void) const {return (_passwd);}
-const std::vector<Client> &Server::getClients(void) const {return (_clients);}
+const std::vector<Client*> &Server::getClients(void) const {return (_clients);}
 const std::vector<Channel> &Server::getChannels(void) const {return (_channels);}
 
 void Server::run(void)
@@ -54,8 +56,8 @@ void Server::run(void)
 				{
 					try
 					{
-						Client new_client(*this);
-						_pollfds.push_back(new_client.getPoll());
+						Client *new_client = new Client(*this);
+						_pollfds.push_back(new_client->getPoll());
 						_clients.push_back(new_client);
 					}
 					catch (const std::exception& e) {std::cerr << e.what();}
@@ -69,6 +71,7 @@ void Server::run(void)
 						close(_pollfds[i].fd);
 						_pollfds.erase(_pollfds.begin() + i);
 						_clients.erase(_clients.begin() + (i - 1));
+						delete _clients[i];
 						i--;
 					}
 					else
@@ -80,12 +83,12 @@ void Server::run(void)
 						std::vector<std::string>::iterator it;
 						for (it = user_inputs.begin(); it != user_inputs.end(); it++)
 						{
-							try {_exec_cmd(_clients[i  - 1], *it);}
+							try {_exec_cmd(*(_clients)[i  - 1], *it);}
 							catch (std::exception const &e)
 							{
 								std::string error_msg(e.what());
 								std::cerr << error_msg;
-								send(_clients[i - 1].getPoll().fd, error_msg.c_str(), error_msg.length(), 0);
+								send(_clients[i - 1]->getPoll().fd, error_msg.c_str(), error_msg.length(), 0);
 							}
 						}
 					}
@@ -150,17 +153,17 @@ std::vector<Channel> Server::getChannels(Client const &client)
 	return (v);
 }
 
-Client &Server::getUserFromNickName(std::string const &nickname)
+Client::iterator Server::getUserFromNickName(std::string const &nickname)
 {
 	for (Client::iterator it = _clients.begin(); it != _clients.end(); it++)
-		if (it->getNickName() == nickname)
-			return (*it);
-	return (*(_clients.end()));
+		if ((*it)->getNickName() == nickname)
+			return (it);
+	return (_clients.end());
 }
 
 void Server::_get_commands(std::vector<std::string> &cmds)
 {
-	cmds.reserve(15);
+	// cmds.reserve(15);
 	cmds.push_back("PASS");
 	cmds.push_back("NICK");
 	cmds.push_back("USER");

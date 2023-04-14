@@ -24,6 +24,6 @@ void Server::privmsg(Client &client, std::vector<std::string> const &args)
 		Client::iterator cli = search_client(args[0]);
 		if (cli == _clients.end())
 			throw (NoSuchNickException(client.getServerName(), client.getNickName(), args[0]));
-		send_to_user((*cli), format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n");
+		send_to_user(*(*cli), format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n");
 	}
 }

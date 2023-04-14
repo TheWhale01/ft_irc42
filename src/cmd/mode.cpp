@@ -84,11 +84,11 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 			else if (sign != 0 && (charset.find(args[1][i]) != std::string::npos))
 			{
 				if (sign == 1) {
-					cli->setClientMode(args[1][i]);
+					(*cli)->setClientMode(args[1][i]);
 					send_to_user(client, format_msg(client) + "MODE " + args[0] + " :+" + args[1][i] + "\r\n");
 				}
 				else {
-					cli->unsetClientMode(args[1][i]);
+					(*cli)->unsetClientMode(args[1][i]);
 					send_to_user(client, format_msg(client) + "MODE " + args[0] + " :-" + args[1][i] + "\r\n");
 				}
 			}
