@@ -31,6 +31,6 @@ void Server::whois(Client &client, std::vector<std::string> const &args)
 	send(client.getPoll().fd, msg.c_str(), msg.length(), 0);
 
 	//End of who is
-	msg = format_reply(client, RPL_ENDOFWHOIS, (*target)->getNickName()) + ":End of WHOIS list\r\n";
+	msg = format_reply(client, RPL_ENDOFWHOIS, (*target)->getNickName()) + "End of WHOIS list\r\n";
 	send(client.getPoll().fd, msg.c_str(), msg.length(), 0);
 }

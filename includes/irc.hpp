@@ -50,16 +50,18 @@
 # define ERR_UMODEUNKNOWNFLAG	"501"
 # define ERR_USERSDONTMATCH		"502"
 
-// Reply
+// Replies
 # define RPL_WELCOME			"001"
 # define RPL_WHOISUSER			"311"
 # define RPL_WHOISSERVER		"312"
+# define RPL_ENDOFWHO			"315"
 # define RPL_ENDOFWHOIS			"318"
 # define RPL_WHOISCHANNELS		"319"
 # define RPL_UMODEIS			"221"
 # define RPL_CHANNELMODEIS		"324"
 # define RPL_NOTOPIC			"331"
 # define RPL_TOPIC				"332"
+# define RPL_WHOREPLY			"352"
 # define RPL_NAMREPLY			"353"
 # define RPL_ENDOFNAMES			"366"
 
