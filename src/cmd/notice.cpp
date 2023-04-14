@@ -23,6 +23,6 @@ void Server::notice(Client &client, std::vector<std::string> const &args)
 		Client::iterator cli = search_client(args[0]);
 		if (cli == _clients.end())
 			return ;
-		send_to_user((*cli), format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n");
+		send_to_user(*(*cli), format_msg(client) + "NOTICE " + args[0] + " :" + args[1] + "\r\n");
 	}
 }

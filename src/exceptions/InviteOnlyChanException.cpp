@@ -1,6 +1,6 @@
 #include "irc.hpp"
 
-InviteOnlyException::InviteOnlyException(std::string const &servername, std::string const &nickname, std::string const &cmd)
+InviteOnlyChanException::InviteOnlyChanException(std::string const &servername, std::string const &nickname, std::string const &cmd)
 {
 	_cmd = cmd;
 	_nickname = nickname;
@@ -8,9 +8,9 @@ InviteOnlyException::InviteOnlyException(std::string const &servername, std::str
 	_error_msg = new std::string();
 }
 
-InviteOnlyException::~InviteOnlyException(void) throw() {delete _error_msg;}
+InviteOnlyChanException::~InviteOnlyChanException(void) throw() {delete _error_msg;}
 
-const char *InviteOnlyException::what(void) const throw()
+const char *InviteOnlyChanException::what(void) const throw()
 {
 	*_error_msg = *_error_msg + ":" + (_servername.empty() ? "localhost" : _servername) + " "
 		+ ERR_INVITEONLYCHAN + " " + (_nickname.empty() ? "*" : _nickname) + " " + _cmd

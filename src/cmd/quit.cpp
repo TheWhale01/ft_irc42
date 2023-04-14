@@ -19,4 +19,5 @@ void Server::quit(Client &client, std::vector<std::string> const &args)
 	close(this->_pollfds[i].fd);
 	this->_pollfds.erase(this->_pollfds.begin() + i);
 	this->_clients.erase(this->_clients.begin() + (i - 1));
+	delete &client;
 }

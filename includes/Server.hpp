@@ -15,7 +15,7 @@ class Server
 		const pollfd_t &getPoll(void) const;
 		const sockaddr_in_t &getAddr(void) const;
 		const std::string &getPasswd(void) const;
-		const std::vector<Client> &getClients(void) const;
+		const std::vector<Client*> &getClients(void) const;
 		const std::vector<Channel> &getChannels(void) const;
 
 		void run(void);
@@ -43,7 +43,7 @@ class Server
 
 		std::vector<Channel> getChannels(Client const &client);
 
-		Client &getUserFromNickName(std::string const &nickname);
+		Client::iterator getUserFromNickName(std::string const &nickname);
 
 	private:
 		int _bytes;
@@ -51,7 +51,7 @@ class Server
 		pollfd_t _poll;
 		std::string _passwd;
 		sockaddr_in_t _addr;
-		std::vector<Client> _clients;
+		std::vector<Client*> _clients;
 		std::vector<Channel> _channels;
 		std::vector<pollfd_t> _pollfds;
 

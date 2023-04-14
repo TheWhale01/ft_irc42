@@ -30,21 +30,15 @@ bool check_already_in_chan(std::string const &nickname, Channel const &channel)
 	return (0); 
 }
 
-bool check_user_in_invitelist(std::string const &nickname, Channel const &channel)
-{
-	for (size_t i = 0; i < channel.getChannelInviteList().size(); i++)
-		if (channel.getChannelInviteList()[i].getNickName() == nickname)
-			return (1);
-	return (0); 
-}
-
 void join_channel(Client &client, Channel &channel)
 {
+	Channel::iter_invite it_inv = channel.search_invite(client.getNickName());
 	if (channel.getChannelModes() & MODE_I)
 	{
-		if (!check_user_in_invitelist(client.getNickName(), channel))
-			throw (InviteOnlyChanException(client.getServerName(), client.getNickName(), channel.getChannelName()));
+			if (it_inv == channel.getChannelInviteList().end())
+				throw (InviteOnlyChanException(client.getServerName(), client.getNickName(), channel.getChannelName()));
 	}
+	channel.deleteUserfromInviteList(it_inv);
 	std::string answer;
 	if (!check_already_in_chan(client.getNickName(), channel))
 	{
@@ -55,7 +49,6 @@ void join_channel(Client &client, Channel &channel)
 	if (!channel.getChannelTopic().empty())
 		answer += format_reply(client, RPL_TOPIC, channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
 	answer += print_all_user(client, channel);
-	channel.deleteUserfromInviteList(client);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
