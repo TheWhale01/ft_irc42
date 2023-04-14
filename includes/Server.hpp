@@ -32,10 +32,11 @@ class Server
 		void privmsg(Client &client, std::vector<std::string> const &args);
 		void mode(Client &client, std::vector<std::string> const &args);
 		void ping(Client &client, std::vector<std::string> const &args);
+		void who(Client &client, std::vector<std::string> const &args);
+		void whois(Client &client, std::vector<std::string> const &args);
 
 		void create_channel(Client &client, std::string const &name);
 		void sendToChannels(Client const &client, std::string const &msg);
-		void whois(Client &client, std::vector<std::string> const &args);
 
 		Client::iterator search_client(std::string const &name);
 		Channel::iter_channel search_channel(std::string const &name);
@@ -57,4 +58,6 @@ class Server
 		void _exec_cmd(Client &client, std::string str);
 		void _get_commands(std::vector<std::string> &cmds);
 		void _get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &));
+
+		void _who_user(Client const &client, Client const &target);
 };
