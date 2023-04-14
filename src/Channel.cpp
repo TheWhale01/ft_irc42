@@ -18,11 +18,11 @@ std::string const Channel::getChannelMode(void) const
 {
 	std::string modes;
 	if (_mode & MODE_T)
-		modes += "t ";
+		modes += "+t ";
 	if (_mode & MODE_I)
-		modes += "i ";
+		modes += "+i ";
 	if (_mode & MODE_M)
-		modes += "m ";
+		modes += "+m ";
 	return (modes);
 }
 
@@ -46,5 +46,5 @@ void Channel::unsetChannelMode(char const &mode)
 		_mode &= -(MODE_M) - 1;
 }
 
-void Channel::deleteUserfromInviteList(std::vector<Client*>::iterator it) {_invitelist.erase(it);}
+void Channel::deleteUserfromInviteList(Client::iterator it) {_invitelist.erase(it);}
 void Channel::deleteChannelMember(Channel::iter_member it) {_channelmembers.erase(it);}

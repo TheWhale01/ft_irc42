@@ -153,14 +153,6 @@ std::vector<Channel> Server::getChannels(Client const &client)
 	return (v);
 }
 
-Client::iterator Server::getUserFromNickName(std::string const &nickname)
-{
-	for (Client::iterator it = _clients.begin(); it != _clients.end(); it++)
-		if ((*it)->getNickName() == nickname)
-			return (it);
-	return (_clients.end());
-}
-
 void Server::_get_commands(std::vector<std::string> &cmds)
 {
 	cmds.reserve(15);

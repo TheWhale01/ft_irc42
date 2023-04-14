@@ -32,13 +32,14 @@ bool check_already_in_chan(std::string const &nickname, Channel const &channel)
 
 void join_channel(Client &client, Channel &channel)
 {
-	Channel::iter_invite it_inv = channel.search_invite(client.getNickName());
+	Client::iterator it_inv = channel.search_invite(client.getNickName());
 	if (channel.getChannelModes() & MODE_I)
 	{
 			if (it_inv == channel.getChannelInviteList().end())
 				throw (InviteOnlyChanException(client.getServerName(), client.getNickName(), channel.getChannelName()));
 	}
-	channel.deleteUserfromInviteList(it_inv);
+	if (it_inv != channel.getChannelInviteList().end())
+		channel.deleteUserfromInviteList(it_inv);
 	std::string answer;
 	if (!check_already_in_chan(client.getNickName(), channel))
 	{

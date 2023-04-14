@@ -34,7 +34,7 @@ std::string const Client::getClientMode(void) const
 {
 	std::string modes;
 	if (_mode & MODE_I)
-		modes += "i ";
+		modes += "+i ";
 	return (modes);
 }
 

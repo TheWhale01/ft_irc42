@@ -8,7 +8,7 @@ void Server::whois(Client &client, std::vector<std::string> const &args)
 
 	if (!args.size())
 		throw (NoNickNameGivenException(client.getServerName(), client.getNickName()));
-	target = getUserFromNickName(args[0]);
+	target = search_client(args[0]);
 	if (target == _clients.end())
 		throw (NoSuchNickException(client.getServerName(), client.getNickName(), "WHOIS"));
 

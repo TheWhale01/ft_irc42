@@ -21,6 +21,8 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 		Channel::iter_member member_cli = channel->search_user_in_channel(client.getNickName());
 		if (member_cli == channel->getChannelMembers().end())
 			throw (NotOnChannelException(client.getServerName(), client.getNickName(), args[0]));
+		if (args[1] == "b")
+			return ;
 		if (member_cli->second == 0)
 			throw (ChanoPrivsNeededException(client.getServerName(), client.getNickName(), args[0]));
 		charset = "tiom";
