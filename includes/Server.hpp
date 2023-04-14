@@ -20,6 +20,7 @@ class Server
 
 		void run(void);
 
+		void who(Client &client, std::vector<std::string> const &args);
 		void pass(Client &client, std::vector<std::string> const &args);
 		void nick(Client &client, std::vector<std::string> const &args);
 		void user(Client &client, std::vector<std::string> const &args);
@@ -58,4 +59,6 @@ class Server
 		void _exec_cmd(Client &client, std::string str);
 		void _get_commands(std::vector<std::string> &cmds);
 		void _get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &));
+
+		void _who_user(Client const &client, Client const &target);
 };

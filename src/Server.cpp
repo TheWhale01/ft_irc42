@@ -163,7 +163,7 @@ Client::iterator Server::getUserFromNickName(std::string const &nickname)
 
 void Server::_get_commands(std::vector<std::string> &cmds)
 {
-	// cmds.reserve(15);
+	cmds.reserve(15);
 	cmds.push_back("PASS");
 	cmds.push_back("NICK");
 	cmds.push_back("USER");
@@ -178,6 +178,7 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("PING");
 	cmds.push_back("WHOIS");
 	cmds.push_back("INVITE");
+	cmds.push_back("WHO");
 }
 
 void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &))
@@ -196,4 +197,5 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 	cmds_ptr[11] = &Server::ping;
 	cmds_ptr[12] = &Server::whois;
 	cmds_ptr[13] = &Server::invite;
+	cmds_ptr[14] = &Server::who;
 }
