@@ -171,6 +171,15 @@ class NeedMoreParamsException: public AIrcStandardException
 		const char *what(void) const throw();
 };
 
+class InviteOnlyChanException: public AIrcStandardException
+{
+	public:
+		explicit InviteOnlyChanException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~InviteOnlyChanException(void) throw();
+
+		const char *what(void) const throw();
+};
+
 class NoNickNameGivenException: public AIrcStandardException
 {
 	public:

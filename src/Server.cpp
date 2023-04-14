@@ -19,8 +19,8 @@ Server::Server(int port, std::string passwd): _passwd(passwd)
 	if (listen(_poll.fd, SIM_USERS) == -1)
 		throw (ServerException());
 	_pollfds.reserve(11);
-	// _clients.reserve(1);
-	_channels.reserve(1);
+	_clients.reserve(10);
+	_channels.reserve(5);
 	_pollfds.push_back(_poll);
 	std::cout << "Server started on port: " << ntohs(_addr.sin_port) << std::endl;
 	return ;

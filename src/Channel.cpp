@@ -7,10 +7,12 @@ Channel::~Channel(void) {}
 const int &Channel::getChannelModes(void) const {return (_mode);}
 const std::string &Channel::getChannelTopic(void) const {return (_topic);}
 const std::string &Channel::getChannelName(void) const {return (_channelname);}
+const std::vector<Client> &Channel::getChannelInviteList(void) const {return (_invitelist);}
 const std::vector<std::pair<Client*, int> > &Channel::getChannelMembers(void) const {return (_channelmembers);}
 
-void Channel::addMemberToChannel(Client &client, int oper) {_channelmembers.push_back(std::make_pair(&client, oper));}
 void Channel::setChannelTopic(std::string const &topic) {_topic = topic;}
+void Channel::addUserToInviteList(Client &client) {_invitelist.push_back(client);}
+void Channel::addMemberToChannel(Client &client, int oper) {_channelmembers.push_back(std::make_pair(&client, oper));}
 
 std::string const Channel::getChannelMode(void) const
 {
@@ -44,4 +46,5 @@ void Channel::unsetChannelMode(char const &mode)
 		_mode &= -(MODE_M) - 1;
 }
 
+void Channel::deleteUserfromInviteList(Client &client) {_invitelist.erase(_inviclient);}
 void Channel::deleteChannelMember(Channel::iter_member it) {_channelmembers.erase(it);}
