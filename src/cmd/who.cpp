@@ -4,7 +4,7 @@ void Server::_who_user(Client const &client, Client const &target)
 {
 	std::string msg;
 
-	if (!(target.getMode() & MODE_I))
+	if (target.getMode() & MODE_I)
 		return ;
 	msg = ":" + client.getServerName() + " " + RPL_WHOREPLY + " "
 		+ client.getNickName() + " " + getChannels(target)[0].getChannelName()
