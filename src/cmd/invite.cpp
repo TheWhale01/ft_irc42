@@ -19,12 +19,12 @@ void Server::invite(Client &client, std::vector<std::string> const &args)
 		if (member != channel->getChannelMembers().end())
 			throw (UserOnChannelException(client.getServerName(), client.getNickName(), args[0], args[1])); 
 	}
-	Client target = getUserFromNickName(args[1]);
-	if (target == *(_clients.end()))
+	Client::iterator target = search_client(args[1]);
+	if (target == _clients.end())
 		throw (NoSuchNickException(client.getServerName(), client.getNickName(), "INVITE"));
 	if (channel != _channels.end())
-		channel->addUserToInviteList(target);
-	send_to_user(target, format_msg(client) + "INVITE " + args[0] + " " + args[1] + "\r\n");
+		channel->addUserToInviteList(*(*target));
+	send_to_user(*(*target), format_msg(client) + "INVITE " + args[0] + " " + args[1] + "\r\n");
 	send_to_user(client, ":" + client.getServerName() + " " + RPL_INVITING + " " + client.getNickName() + " " + args[1] + " " + args[0] + "\r\n");
 }
 

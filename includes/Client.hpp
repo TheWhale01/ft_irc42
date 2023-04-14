@@ -9,9 +9,7 @@ class Client
 		Client(Server &serv);
 		~Client(void);
 
-		typedef std::vector<Client>::iterator iterator;
-
-		bool operator==(Client const &rhs);
+		typedef std::vector<Client*>::iterator iterator;
 
 		int		_can_co;
 

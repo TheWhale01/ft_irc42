@@ -12,28 +12,31 @@ class Channel
 
 		typedef std::vector<Channel>::iterator iter_channel;
 		typedef std::vector<std::pair<Client*, int> >::iterator iter_member;
+		typedef std::vector<Client*>::iterator iter_invite;
 
 		const int &getChannelModes(void) const;
+		const std::string getChannelMode(void) const;
 		const std::string &getChannelName(void) const;
 		const std::string &getChannelTopic(void) const;
-		const std::string getChannelMode(void) const;
-		const std::vector<Client> &getChannelInviteList(void) const;
+		const std::vector<Client*> &getChannelInviteList(void) const;
 		const std::vector<std::pair<Client*, int> > &getChannelMembers(void) const;
 
-		void setChannelTopic(std::string const &topic);
 		void setChannelMode(char const &mode);
-		void unsetChannelMode(char const &mode);
-		void deleteChannelMember(iter_member it);
-		void deleteUserfromInviteList(Client &client);
-		void addMemberToChannel(Client &client, int modes);
-		void addUserToInviteList(Client &client);
+		void setChannelTopic(std::string const &topic);
 
+		void unsetChannelMode(char const &mode);
+		void addUserToInviteList(Client &client);
+		void deleteChannelMember(iter_member it);
+		void addMemberToChannel(Client &client, int modes);
+		void deleteUserfromInviteList(std::vector<Client*>::iterator it);
+
+		Channel::iter_invite search_invite(std::string const &name);
 		Channel::iter_member search_user_in_channel(std::string const &nickname);
 
 	private:
 		int										_mode;
 		std::string								_topic;
-		std::vector<Client>						_invitelist;
+		std::vector<Client*>					_invitelist;
 		std::string								_channelname;
 		std::vector<std::pair<Client*, int> >	_channelmembers;
 };

@@ -28,7 +28,7 @@ void Server::nick(Client &client, std::vector<std::string> const &args)
 	if (!args.size())
 		throw (NoNickNameGivenException(client.getServerName(), client.getNickName()));
 	for (size_t i = 0; i < this->getClients().size(); i++)
-		if (this->getClients()[i].getNickName() == args[0])
+		if (this->getClients()[i]->getNickName() == args[0])
 			throw (NickNameInUseException(client.getServerName(), client.getNickName(), args[0]));
 	check_nickname_syntax(client, args[0]);
 	old_nickname = client.getNickName();
@@ -44,6 +44,6 @@ void Server::nick(Client &client, std::vector<std::string> const &args)
 		welcome = ":" + old_nickname + "!" + client.getUserName() + "@" + client.getServerName() + " NICK " + client.getNickName() + "\r\n";
 		std::vector<Channel> user_channels = getChannels(client);
 		for (Client::iterator it = _clients.begin(); it != _clients.end(); it++)
-			send(it->getPoll().fd, welcome.c_str(), welcome.length(), 0);
+			send((*it)->getPoll().fd, welcome.c_str(), welcome.length(), 0);
 	}
 }

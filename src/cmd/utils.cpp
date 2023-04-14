@@ -53,10 +53,8 @@ Channel::iter_channel Server::search_channel(std::string const &name)
 {
 	Channel::iter_channel it = _channels.begin();
 	for (; it != _channels.end(); it++)
-	{
 		if (it->getChannelName() == name)
 			return (it);
-	}
 	return (it);
 }
 
@@ -64,10 +62,8 @@ Client::iterator Server::search_client(std::string const &name)
 {
 	Client::iterator it = _clients.begin();
 	for (; it != _clients.end(); it++)
-	{
-		if (it->getNickName() == name)
+		if ((*it)->getNickName() == name)
 			return (it);
-	}
 	return (it);
 }
 
@@ -75,9 +71,16 @@ Channel::iter_member Channel::search_user_in_channel(std::string const &nickname
 {
 	Channel::iter_member it = _channelmembers.begin();
 	for (; it != _channelmembers.end(); it++)
-	{
 		if (it->first->getNickName() == nickname)
 			return (it);
-	}
+	return (it);
+}
+
+Channel::iter_invite Channel::search_invite(std::string const &name)
+{
+	Channel::iter_invite it = _invitelist.begin();
+	for (; it != _invitelist.end(); it++)
+		if ((*it)->getNickName() == name)
+			return (it);
 	return (it);
 }
