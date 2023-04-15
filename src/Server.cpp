@@ -203,7 +203,9 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 //cap ??
 //channel case
 //leaks connection mdp faux;
+//cmd who affichage de nom pas différent ?
 
 //cmd:list, names
+//gestion multi join, name, list, kick, privmsg, notice
 //mode channel: 's', 'n'
 //mode user: 'O', 'o', 'r'

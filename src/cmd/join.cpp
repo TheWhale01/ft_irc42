@@ -60,14 +60,28 @@ void Server::join(Client &client, std::vector<std::string> const &args)
 {
 	if (args.size() < 1)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "JOIN"));
-	check_channel_syntax(client, args[0]);
-	for (size_t i = 0; i < this->getChannels().size(); i++)
+	std::vector<std::string> targ = split(args[0], ",");
+	size_t i;
+	for (size_t j = 0; j < targ.size(); j++)
 	{
-		if (this->getChannels()[i].getChannelName() == args[0])
+		try
 		{
-			join_channel(client, this->_channels[i]);
-			return ;
+			check_channel_syntax(client, targ[j]);
+			for (i = 0; i < this->getChannels().size(); i++)
+			{
+				if (this->getChannels()[i].getChannelName() == targ[j])
+				{
+					join_channel(client, this->_channels[i]);
+					break ;
+				}
+			}
+			if (i == this->getChannels().size())
+				create_channel(client, targ[j]);
+		}
+		catch (std::exception const &e)
+		{
+			std::string error_msg(e.what());
+			send_to_user(client, error_msg);
 		}
 	}
-	create_channel(client, args[0]);
 }
