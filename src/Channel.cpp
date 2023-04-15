@@ -23,6 +23,10 @@ std::string const Channel::getChannelMode(void) const
 		modes += "+i ";
 	if (_mode & MODE_M)
 		modes += "+m ";
+	if (_mode & MODE_S)
+		modes += "+s ";
+	if (_mode & MODE_N)
+		modes += "+n ";
 	return (modes);
 }
 
@@ -34,6 +38,10 @@ void Channel::setChannelMode(char const &mode)
 		_mode |= MODE_I;
 	else if (mode == 'm')
 		_mode |= MODE_M;
+	else if (mode == 's')
+		_mode |= MODE_S;
+	else if (mode == 'n')
+		_mode |= MODE_N;
 }
 
 void Channel::unsetChannelMode(char const &mode)
@@ -44,6 +52,10 @@ void Channel::unsetChannelMode(char const &mode)
 		_mode &= -(MODE_I) - 1;
 	else if (mode == 'm')
 		_mode &= -(MODE_M) - 1;
+	else if (mode == 's')
+		_mode &= -(MODE_S) - 1;
+	else if (mode == 'n')
+		_mode &= -(MODE_N) - 1;
 }
 
 void Channel::deleteUserfromInviteList(Client::iterator it) {_invitelist.erase(it);}

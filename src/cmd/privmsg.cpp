@@ -10,13 +10,16 @@ void Server::privmsg(Client &client, std::vector<std::string> const &args)
 		if (channel == _channels.end())
 			throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
 		Channel::iter_member member = channel->search_user_in_channel(client.getNickName());
-		if (member == channel->getChannelMembers().end())
-			throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
+		if (channel->getChannelModes() & MODE_N)
+		{
+			if (member == channel->getChannelMembers().end())
+				throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
+		}
 		if (channel->getChannelModes() & MODE_M) {
-			if (member->second == 0)
+			if ((member == channel->getChannelMembers().end()) || (member->second == 0))
 				throw (ChanoPrivsNeededException(client.getServerName(), client.getNickName(), args[0]));
 		}
-		send_to_members_in_chan(*channel, format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n", member->first->getNickName());
+		send_to_members_in_chan(*channel, format_msg(client) + "PRIVMSG " + args[0] + " :" + args[1] + "\r\n", client.getNickName());
 	}
 	else
 	{

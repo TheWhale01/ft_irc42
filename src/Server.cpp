@@ -1,6 +1,6 @@
 #include "irc.hpp"
 
-Server::Server(int port, std::string passwd): _passwd(passwd)
+Server::Server(int port, std::string passwd): _passwd(passwd), _opername("admin"), _operpasswd("admin")
 {
 	int temp = 1;
 	bzero(&addrlen, sizeof(addrlen));
@@ -155,7 +155,7 @@ std::vector<Channel> Server::getChannels(Client const &client)
 
 void Server::_get_commands(std::vector<std::string> &cmds)
 {
-	cmds.reserve(15);
+	cmds.reserve(18);
 	cmds.push_back("PASS");
 	cmds.push_back("NICK");
 	cmds.push_back("USER");
@@ -171,6 +171,9 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("WHOIS");
 	cmds.push_back("INVITE");
 	cmds.push_back("WHO");
+	cmds.push_back("NAMES");
+	cmds.push_back("LIST");
+	cmds.push_back("OPER");
 }
 
 void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &))
@@ -190,4 +193,17 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 	cmds_ptr[12] = &Server::whois;
 	cmds_ptr[13] = &Server::invite;
 	cmds_ptr[14] = &Server::who;
+	cmds_ptr[15] = &Server::names;
+	cmds_ptr[16] = &Server::list;
+	cmds_ptr[17] = &Server::oper;
 }
+
+
+//whois modif a faire
+//cap ??
+//channel case
+//leaks connection mdp faux;
+
+//cmd:list, names
+//mode channel: 's', 'n'
+//mode user: 'O', 'o', 'r'

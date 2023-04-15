@@ -28,8 +28,11 @@ class Server
 		void join(Client &client, std::vector<std::string> const &args);
 		void part(Client &client, std::vector<std::string> const &args);
 		void kick(Client &client, std::vector<std::string> const &args);
+		void oper(Client &client, std::vector<std::string> const &args);
 		void mode(Client &client, std::vector<std::string> const &args);
 		void ping(Client &client, std::vector<std::string> const &args);
+		void list(Client &client, std::vector<std::string> const &args);
+		void names(Client &client, std::vector<std::string> const &args);
 		void whois(Client &client, std::vector<std::string> const &args);
 		void topic(Client &client, std::vector<std::string> const &args);
 		void notice(Client &client, std::vector<std::string> const &args);
@@ -51,6 +54,8 @@ class Server
 		char _buff[BUFF_SIZE + 1];
 		pollfd_t _poll;
 		std::string _passwd;
+		std::string _opername;
+		std::string _operpasswd;
 		sockaddr_in_t _addr;
 		std::vector<Client*> _clients;
 		std::vector<Channel> _channels;

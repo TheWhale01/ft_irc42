@@ -3,10 +3,13 @@
 void Server::create_channel(Client &client, std::string const &name)
 {
 	Channel	new_channel(name);
-	new_channel.addMemberToChannel(client, true);
+	if (client.getMode() & MODE_R)
+		new_channel.addMemberToChannel(client, false);
+	else
+		new_channel.addMemberToChannel(client, true);
 	_channels.push_back(new_channel);
 	std::string answer = format_msg(client) + "JOIN " + name + "\r\n";
-	answer += print_all_user(client, new_channel);
+	answer += print_all_user(client, new_channel, 1);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
@@ -49,7 +52,7 @@ void join_channel(Client &client, Channel &channel)
 	}
 	if (!channel.getChannelTopic().empty())
 		answer += format_reply(client, RPL_TOPIC, channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
-	answer += print_all_user(client, channel);
+	answer += print_all_user(client, channel, 1);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 

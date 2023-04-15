@@ -1,10 +1,16 @@
 #include "irc.hpp"
 
-std::string print_all_user(Client const &client, Channel const &channel)
+std::string print_all_user(Client const &client, Channel const &channel, bool is_in)
 {
-	std::string answer = ":" + client.getServerName() + " " + RPL_NAMREPLY + " " + client.getNickName() + " = " + channel.getChannelName() + " :";
+	std::string answer;
+	if (channel.getChannelModes() & MODE_S)
+		answer = ":" + client.getServerName() + " " + RPL_NAMREPLY + " " + client.getNickName() + " @ " + channel.getChannelName() + " :";
+	else
+		answer = ":" + client.getServerName() + " " + RPL_NAMREPLY + " " + client.getNickName() + " = " + channel.getChannelName() + " :";
 	for (size_t i = 0; i < channel.getChannelMembers().size(); i++)
 	{
+		if (!is_in && (channel.getChannelMembers()[i].first->getMode() & MODE_I))
+			continue ;
 		if (channel.getChannelMembers()[i].second == 1)
 			answer += "@" + channel.getChannelMembers()[i].first->getNickName();
 		else

@@ -25,7 +25,7 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 			return ;
 		if (member_cli->second == 0)
 			throw (ChanoPrivsNeededException(client.getServerName(), client.getNickName(), args[0]));
-		charset = "tiom";
+		charset = "tiomsn";
 		for (size_t i = 0; i < args[1].size(); i++)
 		{
 			if (args[1][i] == '+')
@@ -44,6 +44,10 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 						target = channel->search_user_in_channel(args[1 + mode_args]);
 						if (target == channel->getChannelMembers().end()) {
 							send_to_user(client, ":" + client.getServerName() + " 441 " + args[0] + " MODE " + args[1 + mode_args] + " :They aren't on that channel\r\n");
+							continue ;
+						}
+						if ((sign == '+') && (target->first->getMode() & MODE_R)) {
+							send_to_user(client, ":" + client.getServerName() + " 484 " + args[0] + " MODE " + args[1] + " :Can't chanop, " + target->first->getNickName() + " is a restricted (+r) user\r\n"); 
 							continue ;
 						}
 						(sign == '+') ? target->second = 1 : target->second = 0;
@@ -70,7 +74,7 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 			send_to_user(client, format_reply(client, RPL_UMODEIS, std::string()) + client.getClientMode() + "\r\n");
 			return ;
 		}
-		charset = "i";
+		charset = "iroO";
 		for (size_t i = 0; i < args[1].size(); i++)
 		{
 			if (args[1][i] == '+')
@@ -79,6 +83,8 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 				sign = '-';
 			else if (sign != '!' && (charset.find(args[1][i]) != std::string::npos))
 			{
+				if (((sign == '-') && (args[1][i] == 'r')) || ((sign == '+') && ((args[1][i] == 'o') || (args[1][i] == 'O'))))
+					continue ;
 				(sign == '+') ? (*cli)->setClientMode(args[1][i]) : (*cli)->unsetClientMode(args[1][i]);
 				send_to_user(client, format_msg(client) + "MODE " + args[0] + " :" + sign + args[1][i] + "\r\n");
 			}

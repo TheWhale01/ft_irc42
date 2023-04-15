@@ -27,6 +27,10 @@ void Server::nick(Client &client, std::vector<std::string> const &args)
 	std::string old_nickname;
 	if (!args.size())
 		throw (NoNickNameGivenException(client.getServerName(), client.getNickName()));
+	if (client.getMode() & MODE_R) {
+		send_to_user(client, ":" + client.getServerName() + " 484 " + args[0] + " :Your connection is restricted! (+r)\r\n");
+		return ;
+	}
 	for (size_t i = 0; i < this->getClients().size(); i++)
 		if (this->getClients()[i]->getNickName() == args[0])
 			throw (NickNameInUseException(client.getServerName(), client.getNickName(), args[0]));
