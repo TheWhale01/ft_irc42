@@ -34,6 +34,3 @@ void Server::whois(Client &client, std::vector<std::string> const &args)
 	msg = format_reply(client, RPL_ENDOFWHOIS, (*target)->getNickName()) + "End of WHOIS list\r\n";
 	send(client.getPoll().fd, msg.c_str(), msg.length(), 0);
 }
-
-//Pour RPL_WHOISCHANELS: Si le channel est en mode +s (secret) et que le client qui envoie la commande n'est pas dans le channel,
-//alors le channel n'est pas affiché.

@@ -197,16 +197,3 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 	cmds_ptr[16] = &Server::list;
 	cmds_ptr[17] = &Server::oper;
 }
-
-
-//cap ??
-//channel case
-//whois modif a faire
-//cmd who affichage de nom pas différent ?
-//nc authentificattion: seul le dernier PASS doit être utiliser pour register, puis impossible de PASS après.
-//appel d'une autre cmd style join : explosion si pas register/pass
-
-//cmd:list, names, oper
-//gestion multi join, part, name, list, kick, privmsg, notice
-//mode channel: 's', 'n'
-//mode user: 'O', 'o', 'r'
