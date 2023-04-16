@@ -66,7 +66,7 @@ class UModeUnknowFlagsException: public AIrcStandardException
 class CannotSendToChanException: public AIrcStandardException
 {
 	public:
-		explicit CannotSendToChanException(std::string const &servername, std::string const &nickname);
+		explicit CannotSendToChanException(std::string const &servername, std::string const &nickname, std::string const &channel);
 		~CannotSendToChanException(void) throw();
 
 		const char *what(void) const throw();

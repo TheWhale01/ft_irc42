@@ -199,13 +199,16 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 }
 
 
-//whois modif a faire
 //cap ??
 //channel case
-//leaks connection mdp faux;
+//whois modif a faire
 //cmd who affichage de nom pas différent ?
+//leaks connection mdp faux avec irssi;
+//leaks ctrl+c in NC
+//nc authentificattion: seul le dernier PASS doit être utiliser pour register, puis impossible de PASS après.
+//appel d'une autre cmd style join : explosion si pas register/pass
 
-//cmd:list, names
-//gestion multi join, name, list, kick, privmsg, notice
+//cmd:list, names, oper
+//gestion multi join, part, name, list, kick, privmsg, notice
 //mode channel: 's', 'n'
 //mode user: 'O', 'o', 'r'

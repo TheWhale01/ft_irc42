@@ -13,12 +13,12 @@ void Server::privmsg(Client &client, std::vector<std::string> const &args)
 			{
 				Channel::iter_channel channel = search_channel(targ[i]);
 				if (channel == _channels.end())
-					throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
+					throw (CannotSendToChanException(client.getServerName(), client.getNickName(), targ[i]));
 				Channel::iter_member member = channel->search_user_in_channel(client.getNickName());
 				if (channel->getChannelModes() & MODE_N)
 				{
 					if (member == channel->getChannelMembers().end())
-						throw (CannotSendToChanException(client.getServerName(), client.getNickName()));
+						throw (CannotSendToChanException(client.getServerName(), client.getNickName(), targ[i]));
 				}
 				if (channel->getChannelModes() & MODE_M) {
 					if ((member == channel->getChannelMembers().end()) || (member->second == 0))
