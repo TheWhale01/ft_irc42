@@ -71,7 +71,7 @@ void Server::run(void)
 						close(_pollfds[i].fd);
 						_pollfds.erase(_pollfds.begin() + i);
 						_clients.erase(_clients.begin() + (i - 1));
-						delete _clients[i];
+						delete _clients[i - 1];
 						i--;
 					}
 					else
@@ -203,8 +203,6 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 //channel case
 //whois modif a faire
 //cmd who affichage de nom pas différent ?
-//leaks connection mdp faux avec irssi;
-//leaks ctrl+c in NC
 //nc authentificattion: seul le dernier PASS doit être utiliser pour register, puis impossible de PASS après.
 //appel d'une autre cmd style join : explosion si pas register/pass
 
