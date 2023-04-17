@@ -23,7 +23,6 @@ Server::Server(int port, std::string passwd): _passwd(passwd), _opername("admin"
 	_channels.reserve(5);
 	_pollfds.push_back(_poll);
 	std::cout << "Server started on port: " << ntohs(_addr.sin_port) << std::endl;
-	return ;
 }
 
 Server::~Server(void)
@@ -32,7 +31,6 @@ Server::~Server(void)
 		close(_pollfds[i].fd);
 	for (size_t i = 0; i < _clients.size(); i++)
 		delete _clients[i];
-	return ;
 }
 
 const pollfd_t &Server::getPoll(void) const {return (_poll);}
@@ -67,7 +65,7 @@ void Server::run(void)
 					_bytes = recv(_pollfds[i].fd, _buff, BUFF_SIZE, 0);
 					if (_bytes <= 0)
 					{
-						this->quit((_clients.begin() + (i - 1)), std::vector<std::string>());
+						this->quit(*(*(_clients.begin() + (i - 1))), std::vector<std::string>());
 						i--;
 					}
 					else
@@ -116,7 +114,6 @@ void Server::_exec_cmd(Client &client, std::string str)
 			args.erase(args.begin());
 			if ((!client._can_co && i) || (!client.getRegist() && i > 2) || (client._can_co == 2))
 			{
-				client._can_co = 2;
 				if (client._can_co == 2 && !i)
 					return ;
 				throw (NotRegisteredException(client.getServerName(), client.getNickName(), cmds[i]));
