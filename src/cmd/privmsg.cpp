@@ -9,7 +9,7 @@ void Server::privmsg(Client &client, std::vector<std::string> const &args)
 	{
 		try
 		{
-			if (args[0][0] == '#' || args[0][0] == '&')
+			if (targ[i][0] == '#' || targ[i][0] == '&')
 			{
 				Channel::iter_channel channel = search_channel(targ[i]);
 				if (channel == _channels.end())

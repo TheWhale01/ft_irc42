@@ -67,11 +67,7 @@ void Server::run(void)
 					_bytes = recv(_pollfds[i].fd, _buff, BUFF_SIZE, 0);
 					if (_bytes <= 0)
 					{
-						std::cout << "(info) >> Client " << _pollfds[i].fd << " disconnected." << std::endl;
-						close(_pollfds[i].fd);
-						_pollfds.erase(_pollfds.begin() + i);
-						_clients.erase(_clients.begin() + (i - 1));
-						delete _clients[i - 1];
+						this->quit((_clients.begin() + (i - 1)), std::vector<std::string>());
 						i--;
 					}
 					else
