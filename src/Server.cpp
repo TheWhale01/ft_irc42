@@ -1,6 +1,6 @@
 #include "irc.hpp"
 
-Server::Server(int port, std::string passwd): _passwd(passwd), _opername("admin"), _operpasswd("admin")
+Server::Server(int port, std::string passwd): _bytes(0), _passwd(passwd), _opername("admin"), _operpasswd("admin")
 {
 	int temp = 1;
 	bzero(&addrlen, sizeof(addrlen));
@@ -62,7 +62,14 @@ void Server::run(void)
 				}
 				else
 				{
+
 					_bytes = recv(_pollfds[i].fd, _buff, BUFF_SIZE, 0);
+					for (int i = 0; i < _bytes; i++)
+						std::cout << "Bytes number " << i << " / " << _bytes - 1 << " == " << _buff[i] << std::endl;
+					if (_buff[_bytes - 1] == EOF)
+					{
+						std::cout << "\033[31m" << "ctrl d trouve" << "\033[0m\n";
+					}
 					if (_bytes <= 0)
 					{
 						this->quit(*(*(_clients.begin() + (i - 1))), std::vector<std::string>());
@@ -112,9 +119,9 @@ void Server::_exec_cmd(Client &client, std::string str)
 		if (args[0] == cmds[i])
 		{
 			args.erase(args.begin());
-			if ((!client._can_co && i) || (!client.getRegist() && i > 2) || (client._can_co == 2))
+			if ((!client._can_co && i) || (!client.getRegist() && i > 2))
 			{
-				if (client._can_co == 2 && !i)
+				if (!i)
 					return ;
 				throw (NotRegisteredException(client.getServerName(), client.getNickName(), cmds[i]));
 			}

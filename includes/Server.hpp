@@ -47,8 +47,6 @@ class Server
 
 		std::vector<Channel> getChannels(Client const &client);
 
-		Client::iterator getUserFromNickName(std::string const &nickname);
-
 	private:
 		int _bytes;
 		char _buff[BUFF_SIZE + 1];

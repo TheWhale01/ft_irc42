@@ -11,6 +11,7 @@
 # include <map>
 # include <csignal>
 # include <cstring>
+# include <cstdio>
 # include <utility>
 # include <cstdlib>
 # include <sstream>
