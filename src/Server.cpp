@@ -41,6 +41,7 @@ const std::vector<Channel> &Server::getChannels(void) const {return (_channels);
 
 void Server::run(void)
 {
+	std::string command;
 	signal(SIGINT, sigHandler);
 	while (true)
 	{
@@ -62,25 +63,23 @@ void Server::run(void)
 				}
 				else
 				{
-
 					_bytes = recv(_pollfds[i].fd, _buff, BUFF_SIZE, 0);
-					for (int i = 0; i < _bytes; i++)
-						std::cout << "Bytes number " << i << " / " << _bytes - 1 << " == " << _buff[i] << std::endl;
-					if (_buff[_bytes - 1] == EOF)
+					if ((_bytes > 0) && (_buff[_bytes - 1] != '\n'))
 					{
-						std::cout << "\033[31m" << "ctrl d trouve" << "\033[0m\n";
+						command += std::string(_buff, _bytes);
 					}
-					if (_bytes <= 0)
+					else if (_bytes <= 0)
 					{
+						command.clear();
 						this->quit(*(*(_clients.begin() + (i - 1))), std::vector<std::string>());
 						i--;
 					}
 					else
 					{
-						_buff[_bytes] = '\0';
-						std::cout << "message received= " << _buff << std::endl;
-						std::string user_input(_buff);
-						std::vector<std::string> user_inputs = split(user_input, "\r\n");
+						command += std::string(_buff, _bytes);
+						std::cout << "message received= " << command << std::endl;
+						std::vector<std::string> user_inputs = split(command, "\r\n");
+						command.clear();
 						std::vector<std::string>::iterator it;
 						for (it = user_inputs.begin(); it != user_inputs.end(); it++)
 						{
