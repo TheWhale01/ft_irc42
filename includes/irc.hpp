@@ -8,11 +8,12 @@
 # include <netinet/in.h>
 
 // C++ includes
-# include <vector>
 # include <map>
+# include <ctime>
+# include <vector>
+# include <cstdio>
 # include <csignal>
 # include <cstring>
-# include <cstdio>
 # include <utility>
 # include <cstdlib>
 # include <sstream>
@@ -84,8 +85,8 @@ typedef struct addrinfo addrinfo_t;
 typedef struct sockaddr_in sockaddr_in_t;
 
 # include "Client.hpp"
-# include "Bot.hpp"
 # include "Channel.hpp"
+# include "Bot.hpp"
 # include "Server.hpp"
 # include "exception.hpp"
 

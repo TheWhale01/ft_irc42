@@ -32,7 +32,7 @@ void Server::privmsg(Client &client, std::vector<std::string> const &args)
 							throw (ChanoPrivsNeededException(client.getServerName(), client.getNickName(), targ[i]));
 					}
 					if (args[args.size() - 1] == "!weather" && bot)
-						bot->weather();
+						bot->weather(*channel);
 					send_to_members_in_chan(*channel, format_msg(client) + "PRIVMSG " + targ[i] + " :" + args[1] + "\r\n", client.getNickName());
 				}
 				else
