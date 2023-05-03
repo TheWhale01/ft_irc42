@@ -4,7 +4,6 @@ void Server::topic(Client &client, std::vector<std::string> const &args)
 {
 	if (args.size() == 0)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "TOPIC"));
-
 	Channel::iter_channel channel = search_channel(args[0]);
 	if (channel == _channels.end())
 		throw (NoSuchChannelException(client.getServerName(), client.getNickName(), args[0]));
@@ -23,9 +22,9 @@ void Server::topic(Client &client, std::vector<std::string> const &args)
 	}
 	else
 	{
-		if ((*channel).getChannelTopic().empty())
+		if (channel->getChannelTopic().empty())
 			send_to_user(client, format_reply(client, RPL_NOTOPIC, channel->getChannelName()) + "No topic is set\r\n");
 		else
-			send_to_user(client, format_reply(client, RPL_TOPIC, channel->getChannelName()) + (*channel).getChannelTopic() + "\r\n");
+			send_to_user(client, format_reply(client, RPL_TOPIC, channel->getChannelName()) + channel->getChannelTopic() + "\r\n");
 	}
 }

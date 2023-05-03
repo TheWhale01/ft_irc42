@@ -31,7 +31,7 @@ class Client
 		void setHostName(std::string const &hostname);
 		void setServerName(std::string const &servername);
 
-	private:
+	protected:
 		int			_mode;
 		pollfd_t 	_poll;
 		std::string	_username;

@@ -6,6 +6,7 @@ class Channel;
 class Server
 {
 	public:
+		Bot *bot;
 		socklen_t addrlen;
 		sockaddr_in_t client_addr;
 
@@ -19,21 +20,25 @@ class Server
 		const std::vector<Channel> &getChannels(void) const;
 
 		void run(void);
+
+		void who(Client &client, std::vector<std::string> const &args);
 		void pass(Client &client, std::vector<std::string> const &args);
 		void nick(Client &client, std::vector<std::string> const &args);
 		void user(Client &client, std::vector<std::string> const &args);
 		void quit(Client &client, std::vector<std::string> const &args);
-
 		void join(Client &client, std::vector<std::string> const &args);
 		void part(Client &client, std::vector<std::string> const &args);
 		void kick(Client &client, std::vector<std::string> const &args);
-		void topic(Client &client, std::vector<std::string> const &args);
-		void notice(Client &client, std::vector<std::string> const &args);
-		void privmsg(Client &client, std::vector<std::string> const &args);
+		void oper(Client &client, std::vector<std::string> const &args);
 		void mode(Client &client, std::vector<std::string> const &args);
 		void ping(Client &client, std::vector<std::string> const &args);
-		void who(Client &client, std::vector<std::string> const &args);
+		void list(Client &client, std::vector<std::string> const &args);
+		void names(Client &client, std::vector<std::string> const &args);
 		void whois(Client &client, std::vector<std::string> const &args);
+		void topic(Client &client, std::vector<std::string> const &args);
+		void notice(Client &client, std::vector<std::string> const &args);
+		void invite(Client &client, std::vector<std::string> const &args);
+		void privmsg(Client &client, std::vector<std::string> const &args);
 
 		void create_channel(Client &client, std::string const &name);
 		void sendToChannels(Client const &client, std::string const &msg);
@@ -43,13 +48,13 @@ class Server
 
 		std::vector<Channel> getChannels(Client const &client);
 
-		Client::iterator getUserFromNickName(std::string const &nickname);
-
 	private:
 		int _bytes;
 		char _buff[BUFF_SIZE + 1];
 		pollfd_t _poll;
 		std::string _passwd;
+		std::string _opername;
+		std::string _operpasswd;
 		sockaddr_in_t _addr;
 		std::vector<Client*> _clients;
 		std::vector<Channel> _channels;

@@ -2,7 +2,7 @@
 
 Client::Client(void) {}
 
-Client::Client(Server &serv) : _nickname(""), _regist(false)
+Client::Client(Server &serv) : _mode(0), _nickname(""), _regist(false)
 {
 	_poll.fd = accept(serv.getPoll().fd, (struct sockaddr *)(&(serv.client_addr)), &(serv.addrlen));
 	if (_poll.fd < 0)
@@ -34,7 +34,11 @@ std::string const Client::getClientMode(void) const
 {
 	std::string modes;
 	if (_mode & MODE_I)
-		modes += "i ";
+		modes += "+i ";
+	if (_mode & MODE_R)
+		modes += "+r ";
+	if (_mode & MODE_O)
+		modes += "+O +o ";
 	return (modes);
 }
 
@@ -42,10 +46,18 @@ void Client::setClientMode(char const &mode)
 {
 	if (mode == 'i')
 		_mode |= MODE_I;
+	if (mode == 'r')
+		_mode |= MODE_R;
+	if (mode == 'o' || mode == 'O')
+		_mode |= MODE_O;
 }
 
 void Client::unsetClientMode(char const &mode)
 {
 	if (mode == 'i')
 		_mode &= -(MODE_I) - 1;
+	if (mode == 'r')
+		_mode &= -(MODE_R) - 1;
+	if (mode == 'o' || mode == 'O')
+		_mode &= -(MODE_O) - 1;
 }

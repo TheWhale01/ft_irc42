@@ -2,7 +2,6 @@
 
 void Server::user(Client &client, std::vector<std::string> const &args)
 {
-	// RFC 1459
 	if (args.size() < 4)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "USER"));
 	if (client.getRegist())

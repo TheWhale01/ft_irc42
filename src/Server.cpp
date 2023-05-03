@@ -1,8 +1,9 @@
 #include "irc.hpp"
 
-Server::Server(int port, std::string passwd): _passwd(passwd)
+Server::Server(int port, std::string passwd): _bytes(0), _passwd(passwd), _opername("admin"), _operpasswd("admin")
 {
 	int temp = 1;
+	bot = NULL;
 	bzero(&addrlen, sizeof(addrlen));
 	_addr.sin_family = AF_INET;
 	_poll.fd = socket(_addr.sin_family, SOCK_STREAM, 0);
@@ -23,16 +24,16 @@ Server::Server(int port, std::string passwd): _passwd(passwd)
 	_channels.reserve(5);
 	_pollfds.push_back(_poll);
 	std::cout << "Server started on port: " << ntohs(_addr.sin_port) << std::endl;
-	return ;
 }
 
 Server::~Server(void)
 {
+	if (bot)
+		delete bot;
 	for (size_t i = 0; i < _pollfds.size(); i++)
 		close(_pollfds[i].fd);
 	for (size_t i = 0; i < _clients.size(); i++)
 		delete _clients[i];
-	return ;
 }
 
 const pollfd_t &Server::getPoll(void) const {return (_poll);}
@@ -43,6 +44,7 @@ const std::vector<Channel> &Server::getChannels(void) const {return (_channels);
 
 void Server::run(void)
 {
+	std::string command;
 	signal(SIGINT, sigHandler);
 	while (true)
 	{
@@ -65,21 +67,20 @@ void Server::run(void)
 				else
 				{
 					_bytes = recv(_pollfds[i].fd, _buff, BUFF_SIZE, 0);
-					if (_bytes <= 0)
+					if ((_bytes > 0) && (_buff[_bytes - 1] != '\n'))
+						command += std::string(_buff, _bytes);
+					else if (_bytes <= 0)
 					{
-						std::cout << "(info) >> Client " << _pollfds[i].fd << " disconnected." << std::endl;
-						close(_pollfds[i].fd);
-						_pollfds.erase(_pollfds.begin() + i);
-						_clients.erase(_clients.begin() + (i - 1));
-						delete _clients[i - 1];
+						command.clear();
+						this->quit(*(*(_clients.begin() + (i - 1))), std::vector<std::string>());
 						i--;
 					}
 					else
 					{
-						_buff[_bytes] = '\0';
-						std::cout << "message recu= " << _buff << std::endl;
-						std::string user_input(_buff);
-						std::vector<std::string> user_inputs = split(user_input, "\r\n");
+						command += std::string(_buff, _bytes);
+						std::cout << "message received= " << command << std::endl;
+						std::vector<std::string> user_inputs = split(command, "\r\n");
+						command.clear();
 						std::vector<std::string>::iterator it;
 						for (it = user_inputs.begin(); it != user_inputs.end(); it++)
 						{
@@ -118,10 +119,9 @@ void Server::_exec_cmd(Client &client, std::string str)
 		if (args[0] == cmds[i])
 		{
 			args.erase(args.begin());
-			if ((!client._can_co && i) || (!client.getRegist() && i > 2) || (client._can_co == 2))
+			if ((!client._can_co && i) || (!client.getRegist() && i > 2))
 			{
-				client._can_co = 2;
-				if (client._can_co == 2 && !i)
+				if (!i)
 					return ;
 				throw (NotRegisteredException(client.getServerName(), client.getNickName(), cmds[i]));
 			}
@@ -153,17 +153,9 @@ std::vector<Channel> Server::getChannels(Client const &client)
 	return (v);
 }
 
-Client::iterator Server::getUserFromNickName(std::string const &nickname)
-{
-	for (Client::iterator it = _clients.begin(); it != _clients.end(); it++)
-		if ((*it)->getNickName() == nickname)
-			return (it);
-	return (_clients.end());
-}
-
 void Server::_get_commands(std::vector<std::string> &cmds)
 {
-	cmds.reserve(15);
+	cmds.reserve(18);
 	cmds.push_back("PASS");
 	cmds.push_back("NICK");
 	cmds.push_back("USER");
@@ -177,7 +169,11 @@ void Server::_get_commands(std::vector<std::string> &cmds)
 	cmds.push_back("MODE");
 	cmds.push_back("PING");
 	cmds.push_back("WHOIS");
+	cmds.push_back("INVITE");
 	cmds.push_back("WHO");
+	cmds.push_back("NAMES");
+	cmds.push_back("LIST");
+	cmds.push_back("OPER");
 }
 
 void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &))
@@ -195,41 +191,9 @@ void Server::_get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<
 	cmds_ptr[10] = &Server::mode;
 	cmds_ptr[11] = &Server::ping;
 	cmds_ptr[12] = &Server::whois;
-	cmds_ptr[13] = &Server::who;
+	cmds_ptr[13] = &Server::invite;
+	cmds_ptr[14] = &Server::who;
+	cmds_ptr[15] = &Server::names;
+	cmds_ptr[16] = &Server::list;
+	cmds_ptr[17] = &Server::oper;
 }
-
-// Bare minimum to run a bot
-/*
-#include <iostream>
-#include <sys/socket.h>
-#include <cassert>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <unistd.h>
-
-# define BUFF_SIZE 1024
-# define SERVER_PORT 80
-
-int main(int ac, char **av)
-{
-	if (ac != 2)
-		return (0);
-	char buff[BUFF_SIZE + 1];
-	std::string request = "GET / HTTP/1.1\r\nHost: " + std::string(av[1]) + "\r\n\r\n";
-	struct protoent *protoent = getprotobyname("tcp");
-	int sock_fd = socket(AF_INET, SOCK_STREAM, protoent->p_proto);
-	struct hostent *hostent = gethostbyname(av[1]);
-	in_addr_t in_addr = inet_addr(inet_ntoa(*(struct in_addr *)*(hostent->h_addr_list)));
-	struct sockaddr_in sockaddr;
-	sockaddr.sin_addr.s_addr = in_addr;
-	sockaddr.sin_family = AF_INET;
-	sockaddr.sin_port = htons(SERVER_PORT);
-	connect(sock_fd, (struct sockaddr *)&sockaddr, sizeof(sockaddr));
-	send(sock_fd, request.c_str(), request.length(), 0);
-	int bytes = read(sock_fd, buff, BUFF_SIZE);
-	buff[bytes] = '\0';
-	std::cout << buff << std::endl;
-	close(sock_fd);
-	return (0);
-}
-*/

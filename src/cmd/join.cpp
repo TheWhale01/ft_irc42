@@ -3,10 +3,13 @@
 void Server::create_channel(Client &client, std::string const &name)
 {
 	Channel	new_channel(name);
-	new_channel.addMemberToChannel(client, true);
+	if (client.getMode() & MODE_R)
+		new_channel.addMemberToChannel(client, false);
+	else
+		new_channel.addMemberToChannel(client, true);
 	_channels.push_back(new_channel);
 	std::string answer = format_msg(client) + "JOIN " + name + "\r\n";
-	answer += print_all_user(client, new_channel);
+	answer += print_all_user(client, new_channel, 1);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
@@ -32,7 +35,16 @@ bool check_already_in_chan(std::string const &nickname, Channel const &channel)
 
 void join_channel(Client &client, Channel &channel)
 {
+	Client::iterator it_inv = channel.search_invite(client.getNickName());
+	if (channel.getChannelModes() & MODE_I)
+	{
+			if (it_inv == channel.getChannelInviteList().end())
+				throw (InviteOnlyChanException(client.getServerName(), client.getNickName(), channel.getChannelName()));
+	}
+	if (it_inv != channel.getChannelInviteList().end())
+		channel.deleteUserfromInviteList(it_inv);
 	std::string answer;
+	answer = "";
 	if (!check_already_in_chan(client.getNickName(), channel))
 	{
 		channel.addMemberToChannel(client, false);
@@ -41,22 +53,36 @@ void join_channel(Client &client, Channel &channel)
 	}
 	if (!channel.getChannelTopic().empty())
 		answer += format_reply(client, RPL_TOPIC, channel.getChannelName()) + channel.getChannelTopic() + "\r\n";
-	answer += print_all_user(client, channel);
+	answer += print_all_user(client, channel, 1);
 	send(client.getPoll().fd, answer.c_str(), answer.length(), 0);
 }
 
 void Server::join(Client &client, std::vector<std::string> const &args)
 {
-	if (args.size() != 1)
+	if (args.size() < 1)
 		throw (NeedMoreParamsException(client.getServerName(), client.getNickName(), "JOIN"));
-	check_channel_syntax(client, args[0]);
-	for (size_t i = 0; i < this->getChannels().size(); i++)
+	std::vector<std::string> targ = split(args[0], ",");
+	size_t i;
+	for (size_t j = 0; j < targ.size(); j++)
 	{
-		if (this->getChannels()[i].getChannelName() == args[0])
+		try
 		{
-			join_channel(client, this->_channels[i]);
-			return ;
+			check_channel_syntax(client, targ[j]);
+			for (i = 0; i < this->getChannels().size(); i++)
+			{
+				if (this->getChannels()[i].getChannelName() == targ[j])
+				{
+					join_channel(client, this->_channels[i]);
+					break ;
+				}
+			}
+			if (i == this->getChannels().size())
+				create_channel(client, targ[j]);
+		}
+		catch (std::exception const &e)
+		{
+			std::string error_msg(e.what());
+			send_to_user(client, error_msg);
 		}
 	}
-	create_channel(client, args[0]);
 }

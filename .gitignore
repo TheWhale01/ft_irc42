@@ -6,3 +6,4 @@ test*
 a.out
 ircserv
 callgrind*
+.nfs*

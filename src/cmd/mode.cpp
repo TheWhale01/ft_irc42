@@ -2,7 +2,7 @@
 
 void Server::mode(Client &client, std::vector<std::string> const &args)
 {
-	int sign = 0;
+	char sign = '!';
 	size_t mode_args = 0;
 	std::string charset;
 	Channel::iter_member target;
@@ -21,16 +21,18 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 		Channel::iter_member member_cli = channel->search_user_in_channel(client.getNickName());
 		if (member_cli == channel->getChannelMembers().end())
 			throw (NotOnChannelException(client.getServerName(), client.getNickName(), args[0]));
+		if (args[1] == "b")
+			return ;
 		if (member_cli->second == 0)
 			throw (ChanoPrivsNeededException(client.getServerName(), client.getNickName(), args[0]));
-		charset = "tio";
+		charset = "tiomsn";
 		for (size_t i = 0; i < args[1].size(); i++)
 		{
 			if (args[1][i] == '+')
-				sign = 1;
+				sign = '+';
 			else if (args[1][i] == '-')
-				sign = -1;
-			else if (sign != 0 && (charset.find(args[1][i]) != std::string::npos))
+				sign = '-';
+			else if (sign != '!' && (charset.find(args[1][i]) != std::string::npos))
 			{
 					if (args[1][i] == 'o')
 					{
@@ -44,22 +46,16 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 							send_to_user(client, ":" + client.getServerName() + " 441 " + args[0] + " MODE " + args[1 + mode_args] + " :They aren't on that channel\r\n");
 							continue ;
 						}
-						else if (sign == 1) {
-							target->second = 1;
-							send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :+" + args[1][i] + " " + args[mode_args + 2] + "\r\n", std::string());
+						if ((sign == '+') && (target->first->getMode() & MODE_R)) {
+							send_to_user(client, ":" + client.getServerName() + " 484 " + args[0] + " MODE " + args[1] + " :Can't chanop, " + target->first->getNickName() + " is a restricted (+r) user\r\n"); 
+							continue ;
 						}
-						else {
-							target->second = 0;
-							send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :-" + args[1][i] + " " + args[mode_args + 2] +  + "\r\n", std::string());
-						}
-					}
-					else if (sign == 1) {
-						send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :+" + args[1][i] + "\r\n", std::string());
-						channel->setChannelMode(args[1][i]);
+						(sign == '+') ? target->second = 1 : target->second = 0;
+						send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :" + sign + args[1][i] + " " + args[mode_args + 2] + "\r\n", std::string());
 					}
 					else {
-						send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :-" + args[1][i] + "\r\n", std::string());
-						channel->unsetChannelMode(args[1][i]);
+						(sign == '+') ? channel->setChannelMode(args[1][i]) : channel->unsetChannelMode(args[1][i]);
+						send_to_members_in_chan(*channel, format_msg(client) + "MODE " + args[0] + " :" + sign + args[1][i] + "\r\n", std::string());
 					}
 			}
 			else
@@ -78,23 +74,19 @@ void Server::mode(Client &client, std::vector<std::string> const &args)
 			send_to_user(client, format_reply(client, RPL_UMODEIS, std::string()) + client.getClientMode() + "\r\n");
 			return ;
 		}
-		charset = "i";
+		charset = "iroO";
 		for (size_t i = 0; i < args[1].size(); i++)
 		{
 			if (args[1][i] == '+')
-				sign = 1;
+				sign = '+';
 			else if (args[1][i] == '-')
-				sign = -1;
-			else if (sign != 0 && (charset.find(args[1][i]) != std::string::npos))
+				sign = '-';
+			else if (sign != '!' && (charset.find(args[1][i]) != std::string::npos))
 			{
-				if (sign == 1) {
-					(*cli)->setClientMode(args[1][i]);
-					send_to_user(client, format_msg(client) + "MODE " + args[0] + " :+" + args[1][i] + "\r\n");
-				}
-				else {
-					(*cli)->unsetClientMode(args[1][i]);
-					send_to_user(client, format_msg(client) + "MODE " + args[0] + " :-" + args[1][i] + "\r\n");
-				}
+				if (((sign == '-') && (args[1][i] == 'r')) || ((sign == '+') && ((args[1][i] == 'o') || (args[1][i] == 'O'))))
+					continue ;
+				(sign == '+') ? (*cli)->setClientMode(args[1][i]) : (*cli)->unsetClientMode(args[1][i]);
+				send_to_user(client, format_msg(client) + "MODE " + args[0] + " :" + sign + args[1][i] + "\r\n");
 			}
 			else
 				send_to_user(client, ":" + client.getServerName() + " 501 " + client.getNickName() + " MODE :Unknown " + args[1][i] + " flag\r\n");

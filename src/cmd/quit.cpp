@@ -11,9 +11,15 @@ void Server::quit(Client &client, std::vector<std::string> const &args)
 	{
 		if ((del_member = _channels[j].search_user_in_channel(client.getNickName())) != _channels[j].getChannelMembers().end())
 		{
-			std::string quit_msg = format_msg(client) + "QUIT :" + args[0] + "\r\n";
+			std::string quit_msg;
+			if (args.size() == 0)
+				quit_msg = format_msg(client) + "QUIT :disconnected\r\n";
+			else
+				quit_msg = format_msg(client) + "QUIT :" + args[0] + "\r\n";
 			send_to_members_in_chan(_channels[j], quit_msg.c_str(), "");
 			_channels[j].deleteChannelMember(del_member);
+			if (_channels[j].getChannelMembers().size() == 0)
+				_channels.erase(_channels.begin() + j);
 		}
 	}
 	close(this->_pollfds[i].fd);

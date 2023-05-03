@@ -66,7 +66,7 @@ class UModeUnknowFlagsException: public AIrcStandardException
 class CannotSendToChanException: public AIrcStandardException
 {
 	public:
-		explicit CannotSendToChanException(std::string const &servername, std::string const &nickname);
+		explicit CannotSendToChanException(std::string const &servername, std::string const &nickname, std::string const &channel);
 		~CannotSendToChanException(void) throw();
 
 		const char *what(void) const throw();
@@ -104,6 +104,15 @@ class UserNotInChannelException: public AIrcStandardException
 	public:
 		explicit UserNotInChannelException(std::string const &servername, std::string const &nickname, std::string const &cmd, std::string const &user);
 		~UserNotInChannelException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class UserOnChannelException: public AIrcStandardException
+{
+	public:
+		explicit UserOnChannelException(std::string const &servername, std::string const &nickname, std::string const &cmd, std::string const &user);
+		~UserOnChannelException(void) throw();
 
 		const char *what(void) const throw();
 };
@@ -158,6 +167,15 @@ class NeedMoreParamsException: public AIrcStandardException
 	public:
 		explicit NeedMoreParamsException(std::string const &servername, std::string const &nickname, std::string const &cmd);
 		~NeedMoreParamsException(void) throw();
+
+		const char *what(void) const throw();
+};
+
+class InviteOnlyChanException: public AIrcStandardException
+{
+	public:
+		explicit InviteOnlyChanException(std::string const &servername, std::string const &nickname, std::string const &cmd);
+		~InviteOnlyChanException(void) throw();
 
 		const char *what(void) const throw();
 };

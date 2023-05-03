@@ -8,7 +8,7 @@ void Server::whois(Client &client, std::vector<std::string> const &args)
 
 	if (!args.size())
 		throw (NoNickNameGivenException(client.getServerName(), client.getNickName()));
-	target = getUserFromNickName(args[0]);
+	target = search_client(args[0]);
 	if (target == _clients.end())
 		throw (NoSuchNickException(client.getServerName(), client.getNickName(), "WHOIS"));
 
@@ -21,7 +21,11 @@ void Server::whois(Client &client, std::vector<std::string> const &args)
 	msg = format_reply(client, RPL_WHOISCHANNELS, (*target)->getNickName());
 	user_channels = getChannels(*(*target));
 	for (Channel::iter_channel it = user_channels.begin(); it != user_channels.end(); it++)
+	{
+		if ((it->getChannelModes() & MODE_S) && (it->search_user_in_channel(client.getNickName()) == it->getChannelMembers().end()))
+			continue ;
 		msg = msg + "@" + it->getChannelName() + (it + 1 == user_channels.end() ? "" : " ");
+	}
 	msg += "\r\n";
 	send(client.getPoll().fd, msg.c_str(), msg.length(), 0);
 
