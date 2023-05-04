@@ -28,7 +28,7 @@ void Bot::weather(Server &serv, Channel const &chan)
 		throw (ServerException());
 	_poll.events = POLLIN;
 	_poll.revents = 0;
-	bzero(&_hints, sizeof(_hints));
+	bzero(&_hints, sizeof(_hints));	
 	_hints.ai_family = AF_INET;
 	_hints.ai_socktype = SOCK_STREAM;
 	if (getaddrinfo(_domain_name.c_str(), "80", &_hints, &_server_info))
@@ -39,22 +39,16 @@ void Bot::weather(Server &serv, Channel const &chan)
 	if (!addr)
 	{
 		std::cout << "(error) >> Bot could not connect." << std::endl;
+		close(_poll.fd);
+		freeaddrinfo(_server_info);
 		return ;
 	}
 	freeaddrinfo(_server_info);
 	request = _get_request("/v1/forecast?latitude=48.85&longitude=2.35&current_weather=true&timezone=auto&hourly=cloudcover&forecast_days=1");
 	send(_poll.fd, request.c_str(), request.length(), 0);
-	while (true)
-	{
-		if (poll(&_poll, 1, TIMEOUT) > 0)
-		{
-			size_t bytes = recv(_poll.fd, _buff, BUFF_SIZE, 0);
-			if (bytes <= 0)
-				break ;
-			_buff[bytes] = '\0';
-			response_sstream << _buff;
-		}
-	}
+	size_t bytes = recv(_poll.fd, _buff, BUFF_SIZE, 0);
+	_buff[bytes] = '\0';
+	response_sstream << _buff;
 	mp = _parse_json(response_sstream.str());
 	close(_poll.fd);
 	send_to_channel(chan, mp);
