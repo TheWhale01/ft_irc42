@@ -3,10 +3,10 @@
 class Bot: public Client
 {
 	public:
-		Bot();
+		Bot(void);
 		~Bot(void);
 
-		void weather(Channel const &chann);
+		void weather(Server &serv, Channel const &chann);
 	
 	private:
 		char _buff[BUFF_SIZE];

@@ -7,7 +7,7 @@ class Client
 	public:
 		Client(void);
 		Client(Server &serv);
-		~Client(void);
+		virtual ~Client(void);
 
 		typedef std::vector<Client*>::iterator iterator;
 

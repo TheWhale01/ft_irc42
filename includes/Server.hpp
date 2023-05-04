@@ -48,6 +48,8 @@ class Server
 
 		std::vector<Channel> getChannels(Client const &client);
 
+		friend void Bot::weather(Server &serv, Channel const &chan);
+
 	private:
 		int _bytes;
 		char _buff[BUFF_SIZE + 1];
