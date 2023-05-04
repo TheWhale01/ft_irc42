@@ -64,5 +64,5 @@ class Server
 		void _get_commands(std::vector<std::string> &cmds);
 		void _get_commands_ptr(void (Server::*cmds_ptr[])(Client &, std::vector<std::string> const &));
 
-		void _who_user(Client const &client, Client const &target);
+		void _who_user(Client const &client, Client const &target, bool in, bool c);
 };

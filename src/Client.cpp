@@ -21,6 +21,7 @@ const pollfd_t &Client::getPoll(void) const {return (_poll);}
 const std::string &Client::getRealName(void) const {return (_realname);}
 const std::string &Client::getNickName(void) const {return (_nickname);}
 const std::string &Client::getUserName(void) const {return (_username);}
+const std::string &Client::getHostName(void) const {return (_hostname);}
 const std::string &Client::getServerName(void) const {return (_servername);}
 
 void Client::setRegist(bool val) {_regist = val;}

@@ -67,7 +67,7 @@ void Server::run(void)
 				else
 				{
 					_bytes = recv(_pollfds[i].fd, _buff, BUFF_SIZE, 0);
-					if ((_bytes > 0) && (_buff[_bytes - 1] != '\n'))
+					if ((_bytes > 0) && _buff[_bytes - 1] != '\n' && _buff[_bytes - 2] != '\r')
 						command += std::string(_buff, _bytes);
 					else if (_bytes <= 0)
 					{

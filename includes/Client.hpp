@@ -19,6 +19,7 @@ class Client
 		const std::string &getRealName(void) const;
 		const std::string &getNickName(void) const;
 		const std::string &getUserName(void) const;
+		const std::string &getHostName(void) const;
 		const std::string &getServerName(void) const;
 		const std::string getClientMode(void) const;
 
