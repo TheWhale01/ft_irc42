@@ -3,19 +3,21 @@
 Bot::Bot(void)
 {
 	setClientMode('i');
-	_regist = true;
+	bzero(&_poll, sizeof(_poll));
 	_username = "bot";
 	_nickname = "bot";
 	_realname = "Super Bot";
 	_hostname = "127.0.0.1";
 	_servername = "127.0.0.1";
+	_regist = true;
 	_domain_name = "api.open-meteo.com";
 }
 
 Bot::~Bot(void) {}
 
-void Bot::weather(Channel const &chan)
+void Bot::weather(Server &serv, Channel const &chan)
 {
+	(void)serv;
 	addrinfo_t *addr;
 	std::stringstream response_sstream;
 	std::string request;

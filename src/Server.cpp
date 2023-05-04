@@ -3,7 +3,6 @@
 Server::Server(int port, std::string passwd): _bytes(0), _passwd(passwd), _opername("admin"), _operpasswd("admin")
 {
 	int temp = 1;
-	bot = NULL;
 	bzero(&addrlen, sizeof(addrlen));
 	_addr.sin_family = AF_INET;
 	_poll.fd = socket(_addr.sin_family, SOCK_STREAM, 0);
@@ -23,13 +22,14 @@ Server::Server(int port, std::string passwd): _bytes(0), _passwd(passwd), _opern
 	_clients.reserve(10);
 	_channels.reserve(5);
 	_pollfds.push_back(_poll);
+	bot = new Bot();
+	_pollfds.push_back(bot->getPoll());
+	_clients.push_back(bot);
 	std::cout << "Server started on port: " << ntohs(_addr.sin_port) << std::endl;
 }
 
 Server::~Server(void)
 {
-	if (bot)
-		delete bot;
 	for (size_t i = 0; i < _pollfds.size(); i++)
 		close(_pollfds[i].fd);
 	for (size_t i = 0; i < _clients.size(); i++)
